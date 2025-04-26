@@ -1,11 +1,23 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useUser } from '@/contexts/UserContext';
 import { Button } from '@/components/ui/button';
 import TopicSelector from './TopicSelector';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { Settings, LogOut, User } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import ProfileSettings from './ProfileSettings';
 
 const DashboardHeader: React.FC = () => {
-  const { user, isLoggedIn } = useUser();
+  const { user, isLoggedIn, logout } = useUser();
+  const [showProfileSettings, setShowProfileSettings] = useState(false);
   
   if (!isLoggedIn) return null;
   
@@ -20,11 +32,42 @@ const DashboardHeader: React.FC = () => {
               Dashboard mit aktuellen Informationen und Empfehlungen
             </p>
           </div>
-          <Button variant="outline">Profil bearbeiten</Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2">
+                <User size={16} />
+                Profil
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>
+                {user.firstName} {user.lastName}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setShowProfileSettings(true)}>
+                <Settings className="mr-2 h-4 w-4" />
+                Einstellungen
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => logout()}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Abmelden
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         
         <TopicSelector />
       </div>
+      
+      <Dialog open={showProfileSettings} onOpenChange={setShowProfileSettings}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Profileinstellungen</DialogTitle>
+          </DialogHeader>
+          <ProfileSettings />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

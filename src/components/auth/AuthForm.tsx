@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useUser } from '@/contexts/UserContext';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -16,21 +17,58 @@ const AuthForm = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { updateUser, registerUser } = useUser();
+
+  // Check if already logged in
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate('/');
+      }
+    };
+    
+    checkSession();
+  }, [navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
       if (error) throw error;
-      navigate('/');
-      toast({
-        title: "Erfolgreich angemeldet",
-        description: "Willkommen zurück!",
-      });
+      
+      if (data.user) {
+        // Fetch profile data
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+        
+        if (profileData) {
+          registerUser({
+            firstName: profileData.first_name || '',
+            lastName: profileData.last_name || '',
+            email: data.user.email || '',
+            userType: profileData.user_type || 'private',
+            location: profileData.location || '',
+            interests: ['wohnen', 'steuern'],
+            isRegistered: true
+          });
+        }
+        
+        toast({
+          title: "Erfolgreich angemeldet",
+          description: "Willkommen zurück!",
+        });
+        
+        navigate('/');
+      }
     } catch (error: any) {
       toast({
         title: "Fehler bei der Anmeldung",
@@ -46,7 +84,7 @@ const AuthForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -56,11 +94,18 @@ const AuthForm = () => {
           },
         },
       });
+      
       if (error) throw error;
+      
       toast({
         title: "Registrierung erfolgreich",
         description: "Bitte überprüfen Sie Ihre E-Mails für die Bestätigung.",
       });
+      
+      // Auto-login after registration if email confirmation is disabled
+      if (data.user) {
+        await handleSignIn(e);
+      }
     } catch (error: any) {
       toast({
         title: "Fehler bei der Registrierung",

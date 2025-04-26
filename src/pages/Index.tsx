@@ -1,4 +1,6 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserProvider, useUser } from '@/contexts/UserContext';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import StatCard from '@/components/dashboard/StatCard';
@@ -7,6 +9,7 @@ import RecommendationCard from '@/components/dashboard/RecommendationCard';
 import ChartCard from '@/components/dashboard/ChartCard';
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import TimeWidget from '@/components/dashboard/TimeWidget';
+import DocumentUploader from '@/components/dashboard/DocumentUploader';
 import { useToast } from '@/hooks/use-toast';
 import { Home, BarChart, FileText, AlertCircle } from 'lucide-react';
 
@@ -21,8 +24,15 @@ const energyData = [
 ];
 
 const Dashboard: React.FC = () => {
-  const { user } = useUser();
+  const { user, isLoggedIn } = useUser();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/auth');
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleAction = (actionType: string) => {
     toast({
@@ -70,14 +80,10 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      {/* Charts & Insights */}
+      {/* Document Uploader and Insights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-2">
-          <ChartCard
-            title="Energieverbrauch der letzten 6 Monate"
-            data={energyData}
-            dataKey="value"
-          />
+          <DocumentUploader />
         </div>
         <div className="space-y-6">
           <InsightCard
@@ -102,6 +108,15 @@ const Dashboard: React.FC = () => {
             }}
           />
         </div>
+      </div>
+
+      {/* Charts */}
+      <div className="mb-8">
+        <ChartCard
+          title="Energieverbrauch der letzten 6 Monate"
+          data={energyData}
+          dataKey="value"
+        />
       </div>
 
       {/* Recommendations */}
@@ -135,11 +150,7 @@ const Dashboard: React.FC = () => {
 };
 
 const Index: React.FC = () => {
-  return (
-    <UserProvider>
-      <Dashboard />
-    </UserProvider>
-  );
+  return <Dashboard />;
 };
 
 export default Index;
