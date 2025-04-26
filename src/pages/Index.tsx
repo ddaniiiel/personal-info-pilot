@@ -1,19 +1,14 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { UserProvider, useUser } from '@/contexts/UserContext';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import RegistrationForm from '@/components/registration/RegistrationForm';
 import StatCard from '@/components/dashboard/StatCard';
 import InsightCard from '@/components/dashboard/InsightCard';
 import RecommendationCard from '@/components/dashboard/RecommendationCard';
 import ChartCard from '@/components/dashboard/ChartCard';
+import WeatherWidget from '@/components/dashboard/WeatherWidget';
+import TimeWidget from '@/components/dashboard/TimeWidget';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Home, 
-  BarChart, 
-  FileText, 
-  AlertCircle 
-} from 'lucide-react';
+import { Home, BarChart, FileText, AlertCircle } from 'lucide-react';
 
 // Mock data for charts
 const energyData = [
@@ -26,7 +21,7 @@ const energyData = [
 ];
 
 const Dashboard: React.FC = () => {
-  const { isLoggedIn } = useUser();
+  const { user } = useUser();
   const { toast } = useToast();
 
   const handleAction = (actionType: string) => {
@@ -36,16 +31,18 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-dashboard-background flex items-center justify-center p-4">
-        <RegistrationForm />
-      </div>
-    );
-  }
-
   return (
     <DashboardLayout>
+      {/* Time and Weather Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="lg:col-span-1">
+          <TimeWidget />
+        </div>
+        <div className="lg:col-span-1">
+          <WeatherWidget />
+        </div>
+      </div>
+
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard 
