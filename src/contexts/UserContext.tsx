@@ -58,7 +58,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             firstName: profileData.first_name || '',
             lastName: profileData.last_name || '',
             email: data.session.user.email || '',
-            userType: profileData.user_type || 'private',
+            // Ensure userType is of type UserType
+            userType: (profileData.user_type as UserType) || 'private',
             location: profileData.location || '',
             interests: ['wohnen', 'steuern'], // Default interests, could be stored in profile
             isRegistered: true
@@ -85,7 +86,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               firstName: profileData.first_name || '',
               lastName: profileData.last_name || '',
               email: session.user.email || '',
-              userType: profileData.user_type || 'private',
+              // Ensure userType is of type UserType
+              userType: (profileData.user_type as UserType) || 'private',
               location: profileData.location || '',
               interests: ['wohnen', 'steuern'],
               isRegistered: true

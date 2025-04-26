@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useUser } from '@/contexts/UserContext';
+import { useUser, UserType } from '@/contexts/UserContext';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -55,7 +55,7 @@ const AuthForm = () => {
             firstName: profileData.first_name || '',
             lastName: profileData.last_name || '',
             email: data.user.email || '',
-            userType: profileData.user_type || 'private',
+            userType: (profileData.user_type as UserType) || 'private',
             location: profileData.location || '',
             interests: ['wohnen', 'steuern'],
             isRegistered: true
