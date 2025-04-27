@@ -13,8 +13,6 @@ import Family from "./pages/Family";
 
 const queryClient = new QueryClient();
 
-// Entfernung der ProtectedRoute-Komponente, da keine Authentifizierung mehr erforderlich ist
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <UserProvider>

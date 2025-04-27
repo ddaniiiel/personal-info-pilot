@@ -9,12 +9,17 @@ import {
   Lightbulb, 
   Scale, 
   Award,
-  Users
+  Users,
+  GraduationCap,
+  Car,
+  PawPrint
 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+export type MainCategory = 'dashboard' | 'wohnen' | 'energie' | 'finanzen' | 'steuern' | 'familie' | 'kinder' | 'mobilitaet' | 'haustiere';
+
 interface TopicOption {
-  id: InterestTopic | 'dashboard' | 'family';
+  id: MainCategory;
   label: string;
   icon: React.ReactNode;
   path: string;
@@ -39,47 +44,54 @@ const TopicSelector: React.FC = () => {
       path: '/topics/wohnen'
     },
     { 
-      id: 'steuern', 
-      label: 'Steuern', 
-      icon: <FileText className="h-4 w-4 mr-2" />,
-      path: '/topics/steuern'
-    },
-    { 
-      id: 'versicherungen', 
-      label: 'Versicherungen', 
-      icon: <Landmark className="h-4 w-4 mr-2" />,
-      path: '/topics/versicherungen'
-    },
-    { 
       id: 'energie', 
-      label: 'Energie', 
+      label: 'Energie & Nachhaltigkeit', 
       icon: <Lightbulb className="h-4 w-4 mr-2" />,
       path: '/topics/energie'
     },
     { 
-      id: 'recht', 
-      label: 'Recht & Compliance', 
+      id: 'finanzen', 
+      label: 'Finanzen & Versicherungen', 
+      icon: <Landmark className="h-4 w-4 mr-2" />,
+      path: '/topics/finanzen'
+    },
+    { 
+      id: 'steuern', 
+      label: 'Steuern & Recht', 
       icon: <Scale className="h-4 w-4 mr-2" />,
-      path: '/topics/recht'
+      path: '/topics/steuern'
     },
     { 
-      id: 'foerderungen', 
-      label: 'Förderprogramme', 
-      icon: <Award className="h-4 w-4 mr-2" />,
-      path: '/topics/foerderungen'
-    },
-    { 
-      id: 'family', 
-      label: 'Familie', 
+      id: 'familie', 
+      label: 'Familie & Gesundheit', 
       icon: <Users className="h-4 w-4 mr-2" />,
       path: '/family'
+    },
+    { 
+      id: 'kinder', 
+      label: 'Kinder & Bildung', 
+      icon: <GraduationCap className="h-4 w-4 mr-2" />,
+      path: '/topics/kinder'
+    },
+    { 
+      id: 'mobilitaet', 
+      label: 'Mobilität', 
+      icon: <Car className="h-4 w-4 mr-2" />,
+      path: '/topics/mobilitaet'
+    },
+    { 
+      id: 'haustiere', 
+      label: 'Haustiere', 
+      icon: <PawPrint className="h-4 w-4 mr-2" />,
+      path: '/topics/haustiere'
     },
   ];
   
   const currentPath = location.pathname;
   const activePath = topics.find(topic => 
     currentPath === topic.path || 
-    (currentPath.startsWith('/topics/') && topic.path.includes(currentPath.split('/').pop() || ''))
+    (currentPath.startsWith('/topics/') && topic.path.includes(currentPath.split('/').pop() || '')) ||
+    (currentPath === '/family' && topic.path === '/family')
   )?.path || '/';
   
   const handleTabChange = (value: string) => {
