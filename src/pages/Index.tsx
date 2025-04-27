@@ -1,7 +1,5 @@
 
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserProvider, useUser } from '@/contexts/UserContext';
+import React from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import StatCard from '@/components/dashboard/StatCard';
 import InsightCard from '@/components/dashboard/InsightCard';
@@ -24,16 +22,10 @@ const energyData = [
 ];
 
 const Dashboard: React.FC = () => {
-  const { user, isLoggedIn } = useUser();
   const { toast } = useToast();
-  const navigate = useNavigate();
   
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/auth');
-    }
-  }, [isLoggedIn, navigate]);
-
+  // Entfernung der Authentifizierungsprüfung und Weiterleitung
+  
   const handleAction = (actionType: string) => {
     toast({
       title: "Aktion ausgeführt",
