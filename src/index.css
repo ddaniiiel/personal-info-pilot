@@ -120,4 +120,41 @@
   .topic-pill-inactive {
     @apply bg-muted text-muted-foreground hover:bg-dashboard-purple/10;
   }
+  
+  /* New widget-specific styles */
+  .event-item {
+    @apply p-3 rounded-md border-l-4 mb-2 flex items-center;
+  }
+  
+  .event-item-appointment {
+    @apply border-blue-500 bg-blue-50;
+  }
+  
+  .event-item-school {
+    @apply border-purple-500 bg-purple-50;
+  }
+  
+  .event-item-sport {
+    @apply border-green-500 bg-green-50;
+  }
+  
+  .task-item {
+    @apply p-3 bg-gray-50 rounded-md border-l-4 mb-2 flex items-center justify-between;
+  }
+  
+  .task-high {
+    @apply border-red-500;
+  }
+  
+  .task-medium {
+    @apply border-orange-400;
+  }
+  
+  .task-low {
+    @apply border-green-500;
+  }
+  
+  .person-badge {
+    @apply text-xs bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 ml-2;
+  }
 }
