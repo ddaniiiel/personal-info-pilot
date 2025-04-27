@@ -2,12 +2,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import TopicTabs from '@/components/dashboard/TopicTabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from '@/components/ui/button';
-import { Filter, Mail, MapPin, Bell, Calendar, Upload } from 'lucide-react';
-import DocumentUploader from '@/components/dashboard/DocumentUploader';
+import { Filter, Calendar, Upload } from 'lucide-react';
 
 // Topic-specific content components
 import WohnenContent from '@/components/topics/WohnenContent';
@@ -55,8 +52,6 @@ const Topic: React.FC = () => {
     <DashboardLayout>
       <div className="container py-6">
         <h1 className="text-2xl font-bold mb-6">{getTopicTitle()}</h1>
-        
-        <TopicTabs />
         
         <div className="mt-6">
           <div className="flex justify-between items-center mb-4">
