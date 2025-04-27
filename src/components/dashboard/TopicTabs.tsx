@@ -1,21 +1,23 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser, InterestTopic } from '@/contexts/UserContext';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Home, FileText, Landmark, Lightbulb, Scale, Award } from 'lucide-react';
+import { InterestTopic } from '@/contexts/UserContext';
 
-interface TopicOption {
+interface TopicTab {
   id: InterestTopic;
   label: string;
   icon: React.ReactNode;
   path: string;
 }
 
-const TopicSelector: React.FC = () => {
-  const { user, addInterest, removeInterest } = useUser();
+const TopicTabs: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
   
-  const topics: TopicOption[] = [
+  const topics: TopicTab[] = [
     { 
       id: 'wohnen', 
       label: 'Wohnen & Eigentum', 
@@ -54,26 +56,28 @@ const TopicSelector: React.FC = () => {
     },
   ];
   
-  const handleTopicSelect = (topic: TopicOption) => {
-    navigate(topic.path);
+  const handleTabChange = (value: string) => {
+    navigate(value);
   };
   
+  const currentTab = topics.find(topic => topic.path === currentPath)?.path || '/topics/wohnen';
+  
   return (
-    <div className="mt-6 overflow-x-auto">
-      <div className="flex space-x-2 pb-2">
+    <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full overflow-x-auto">
+      <TabsList className="inline-flex w-full bg-white border-b border-border p-0 h-auto">
         {topics.map((topic) => (
-          <button
+          <TabsTrigger
             key={topic.id}
-            onClick={() => handleTopicSelect(topic)}
-            className="flex items-center whitespace-nowrap px-4 py-2 rounded-md border bg-white hover:bg-gray-50 transition-colors"
+            value={topic.path}
+            className="flex items-center py-3 px-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-dashboard-purple data-[state=active]:text-dashboard-purple rounded-none"
           >
             {topic.icon}
             {topic.label}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
-    </div>
+      </TabsList>
+    </Tabs>
   );
 };
 
-export default TopicSelector;
+export default TopicTabs;

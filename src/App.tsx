@@ -8,6 +8,7 @@ import { UserProvider, useUser } from "@/contexts/UserContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Topic from "./pages/Topic";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -53,6 +54,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/topics/:topicId"
+              element={
+                <ProtectedRoute>
+                  <Topic />
                 </ProtectedRoute>
               }
             />
