@@ -4,6 +4,9 @@ import { Menu, Bell, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationPanel } from '../dashboard/NotificationPanel';
 import DashboardHeader from '../dashboard/DashboardHeader';
+import TimeWidget from '../dashboard/TimeWidget';
+import WeatherWidget from '../dashboard/WeatherWidget';
+import NewsWidget from '../dashboard/NewsWidget';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -12,6 +15,9 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  // Only show the additional widgets on the main dashboard page
+  const isMainDashboard = window.location.pathname === '/';
 
   return (
     <div className="flex min-h-screen bg-dashboard-background">
@@ -50,6 +56,23 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
         {/* Header with User Info */}
         <DashboardHeader />
+
+        {/* Dashboard Widgets - Only for main dashboard */}
+        {isMainDashboard && (
+          <div className="container py-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="dashboard-card h-32">
+                <TimeWidget />
+              </div>
+              <div className="dashboard-card h-32">
+                <WeatherWidget />
+              </div>
+              <div className="dashboard-card h-32">
+                <NewsWidget />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <div className="container py-6 flex-grow">

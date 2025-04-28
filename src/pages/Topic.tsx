@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from '@/components/ui/button';
 import { Filter, Calendar, Upload } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import TopicSelector from '@/components/dashboard/TopicSelector';
+import SubcategoryNavigation from '@/components/dashboard/SubcategoryNavigation';
 
 // Topic-specific content components
 import WohnenContent from '@/components/topics/WohnenContent';
@@ -91,33 +91,50 @@ const subcategories = {
 const Topic: React.FC = () => {
   const { topicId = 'wohnen' } = useParams<{ topicId: string }>();
   const location = useLocation();
-  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(
-    location.hash ? location.hash : (subcategories[topicId as keyof typeof subcategories]?.[0]?.href || null)
-  );
+  const navigate = useNavigate();
+  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
+  
+  // Set active subcategory based on URL hash or default to the first subcategory
+  useEffect(() => {
+    if (location.hash) {
+      setActiveSubcategory(location.hash);
+    } else {
+      const currentSubcategories = (subcategories as any)[topicId] || [];
+      if (currentSubcategories.length > 0) {
+        setActiveSubcategory(currentSubcategories[0].href);
+        navigate(`${location.pathname}${currentSubcategories[0].href}`, { replace: true });
+      }
+    }
+  }, [topicId, location.pathname, location.hash, navigate]);
+  
+  const handleSubcategoryChange = (href: string) => {
+    setActiveSubcategory(href);
+    navigate(`${location.pathname}${href}`);
+  };
   
   const renderTopicContent = () => {
     switch (topicId) {
       case 'wohnen':
-        return <WohnenContent />;
+        return <WohnenContent activeSubcategory={activeSubcategory} />;
       case 'steuern':
-        return <SteuernContent />;
+        return <SteuernContent activeSubcategory={activeSubcategory} />;
       case 'versicherungen':
       case 'finanzen':
-        return <VersicherungenContent />;
+        return <VersicherungenContent activeSubcategory={activeSubcategory} />;
       case 'energie':
-        return <EnergieContent />;
+        return <EnergieContent activeSubcategory={activeSubcategory} />;
       case 'recht':
-        return <RechtContent />;
+        return <RechtContent activeSubcategory={activeSubcategory} />;
       case 'foerderungen':
-        return <FoerderungenContent />;
+        return <FoerderungenContent activeSubcategory={activeSubcategory} />;
       case 'kinder':
-        return <KinderContent />;
+        return <KinderContent activeSubcategory={activeSubcategory} />;
       case 'mobilitaet':
-        return <MobilitaetContent />;
+        return <MobilitaetContent activeSubcategory={activeSubcategory} />;
       case 'haustiere':
-        return <HaustiereContent />;
+        return <HaustiereContent activeSubcategory={activeSubcategory} />;
       default:
-        return <WohnenContent />;
+        return <WohnenContent activeSubcategory={activeSubcategory} />;
     }
   };
 
@@ -143,88 +160,73 @@ const Topic: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="container py-6">
-        <h1 className="text-2xl font-bold mb-6">{getTopicTitle()}</h1>
-        
-        {/* Standardized Subcategory Navigation */}
-        {currentSubcategories.length > 0 && (
-          <div className="mb-6 overflow-x-auto">
-            <div className="flex space-x-2 p-1 bg-white rounded-lg border shadow-sm">
-              {currentSubcategories.map((subcategory: any, index: number) => (
-                <Button
-                  key={index}
-                  variant="ghost"
-                  className={cn(
-                    "whitespace-nowrap",
-                    activeSubcategory === subcategory.href
-                      ? "bg-dashboard-purple text-white hover:bg-dashboard-purple/90"
-                      : "hover:bg-gray-100"
-                  )}
-                  onClick={() => {
-                    setActiveSubcategory(subcategory.href);
-                    window.location.hash = subcategory.href;
-                  }}
-                >
-                  {subcategory.title}
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
+        <TopicSelector />
         
         <div className="mt-6">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
-                <Calendar className="h-4 w-4 mr-2" />
-                Heute
-              </Button>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Filter className="h-4 w-4 mr-2" />
-                    Filter
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right">
-                  <div className="py-4">
-                    <h3 className="text-lg font-medium">Filter anwenden</h3>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Wählen Sie die gewünschten Filter aus, um die Inhalte anzupassen.
-                    </p>
-                    <div className="mt-6 space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Kanton</label>
-                        <select className="w-full border rounded p-2">
-                          <option>Alle Kantone</option>
-                          <option>Zürich</option>
-                          <option>Bern</option>
-                          <option>Luzern</option>
-                        </select>
+          <h1 className="text-2xl font-bold mb-6">{getTopicTitle()}</h1>
+          
+          {/* Standardized Subcategory Navigation */}
+          <SubcategoryNavigation 
+            subcategories={currentSubcategories}
+            activeSubcategory={activeSubcategory}
+            onSubcategoryChange={handleSubcategoryChange}
+          />
+          
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center space-x-2">
+                <Button variant="outline" size="sm">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Heute
+                </Button>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Filter className="h-4 w-4 mr-2" />
+                      Filter
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right">
+                    <div className="py-4">
+                      <h3 className="text-lg font-medium">Filter anwenden</h3>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Wählen Sie die gewünschten Filter aus, um die Inhalte anzupassen.
+                      </p>
+                      <div className="mt-6 space-y-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Kanton</label>
+                          <select className="w-full border rounded p-2">
+                            <option>Alle Kantone</option>
+                            <option>Zürich</option>
+                            <option>Bern</option>
+                            <option>Luzern</option>
+                          </select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Zeitraum</label>
+                          <select className="w-full border rounded p-2">
+                            <option>Letzte Woche</option>
+                            <option>Letzter Monat</option>
+                            <option>Letztes Jahr</option>
+                          </select>
+                        </div>
+                        
+                        <Button className="w-full mt-4">Filter anwenden</Button>
                       </div>
-                      
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Zeitraum</label>
-                        <select className="w-full border rounded p-2">
-                          <option>Letzte Woche</option>
-                          <option>Letzter Monat</option>
-                          <option>Letztes Jahr</option>
-                        </select>
-                      </div>
-                      
-                      <Button className="w-full mt-4">Filter anwenden</Button>
                     </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
+                  </SheetContent>
+                </Sheet>
+              </div>
+              
+              <Button>
+                <Upload className="h-4 w-4 mr-2" />
+                Dokument hochladen
+              </Button>
             </div>
             
-            <Button>
-              <Upload className="h-4 w-4 mr-2" />
-              Dokument hochladen
-            </Button>
+            {renderTopicContent()}
           </div>
-          
-          {renderTopicContent()}
         </div>
       </div>
     </DashboardLayout>

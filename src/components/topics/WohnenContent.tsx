@@ -1,374 +1,302 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { FileText, Home, Wrench, Shield, Package, Cog, MoveRight, BarChart } from 'lucide-react';
 import SubcategoryLayout from './SubcategoryLayout';
-import { cn } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { 
+  FileText, 
+  Wrench, 
+  Home as HomeIcon, 
+  TruckMoving, 
+  Shield, 
+  ShoppingBag,
+  Tv
+} from 'lucide-react';
 
-const WohnenContent: React.FC = () => {
-  const location = useLocation();
-  const currentHash = location.hash;
+interface WohnenContentProps {
+  activeSubcategory: string | null;
+}
 
-  const documents = [
-    { id: 1, title: 'Mietvertrag.pdf', type: 'Vertrag', date: '01.01.2024', status: 'Aktiv' },
-    { id: 2, title: 'Grundrissplan.pdf', type: 'Plan', date: '15.01.2024', status: 'Aktiv' },
-    { id: 3, title: 'Versicherungspolice.pdf', type: 'Versicherung', date: '01.02.2024', status: 'Aktiv' }
-  ];
-
-  const maintenance = [
-    { id: 1, title: 'Heizungswartung', due: '15.05.2024', priority: 'Hoch', status: 'Ausstehend' },
-    { id: 2, title: 'Fensterreinigung', due: '01.06.2024', priority: 'Mittel', status: 'Geplant' },
-    { id: 3, title: 'Rauchmelder prüfen', due: '10.06.2024', priority: 'Hoch', status: 'Geplant' }
-  ];
-
-  const properties = [
-    { id: 1, title: 'Hauptwohnsitz', address: 'Musterstraße 123, 8001 Zürich', type: 'Eigentumswohnung', size: '110m²' },
-    { id: 2, title: 'Ferienhaus', address: 'Bergweg 45, 7270 Davos', type: 'Haus', size: '85m²' }
-  ];
-
-  const smartDevices = [
-    { id: 1, title: 'Thermostat Wohnzimmer', status: 'Online', temperature: '21.5°C' },
-    { id: 2, title: 'Lichtsteuerung', status: 'Online', rooms: 4 },
-    { id: 3, title: 'Sicherheitssystem', status: 'Online', sensors: 6 }
-  ];
-
-  const securityItems = [
-    { id: 1, title: 'Rauchmelder', location: 'Wohnzimmer', nextCheck: '10.06.2024' },
-    { id: 2, title: 'Sicherheitsschloss', location: 'Haustür', nextCheck: '15.07.2024' },
-    { id: 3, title: 'Bewegungssensor', location: 'Eingangsbereich', nextCheck: '22.05.2024' }
-  ];
-
-  const inventory = [
-    { id: 1, title: 'Waschmaschine', brand: 'Bosch', purchaseDate: '15.03.2022', warranty: '15.03.2025' },
-    { id: 2, title: 'Kühlschrank', brand: 'Siemens', purchaseDate: '10.01.2021', warranty: '10.01.2026' },
-    { id: 3, title: 'Fernseher', brand: 'Samsung', purchaseDate: '05.12.2023', warranty: '05.12.2025' }
-  ];
-
-  const movingTasks = [
-    { id: 1, title: 'Umzugsfirma kontaktieren', deadline: '01.06.2024', status: 'Ausstehend' },
-    { id: 2, title: 'Adressänderung melden', deadline: '15.06.2024', status: 'Ausstehend' },
-    { id: 3, title: 'Internetanschluss umziehen', deadline: '20.06.2024', status: 'Ausstehend' }
-  ];
-
+const WohnenContent: React.FC<WohnenContentProps> = ({ activeSubcategory }) => {
   return (
-    <div className="space-y-6">
-      <div id="dokumente" className={cn("scroll-mt-20", currentHash === '#dokumente' ? 'animate-fade-in' : '')}>
-        <SubcategoryLayout 
-          title="Dokumentenmanagement" 
-          description="Wichtige Unterlagen und Verträge"
-          isActive={currentHash === '#dokumente'}
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Dokumente</h3>
-              <Button variant="outline" size="sm">
-                <FileText className="h-4 w-4 mr-2" />
-                Dokument hochladen
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {documents.map(doc => (
-                <Card key={doc.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium">{doc.title}</h4>
-                        <p className="text-sm text-muted-foreground">{doc.date}</p>
-                        <Badge className="mt-2" variant="outline">{doc.type}</Badge>
-                      </div>
-                      <Badge variant="secondary">{doc.status}</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </SubcategoryLayout>
-      </div>
-
-      <div id="wartung" className={cn("scroll-mt-20", currentHash === '#wartung' ? 'animate-fade-in' : '')}>
-        <SubcategoryLayout 
-          title="Wartung & Instandhaltung" 
-          description="Anstehende Wartungsarbeiten und Reparaturen"
-          isActive={currentHash === '#wartung'}
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Wartungsplan</h3>
-              <Button variant="outline" size="sm">
-                <Wrench className="h-4 w-4 mr-2" />
-                Wartung hinzufügen
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {maintenance.map(task => (
-                <Card key={task.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium">{task.title}</h4>
-                        <p className="text-sm text-muted-foreground">Fällig: {task.due}</p>
-                        <Badge 
-                          className="mt-2" 
-                          variant={task.priority === 'Hoch' ? 'destructive' : 'outline'}
-                        >
-                          {task.priority}
-                        </Badge>
-                      </div>
-                      <Badge variant="secondary">{task.status}</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </SubcategoryLayout>
-      </div>
-
-      <div id="immobilien" className={cn("scroll-mt-20", currentHash === '#immobilien' ? 'animate-fade-in' : '')}>
-        <SubcategoryLayout 
-          title="Immobilienverwaltung" 
-          description="Übersicht und Verwaltung Ihrer Immobilien"
-          isActive={currentHash === '#immobilien'}
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Meine Immobilien</h3>
-              <Button variant="outline" size="sm">
-                <Home className="h-4 w-4 mr-2" />
-                Immobilie hinzufügen
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {properties.map(property => (
-                <Card key={property.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{property.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-sm text-muted-foreground">{property.address}</p>
-                    <div className="flex justify-between mt-4">
-                      <div>
-                        <Badge variant="outline">{property.type}</Badge>
-                        <span className="ml-2 text-sm">{property.size}</span>
-                      </div>
-                      <Button variant="ghost" size="sm">Details</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <div className="mt-6">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg flex items-center">
-                    <BarChart className="h-5 w-5 mr-2 text-dashboard-purple" />
-                    Immobilienwertentwicklung
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-48 bg-gray-50 rounded flex items-center justify-center">
-                    <p className="text-sm text-muted-foreground">Grafik: Wertentwicklung Ihrer Immobilien</p>
-                    {/* Hier könnte ein Chart eingebunden werden */}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </SubcategoryLayout>
-      </div>
-
-      <div id="umzug" className={cn("scroll-mt-20", currentHash === '#umzug' ? 'animate-fade-in' : '')}>
-        <SubcategoryLayout 
-          title="Umzug & Renovation" 
-          description="Planung und Organisation von Umzügen und Renovierungen"
-          isActive={currentHash === '#umzug'}
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Umzugsplanung</h3>
-              <Button variant="outline" size="sm">
-                <MoveRight className="h-4 w-4 mr-2" />
-                Aufgabe hinzufügen
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {movingTasks.map(task => (
-                <Card key={task.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium">{task.title}</h4>
-                        <p className="text-sm text-muted-foreground">Fällig: {task.deadline}</p>
-                      </div>
-                      <Badge variant="secondary">{task.status}</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            <div className="mt-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-md">Geplante Renovationen</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="p-4 bg-blue-50 rounded-md text-center">
-                    <p className="text-sm">Keine geplanten Renovationen momentan.</p>
-                    <Button variant="link" className="mt-2">
-                      Renovation planen
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </SubcategoryLayout>
-      </div>
-
-      <div id="sicherheit" className={cn("scroll-mt-20", currentHash === '#sicherheit' ? 'animate-fade-in' : '')}>
-        <SubcategoryLayout 
-          title="Sicherheit" 
-          description="Sicherheitseinrichtungen und -massnahmen"
-          isActive={currentHash === '#sicherheit'}
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Sicherheitskomponenten</h3>
-              <Button variant="outline" size="sm">
-                <Shield className="h-4 w-4 mr-2" />
-                Komponente hinzufügen
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {securityItems.map(item => (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium">{item.title}</h4>
-                        <p className="text-sm text-muted-foreground">Standort: {item.location}</p>
-                        <p className="text-sm">Nächste Prüfung: {item.nextCheck}</p>
-                      </div>
-                      <Shield className="h-5 w-5 text-green-500" />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </SubcategoryLayout>
-      </div>
-
-      <div id="inventar" className={cn("scroll-mt-20", currentHash === '#inventar' ? 'animate-fade-in' : '')}>
-        <SubcategoryLayout 
-          title="Verbrauchsmaterialien & Inventar" 
-          description="Übersicht über Haushaltsgeräte und Verbrauchsmaterialien"
-          isActive={currentHash === '#inventar'}
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Inventarliste</h3>
-              <Button variant="outline" size="sm">
-                <Package className="h-4 w-4 mr-2" />
-                Gerät hinzufügen
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {inventory.map(item => (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div>
-                      <h4 className="font-medium">{item.title}</h4>
-                      <p className="text-sm text-muted-foreground">Marke: {item.brand}</p>
-                      <p className="text-sm">Gekauft: {item.purchaseDate}</p>
-                      <p className="text-sm">Garantie bis: {item.warranty}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </SubcategoryLayout>
-      </div>
-
-      <div id="smart-home" className={cn("scroll-mt-20", currentHash === '#smart-home' ? 'animate-fade-in' : '')}>
-        <SubcategoryLayout 
-          title="Hausautomatisierung" 
-          description="Smart Home Geräte und Steuerung"
-          isActive={currentHash === '#smart-home'}
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Smart Devices</h3>
-              <Button variant="outline" size="sm">
-                <Cog className="h-4 w-4 mr-2" />
-                Gerät hinzufügen
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {smartDevices.map(device => (
-                <Card key={device.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium">{device.title}</h4>
-                        <p className="text-sm text-muted-foreground">Status: {device.status}</p>
-                        <p className="text-sm">
-                          {device.temperature && `Temperatur: ${device.temperature}`}
-                          {device.rooms && `${device.rooms} Räume`}
-                          {device.sensors && `${device.sensors} Sensoren`}
-                        </p>
-                      </div>
-                      <Badge className="bg-green-100 text-green-800">Online</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-md">Automationsszenarien</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 border rounded-md">
-                    <div className="flex items-center">
-                      <Cog className="h-4 w-4 mr-2 text-gray-500" />
-                      <span className="text-sm">Morgenroutine</span>
-                    </div>
-                    <Badge variant="outline">Aktiv</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-2 border rounded-md">
-                    <div className="flex items-center">
-                      <Cog className="h-4 w-4 mr-2 text-gray-500" />
-                      <span className="text-sm">Energiesparmodus</span>
-                    </div>
-                    <Badge variant="outline">Aktiv</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-2 border rounded-md">
-                    <div className="flex items-center">
-                      <Cog className="h-4 w-4 mr-2 text-gray-500" />
-                      <span className="text-sm">Urlaubsmodus</span>
-                    </div>
-                    <Badge variant="outline" className="bg-gray-100">Inaktiv</Badge>
+    <div>
+      <SubcategoryLayout 
+        title="Dokumentenmanagement" 
+        description="Organisieren Sie Ihre Dokumente effizient"
+        isActive={activeSubcategory === '#dokumente'}
+        id="#dokumente"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <FileText className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="text-base font-medium">Mietvertrag</h3>
+                  <p className="text-sm text-muted-foreground">Letzte Änderung: 14.03.2025</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-sm">Ansehen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <FileText className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="text-base font-medium">Versicherungsnachweis</h3>
+                  <p className="text-sm text-muted-foreground">Letzte Änderung: 20.02.2025</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-sm">Ansehen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <FileText className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="text-base font-medium">Kaufvertrag</h3>
+                  <p className="text-sm text-muted-foreground">Letzte Änderung: 05.01.2025</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-sm">Ansehen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Wartung & Instandhaltung" 
+        description="Planen Sie anstehende Wartungsarbeiten und Reparaturen"
+        isActive={activeSubcategory === '#wartung'}
+        id="#wartung"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Wrench className="h-8 w-8 text-dashboard-purple" />
+                  <div>
+                    <h3 className="font-medium">Heizungswartung</h3>
+                    <p className="text-sm text-muted-foreground">Fällig am: 15.06.2025</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </SubcategoryLayout>
-      </div>
+                <Button size="sm">Termin vereinbaren</Button>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Wrench className="h-8 w-8 text-dashboard-purple" />
+                  <div>
+                    <h3 className="font-medium">Rauchmelder prüfen</h3>
+                    <p className="text-sm text-muted-foreground">Fällig am: 30.07.2025</p>
+                  </div>
+                </div>
+                <Button size="sm">Als erledigt markieren</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Immobilienverwaltung" 
+        description="Verwalten Sie Ihre Immobilien und Liegenschaften"
+        isActive={activeSubcategory === '#immobilien'}
+        id="#immobilien"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <HomeIcon className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="text-base font-medium">Hauptwohnsitz</h3>
+                  <p className="text-sm">Musterstrasse 123, 8000 Zürich</p>
+                  <p className="text-sm text-muted-foreground">Miete: CHF 2'100 / Monat</p>
+                  <div className="flex space-x-2 mt-2">
+                    <Button size="sm">Details</Button>
+                    <Button variant="outline" size="sm">Kosten einsehen</Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Umzug & Renovation" 
+        description="Planen Sie Ihren Umzug oder Renovationsarbeiten"
+        isActive={activeSubcategory === '#umzug'}
+        id="#umzug"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <TruckMoving className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="font-medium">Umzugsplan</h3>
+                  <p className="text-sm">Ein strukturierter Zeitplan für Ihren nächsten Umzug</p>
+                  <Button variant="outline" size="sm" className="mt-2">Plan erstellen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-2">Checkliste für Umzug</h3>
+              <ul className="space-y-2 list-disc list-inside text-sm">
+                <li>Umzugshelfer organisieren</li>
+                <li>Adressänderung melden</li>
+                <li>Versicherungen anpassen</li>
+                <li>Internet und Telefon umziehen</li>
+                <li>Nachsendeauftrag einrichten</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Sicherheit" 
+        description="Sorgen Sie für Sicherheit in Ihrem Zuhause"
+        isActive={activeSubcategory === '#sicherheit'}
+        id="#sicherheit"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Shield className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="font-medium">Sicherheitscheck</h3>
+                  <p className="text-sm">Führen Sie einen umfassenden Sicherheitscheck durch</p>
+                  <Button variant="outline" size="sm" className="mt-2">Check starten</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-2">Ihre Sicherheitsgeräte</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center justify-between">
+                  <span>Rauchmelder Wohnzimmer</span>
+                  <span className="text-green-600 font-medium">Aktiv</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Rauchmelder Küche</span>
+                  <span className="text-green-600 font-medium">Aktiv</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Bewegungsmelder Eingang</span>
+                  <span className="text-green-600 font-medium">Aktiv</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>CO2-Melder</span>
+                  <span className="text-amber-600 font-medium">Batterie schwach</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Verbrauchsmaterialien & Inventar" 
+        description="Behalten Sie den Überblick über Ihre Vorräte und Inventar"
+        isActive={activeSubcategory === '#inventar'}
+        id="#inventar"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <ShoppingBag className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="font-medium">Inventarverwaltung</h3>
+                  <p className="text-sm">Verwalten Sie Ihre Haushaltsgeräte und Möbel</p>
+                  <Button variant="outline" size="sm" className="mt-2">Inventar anzeigen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-2">Einkaufsliste</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center justify-between">
+                  <span>Glühbirnen (E27)</span>
+                  <Button variant="ghost" size="sm">Hinzufügen</Button>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Wasserfilter</span>
+                  <Button variant="ghost" size="sm">Hinzufügen</Button>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Heizkörperfolie</span>
+                  <Button variant="ghost" size="sm">Hinzufügen</Button>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Hausautomatisierung" 
+        description="Steuern und automatisieren Sie Ihr Smart Home"
+        isActive={activeSubcategory === '#smart-home'}
+        id="#smart-home"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Tv className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="font-medium">Smart Home Geräte</h3>
+                  <p className="text-sm">Verwalten Sie Ihre vernetzten Geräte</p>
+                  <Button variant="outline" size="sm" className="mt-2">Geräte anzeigen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-2">Automatisierungen</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center justify-between">
+                  <span>Morgen-Routine</span>
+                  <span className="text-green-600 font-medium">Aktiv</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Abend-Routine</span>
+                  <span className="text-green-600 font-medium">Aktiv</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Urlaubs-Modus</span>
+                  <span className="text-gray-600 font-medium">Inaktiv</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
     </div>
   );
 };

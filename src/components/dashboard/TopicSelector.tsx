@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser, InterestTopic } from '@/contexts/UserContext';
@@ -10,11 +11,12 @@ import {
   Users,
   GraduationCap,
   Car,
-  PawPrint
+  PawPrint,
+  Award
 } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
-export type MainCategory = 'dashboard' | 'familie' | 'wohnen' | 'energie' | 'finanzen' | 'steuern' | 'kinder' | 'mobilitaet' | 'haustiere';
+export type MainCategory = 'dashboard' | 'familie' | 'wohnen' | 'energie' | 'finanzen' | 'steuern' | 'kinder' | 'mobilitaet' | 'haustiere' | 'recht' | 'foerderungen';
 
 interface TopicOption {
   id: MainCategory;
@@ -32,87 +34,109 @@ const TopicSelector: React.FC = () => {
     { 
       id: 'dashboard', 
       label: 'Dashboard', 
-      icon: <Home className="h-4 w-4 mr-2" />,
+      icon: <Home className="h-4 w-4" />,
       path: '/'
     },
     { 
       id: 'familie', 
       label: 'Familie & Gesundheit', 
-      icon: <Users className="h-4 w-4 mr-2" />,
+      icon: <Users className="h-4 w-4" />,
       path: '/family'
     },
     { 
       id: 'wohnen', 
       label: 'Wohnen & Eigentum', 
-      icon: <Home className="h-4 w-4 mr-2" />,
+      icon: <Home className="h-4 w-4" />,
       path: '/topics/wohnen'
     },
     { 
       id: 'energie', 
       label: 'Energie & Nachhaltigkeit', 
-      icon: <Lightbulb className="h-4 w-4 mr-2" />,
+      icon: <Lightbulb className="h-4 w-4" />,
       path: '/topics/energie'
     },
     { 
       id: 'finanzen', 
       label: 'Finanzen & Versicherungen', 
-      icon: <Landmark className="h-4 w-4 mr-2" />,
+      icon: <Landmark className="h-4 w-4" />,
       path: '/topics/finanzen'
     },
     { 
       id: 'steuern', 
       label: 'Steuern & Recht', 
-      icon: <Scale className="h-4 w-4 mr-2" />,
+      icon: <Scale className="h-4 w-4" />,
       path: '/topics/steuern'
     },
     { 
       id: 'kinder', 
       label: 'Kinder & Bildung', 
-      icon: <GraduationCap className="h-4 w-4 mr-2" />,
+      icon: <GraduationCap className="h-4 w-4" />,
       path: '/topics/kinder'
     },
     { 
       id: 'mobilitaet', 
       label: 'Mobilität', 
-      icon: <Car className="h-4 w-4 mr-2" />,
+      icon: <Car className="h-4 w-4" />,
       path: '/topics/mobilitaet'
     },
     { 
       id: 'haustiere', 
       label: 'Haustiere', 
-      icon: <PawPrint className="h-4 w-4 mr-2" />,
+      icon: <PawPrint className="h-4 w-4" />,
       path: '/topics/haustiere'
+    },
+    { 
+      id: 'recht', 
+      label: 'Recht & Compliance', 
+      icon: <Scale className="h-4 w-4" />,
+      path: '/topics/recht'
+    },
+    { 
+      id: 'foerderungen', 
+      label: 'Förderprogramme', 
+      icon: <Award className="h-4 w-4" />,
+      path: '/topics/foerderungen'
     },
   ];
   
   const currentPath = location.pathname;
-  const activePath = topics.find(topic => 
+  const activeTopic = topics.find(topic => 
     currentPath === topic.path || 
     (currentPath.startsWith('/topics/') && topic.path.includes(currentPath.split('/').pop() || '')) ||
     (currentPath === '/family' && topic.path === '/family')
-  )?.path || '/';
+  );
   
-  const handleTabChange = (value: string) => {
-    navigate(value);
+  const handleClick = (path: string) => {
+    navigate(path);
   };
   
   return (
-    <div className="w-full overflow-x-auto">
-      <Tabs value={activePath} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="inline-flex w-full bg-white border-b border-border p-0 h-auto">
-          {topics.map((topic) => (
-            <TabsTrigger
-              key={topic.id}
-              value={topic.path}
-              className="flex items-center py-3 px-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-dashboard-purple data-[state=active]:text-dashboard-purple rounded-none whitespace-nowrap"
-            >
-              {topic.icon}
-              {topic.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
-    </div>
+    <nav className="w-full border-b border-gray-200 bg-white py-2 sticky top-0 z-10">
+      <div className="overflow-x-auto pb-2">
+        <div className="flex min-w-max space-x-1 px-2">
+          {topics.map((topic) => {
+            const isActive = topic.path === (activeTopic?.path || '/');
+            return (
+              <button
+                key={topic.id}
+                onClick={() => handleClick(topic.path)}
+                className={cn(
+                  "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-all",
+                  isActive 
+                    ? "bg-dashboard-purple text-white shadow-sm" 
+                    : "text-gray-700 hover:bg-dashboard-purple/10"
+                )}
+              >
+                <span className={cn("mr-2", isActive ? "text-white" : "text-dashboard-purple")}>
+                  {topic.icon}
+                </span>
+                {topic.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
   );
 };
 

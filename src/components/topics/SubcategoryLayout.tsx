@@ -8,34 +8,44 @@ interface SubcategoryLayoutProps {
   description?: string;
   children: ReactNode;
   isActive?: boolean;
+  id: string; // This would match the href from subcategory (e.g., "#dokumente")
 }
 
 const SubcategoryLayout: React.FC<SubcategoryLayoutProps> = ({ 
   title, 
   description, 
   children,
-  isActive = false
+  isActive = false,
+  id
 }) => {
   return (
-    <Card className={cn(
-      "mb-6 transition-all duration-200",
-      isActive && "ring-2 ring-dashboard-purple ring-offset-2"
-    )}>
-      <CardHeader className="pb-2">
-        <CardTitle className={cn(
-          "text-lg font-medium",
-          isActive && "text-dashboard-purple"
-        )}>
-          {title}
-        </CardTitle>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
-      </CardHeader>
-      <CardContent>
-        {children}
-      </CardContent>
-    </Card>
+    <div 
+      id={id.replace('#', '')} 
+      className={cn(
+        "scroll-mt-20 transition-all duration-300",
+        isActive ? "opacity-100" : "opacity-0 hidden"
+      )}
+    >
+      <Card className={cn(
+        "mb-6 transition-all duration-200",
+        isActive && "ring-2 ring-dashboard-purple ring-offset-2"
+      )}>
+        <CardHeader className="pb-2">
+          <CardTitle className={cn(
+            "text-lg font-medium",
+            isActive && "text-dashboard-purple"
+          )}>
+            {title}
+          </CardTitle>
+          {description && (
+            <p className="text-sm text-muted-foreground">{description}</p>
+          )}
+        </CardHeader>
+        <CardContent>
+          {children}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
