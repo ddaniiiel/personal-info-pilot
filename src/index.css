@@ -121,7 +121,7 @@
     @apply bg-muted text-muted-foreground hover:bg-dashboard-purple/10;
   }
   
-  /* New widget-specific styles */
+  /* Widget-specific styles */
   .event-item {
     @apply p-3 rounded-md border-l-4 mb-2 flex items-center;
   }
@@ -156,5 +156,46 @@
   
   .person-badge {
     @apply text-xs bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 ml-2;
+  }
+  
+  /* Navigation styles */
+  .nav-tab {
+    @apply flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors;
+  }
+  
+  .nav-tab-active {
+    @apply bg-dashboard-purple text-white;
+  }
+  
+  .nav-tab-inactive {
+    @apply hover:bg-dashboard-purple/10 text-gray-700;
+  }
+  
+  /* Form styles */
+  .input-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .input-field {
+    @apply w-full p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-dashboard-purple focus:border-transparent;
+  }
+  
+  /* Animation utilities */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in forwards;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .slide-in {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 }

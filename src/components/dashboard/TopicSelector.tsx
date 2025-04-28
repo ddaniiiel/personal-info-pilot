@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser, InterestTopic } from '@/contexts/UserContext';
@@ -8,7 +7,6 @@ import {
   Landmark, 
   Lightbulb, 
   Scale, 
-  Award,
   Users,
   GraduationCap,
   Car,
@@ -16,7 +14,7 @@ import {
 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export type MainCategory = 'dashboard' | 'wohnen' | 'energie' | 'finanzen' | 'steuern' | 'familie' | 'kinder' | 'mobilitaet' | 'haustiere';
+export type MainCategory = 'dashboard' | 'familie' | 'wohnen' | 'energie' | 'finanzen' | 'steuern' | 'kinder' | 'mobilitaet' | 'haustiere';
 
 interface TopicOption {
   id: MainCategory;
@@ -36,6 +34,12 @@ const TopicSelector: React.FC = () => {
       label: 'Dashboard', 
       icon: <Home className="h-4 w-4 mr-2" />,
       path: '/'
+    },
+    { 
+      id: 'familie', 
+      label: 'Familie & Gesundheit', 
+      icon: <Users className="h-4 w-4 mr-2" />,
+      path: '/family'
     },
     { 
       id: 'wohnen', 
@@ -60,12 +64,6 @@ const TopicSelector: React.FC = () => {
       label: 'Steuern & Recht', 
       icon: <Scale className="h-4 w-4 mr-2" />,
       path: '/topics/steuern'
-    },
-    { 
-      id: 'familie', 
-      label: 'Familie & Gesundheit', 
-      icon: <Users className="h-4 w-4 mr-2" />,
-      path: '/family'
     },
     { 
       id: 'kinder', 

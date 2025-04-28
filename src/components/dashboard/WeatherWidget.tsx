@@ -30,7 +30,7 @@ const WeatherWidget = () => {
   };
 
   return (
-    <div className="dashboard-card">
+    <div className="dashboard-card h-full flex flex-col justify-center">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">{weatherData.location}</h3>

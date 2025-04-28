@@ -15,23 +15,9 @@ import VersicherungenContent from '@/components/topics/VersicherungenContent';
 import EnergieContent from '@/components/topics/EnergieContent';
 import RechtContent from '@/components/topics/RechtContent';
 import FoerderungenContent from '@/components/topics/FoerderungenContent';
-
-// Placeholder component for new categories
-const PlaceholderContent = ({ title }: { title: string }) => (
-  <div className="space-y-4">
-    <h2 className="text-xl font-semibold">{title} Content</h2>
-    <p className="text-muted-foreground">Diese Seite wird noch entwickelt.</p>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-      {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div key={i} className="p-6 border rounded-md bg-white shadow-sm">
-          <div className="h-8 w-8 rounded-full bg-gray-200 mb-4"></div>
-          <div className="h-4 w-3/4 bg-gray-200 mb-2"></div>
-          <div className="h-3 w-1/2 bg-gray-200"></div>
-        </div>
-      ))}
-    </div>
-  </div>
-);
+import KinderContent from '@/components/topics/KinderContent';
+import MobilitaetContent from '@/components/topics/MobilitaetContent';
+import HaustiereContent from '@/components/topics/HaustiereContent';
 
 // Define the subcategory items for each main category
 const subcategories = {
@@ -71,11 +57,12 @@ const subcategories = {
   mobilitaet: [
     { title: "Fahrzeuge", href: "#fahrzeuge" },
     { title: "Öffentlicher Nahverkehr", href: "#oeffentlicher-verkehr" },
-    { title: "Carsharing", href: "#carsharing" }
+    { title: "Reiseplanung", href: "#reiseplanung" }
   ],
   haustiere: [
-    { title: "Profil", href: "#profil" },
+    { title: "Haustierprofile", href: "#profile" },
     { title: "Gesundheit", href: "#gesundheit" },
+    { title: "Gewichtsverlauf", href: "#gewicht" },
     { title: "Fütterung", href: "#fuetterung" },
     { title: "Pflege", href: "#pflege" },
     { title: "Kosten", href: "#kosten" },
@@ -103,11 +90,11 @@ const Topic: React.FC = () => {
       case 'foerderungen':
         return <FoerderungenContent />;
       case 'kinder':
-        return <PlaceholderContent title="Kinder & Bildung" />;
+        return <KinderContent />;
       case 'mobilitaet':
-        return <PlaceholderContent title="Mobilität" />;
+        return <MobilitaetContent />;
       case 'haustiere':
-        return <PlaceholderContent title="Haustiere" />;
+        return <HaustiereContent />;
       default:
         return <WohnenContent />;
     }
