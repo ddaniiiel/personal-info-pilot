@@ -16,17 +16,17 @@ const TimeWidget = () => {
   }, []);
 
   return (
-    <div className="dashboard-card h-full flex flex-col justify-center">
+    <div className="dashboard-card h-32 flex flex-col justify-center">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl font-bold">
             {format(currentTime, 'HH:mm:ss')}
           </p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {format(currentTime, 'EEEE, dd. MMMM yyyy', { locale: de })}
           </p>
         </div>
-        <Clock className="h-6 w-6 text-dashboard-purple" />
+        <Clock className="h-5 w-5 text-dashboard-purple" />
       </div>
     </div>
   );
