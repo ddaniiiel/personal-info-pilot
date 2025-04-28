@@ -1,12 +1,11 @@
-
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from '@/components/ui/button';
 import { Filter, Calendar, Upload } from 'lucide-react';
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import TopicSelector from '@/components/dashboard/TopicSelector';
 
 // Topic-specific content components
 import WohnenContent from '@/components/topics/WohnenContent';
@@ -72,7 +71,10 @@ const subcategories = {
 
 const Topic: React.FC = () => {
   const { topicId = 'wohnen' } = useParams<{ topicId: string }>();
-  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
+  const location = useLocation();
+  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(
+    location.hash ? location.hash : null
+  );
   
   const renderTopicContent = () => {
     switch (topicId) {
@@ -126,29 +128,28 @@ const Topic: React.FC = () => {
         
         {/* Subcategory Navigation */}
         {currentSubcategories.length > 0 && (
-          <NavigationMenu className="mb-6">
-            <NavigationMenuList>
+          <div className="mb-6 overflow-x-auto">
+            <div className="flex space-x-2 p-1 bg-white rounded-lg border">
               {currentSubcategories.map((subcategory: any, index: number) => (
-                <NavigationMenuItem key={index}>
-                  <NavigationMenuLink 
-                    className={cn(
-                      navigationMenuTriggerStyle(),
-                      activeSubcategory === subcategory.href 
-                        ? "bg-accent text-accent-foreground" 
-                        : ""
-                    )}
-                    href={subcategory.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveSubcategory(subcategory.href);
-                    }}
-                  >
-                    {subcategory.title}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                <Button
+                  key={index}
+                  variant="ghost"
+                  className={cn(
+                    "whitespace-nowrap",
+                    activeSubcategory === subcategory.href
+                      ? "bg-dashboard-purple text-white hover:bg-dashboard-purple/90"
+                      : "hover:bg-gray-100"
+                  )}
+                  onClick={() => {
+                    setActiveSubcategory(subcategory.href);
+                    window.location.hash = subcategory.href;
+                  }}
+                >
+                  {subcategory.title}
+                </Button>
               ))}
-            </NavigationMenuList>
-          </NavigationMenu>
+            </div>
+          </div>
         )}
         
         <div className="mt-6">
@@ -171,7 +172,6 @@ const Topic: React.FC = () => {
                     <p className="text-sm text-muted-foreground mt-2">
                       Wählen Sie die gewünschten Filter aus, um die Inhalte anzupassen.
                     </p>
-                    {/* Filter options would go here */}
                     <div className="mt-6 space-y-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Kanton</label>
