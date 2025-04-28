@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -21,31 +22,32 @@ import HaustiereContent from '@/components/topics/HaustiereContent';
 // Define the subcategory items for each main category
 const subcategories = {
   wohnen: [
-    { title: "Dokumentenmanagement", href: "#dokumentenmanagement" },
-    { title: "Immobilienverwaltung", href: "#immobilienverwaltung" },
-    { title: "Umzug & Renovation", href: "#umzug-renovation" },
+    { title: "Dokumentenmanagement", href: "#dokumente" },
+    { title: "Wartung & Instandhaltung", href: "#wartung" },
+    { title: "Immobilienverwaltung", href: "#immobilien" },
+    { title: "Umzug & Renovation", href: "#umzug" },
     { title: "Sicherheit", href: "#sicherheit" },
     { title: "Verbrauchsmaterialien & Inventar", href: "#inventar" },
     { title: "Hausautomatisierung", href: "#smart-home" }
   ],
   energie: [
-    { title: "Verbrauchsanalyse", href: "#verbrauchsanalyse" },
-    { title: "Einsparungspotenziale", href: "#einsparungspotenziale" },
-    { title: "Smart Home (Energie)", href: "#smart-home-energie" },
-    { title: "Erneuerbare Energien", href: "#erneuerbare-energien" },
-    { title: "CO2-Fußabdruck", href: "#co2-fussabdruck" },
-    { title: "Mülltrennung", href: "#muelltrennung" }
+    { title: "Verbrauchsanalyse", href: "#verbrauch" },
+    { title: "Einsparungspotenziale", href: "#einsparung" },
+    { title: "Smart Home (Energie)", href: "#smart-home" },
+    { title: "Erneuerbare Energien", href: "#erneuerbare" },
+    { title: "CO2-Fußabdruck", href: "#co2" },
+    { title: "Mülltrennung", href: "#muell" }
   ],
   finanzen: [
     { title: "Konten", href: "#konten" },
-    { title: "Budgetplanung", href: "#budgetplanung" },
-    { title: "Kreditmanagement", href: "#kreditmanagement" },
+    { title: "Budgetplanung", href: "#budget" },
+    { title: "Kreditmanagement", href: "#kredit" },
     { title: "Versicherungen", href: "#versicherungen" },
     { title: "Investments", href: "#investments" }
   ],
   steuern: [
-    { title: "Steuererklärungen", href: "#steuererklaerungen" },
-    { title: "Steueroptimierung", href: "#steueroptimierung" },
+    { title: "Steuererklärungen", href: "#erklaerungen" },
+    { title: "Steueroptimierung", href: "#optimierung" },
     { title: "Rechtliches", href: "#rechtliches" }
   ],
   kinder: [
@@ -66,6 +68,23 @@ const subcategories = {
     { title: "Pflege", href: "#pflege" },
     { title: "Kosten", href: "#kosten" },
     { title: "Haustier-Sitter", href: "#sitter" }
+  ],
+  versicherungen: [
+    { title: "Krankenversicherung", href: "#kranken" },
+    { title: "Rentenversicherung", href: "#renten" },
+    { title: "Hausratversicherung", href: "#hausrat" },
+    { title: "Haftpflicht", href: "#haftpflicht" },
+    { title: "Rechtsschutz", href: "#rechtsschutz" }
+  ],
+  recht: [
+    { title: "Verträge", href: "#vertraege" },
+    { title: "Dokumentenvorlagen", href: "#vorlagen" },
+    { title: "Rechtliche Beratung", href: "#beratung" }
+  ],
+  foerderungen: [
+    { title: "Verfügbare Programme", href: "#programme" },
+    { title: "Antragsstellung", href: "#antrag" },
+    { title: "Förderhistorie", href: "#historie" }
   ]
 };
 
@@ -73,7 +92,7 @@ const Topic: React.FC = () => {
   const { topicId = 'wohnen' } = useParams<{ topicId: string }>();
   const location = useLocation();
   const [activeSubcategory, setActiveSubcategory] = useState<string | null>(
-    location.hash ? location.hash : null
+    location.hash ? location.hash : (subcategories[topicId as keyof typeof subcategories]?.[0]?.href || null)
   );
   
   const renderTopicContent = () => {
@@ -126,10 +145,10 @@ const Topic: React.FC = () => {
       <div className="container py-6">
         <h1 className="text-2xl font-bold mb-6">{getTopicTitle()}</h1>
         
-        {/* Subcategory Navigation */}
+        {/* Standardized Subcategory Navigation */}
         {currentSubcategories.length > 0 && (
           <div className="mb-6 overflow-x-auto">
-            <div className="flex space-x-2 p-1 bg-white rounded-lg border">
+            <div className="flex space-x-2 p-1 bg-white rounded-lg border shadow-sm">
               {currentSubcategories.map((subcategory: any, index: number) => (
                 <Button
                   key={index}

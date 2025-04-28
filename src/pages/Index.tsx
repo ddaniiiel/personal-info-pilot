@@ -7,6 +7,7 @@ import RecommendationCard from '@/components/dashboard/RecommendationCard';
 import ChartCard from '@/components/dashboard/ChartCard';
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import TimeWidget from '@/components/dashboard/TimeWidget';
+import NewsWidget from '@/components/dashboard/NewsWidget'; // We'll create this component
 import DocumentUploader from '@/components/dashboard/DocumentUploader';
 import FamilyEventsWidget from '@/components/dashboard/FamilyEventsWidget';
 import TasksWidget from '@/components/dashboard/TasksWidget';
@@ -39,13 +40,16 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardLayout>
-      {/* Time and Weather Section */}
+      {/* Time, Weather, and News Section - 3 columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="md:col-span-1">
+        <div>
           <TimeWidget />
         </div>
-        <div className="md:col-span-2">
+        <div>
           <WeatherWidget />
+        </div>
+        <div>
+          <NewsWidget />
         </div>
       </div>
 
