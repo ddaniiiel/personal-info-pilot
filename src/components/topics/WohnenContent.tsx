@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Home, Tool, Shield, Package, Cog } from 'lucide-react';
+import { FileText, Home, Wrench, Shield, Package, Cog } from 'lucide-react';
 import SubcategoryLayout from './SubcategoryLayout';
 import { cn } from '@/lib/utils';
 
@@ -70,7 +70,7 @@ const WohnenContent: React.FC = () => {
             <div className="flex justify-between items-center">
               <h3 className="font-medium">Wartungsplan</h3>
               <Button variant="outline" size="sm">
-                <Tool className="h-4 w-4 mr-2" />
+                <Wrench className="h-4 w-4 mr-2" />
                 Wartung hinzufügen
               </Button>
             </div>

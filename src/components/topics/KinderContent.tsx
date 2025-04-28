@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Book, Award, Calendar, PenTool } from 'lucide-react';
 import SubcategoryLayout from './SubcategoryLayout';
+import { cn } from '@/lib/utils';
 
 const KinderContent: React.FC = () => {
   const location = useLocation();
