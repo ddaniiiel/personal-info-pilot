@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,11 @@ import { PawPrint, Calendar, Pill, Scale, HeartPulse } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import SubcategoryLayout from './SubcategoryLayout';
 
-const HaustiereContent: React.FC = () => {
+interface HaustiereContentProps {
+  activeSubcategory: string | null;
+}
+
+const HaustiereContent: React.FC<HaustiereContentProps> = ({ activeSubcategory }) => {
   const pets = [
     { 
       id: 1, 
@@ -46,7 +49,12 @@ const HaustiereContent: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SubcategoryLayout title="Haustierprofile" description="Übersicht Ihrer Haustiere">
+      <SubcategoryLayout 
+        title="Haustierprofile" 
+        description="Übersicht Ihrer Haustiere"
+        isActive={activeSubcategory === '#profile'}
+        id="#profile"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {pets.map(pet => (
             <Card key={pet.id}>
@@ -97,7 +105,12 @@ const HaustiereContent: React.FC = () => {
         </div>
       </SubcategoryLayout>
 
-      <SubcategoryLayout title="Gesundheit" description="Termine und Medikamente">
+      <SubcategoryLayout 
+        title="Gesundheit" 
+        description="Termine und Medikamente"
+        isActive={activeSubcategory === '#gesundheit'}
+        id="#gesundheit"
+      >
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-medium">Kommende Termine</h3>
@@ -156,7 +169,12 @@ const HaustiereContent: React.FC = () => {
         </div>
       </SubcategoryLayout>
 
-      <SubcategoryLayout title="Gewichtsverlauf" description="Entwicklung und Ernährung">
+      <SubcategoryLayout 
+        title="Gewichtsverlauf" 
+        description="Entwicklung und Ernährung"
+        isActive={activeSubcategory === '#gewicht'}
+        id="#gewicht"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
             <CardHeader className="pb-2">

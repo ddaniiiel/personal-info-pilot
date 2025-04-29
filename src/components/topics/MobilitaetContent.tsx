@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,11 @@ import { Car, Train, Calendar, AlertTriangle } from 'lucide-react';
 import SubcategoryLayout from './SubcategoryLayout';
 import { Progress } from '@/components/ui/progress';
 
-const MobilitaetContent: React.FC = () => {
+interface MobilitaetContentProps {
+  activeSubcategory: string | null;
+}
+
+const MobilitaetContent: React.FC<MobilitaetContentProps> = ({ activeSubcategory }) => {
   const vehicles = [
     { 
       id: 1, 
@@ -42,7 +45,12 @@ const MobilitaetContent: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SubcategoryLayout title="Fahrzeuge" description="Verwaltung und Überwachung Ihrer Fahrzeuge">
+      <SubcategoryLayout 
+        title="Fahrzeuge" 
+        description="Verwaltung und Überwachung Ihrer Fahrzeuge"
+        isActive={activeSubcategory === '#fahrzeuge'}
+        id="#fahrzeuge"
+      >
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-medium">Fahrzeugübersicht</h3>
@@ -94,7 +102,12 @@ const MobilitaetContent: React.FC = () => {
         </div>
       </SubcategoryLayout>
 
-      <SubcategoryLayout title="Öffentlicher Nahverkehr" description="Verwaltung von Abonnements und Tickets">
+      <SubcategoryLayout 
+        title="Öffentlicher Nahverkehr" 
+        description="Verwaltung von Abonnements und Tickets"
+        isActive={activeSubcategory === '#oeffentlicher-verkehr'}
+        id="#oeffentlicher-verkehr"
+      >
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-medium">Abonnements</h3>
@@ -125,7 +138,12 @@ const MobilitaetContent: React.FC = () => {
         </div>
       </SubcategoryLayout>
 
-      <SubcategoryLayout title="Reiseplanung" description="Geplante und vergangene Reisen">
+      <SubcategoryLayout 
+        title="Reiseplanung" 
+        description="Geplante und vergangene Reisen"
+        isActive={activeSubcategory === '#reiseplanung'}
+        id="#reiseplanung"
+      >
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-medium">Kommende Reisen</h3>

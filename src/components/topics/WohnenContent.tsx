@@ -7,7 +7,7 @@ import {
   FileText, 
   Wrench, 
   Home as HomeIcon, 
-  TruckMoving, 
+  Truck, 
   Shield, 
   ShoppingBag,
   Tv
@@ -143,7 +143,7 @@ const WohnenContent: React.FC<WohnenContentProps> = ({ activeSubcategory }) => {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <TruckMoving className="h-10 w-10 text-dashboard-purple" />
+                <Truck className="h-10 w-10 text-dashboard-purple" />
                 <div>
                   <h3 className="font-medium">Umzugsplan</h3>
                   <p className="text-sm">Ein strukturierter Zeitplan für Ihren nächsten Umzug</p>
