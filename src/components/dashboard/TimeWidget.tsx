@@ -1,12 +1,13 @@
 
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Clock } from 'lucide-react';
 
-const TimeWidget = () => {
+const TimeWidget: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  // Update time every second
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -15,21 +16,26 @@ const TimeWidget = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Memoize formatted time strings to prevent unnecessary re-renders
-  const formattedTime = format(currentTime, 'HH:mm:ss');
-  const formattedDate = format(currentTime, 'EEEE, dd. MMMM yyyy', { locale: de });
+  // Memoize formatted time and date to prevent unnecessary re-renders
+  const formattedTime = useMemo(() => {
+    return format(currentTime, 'HH:mm:ss');
+  }, [currentTime]);
+  
+  const formattedDate = useMemo(() => {
+    return format(currentTime, 'EEEE, dd. MMMM yyyy', { locale: de });
+  }, [currentTime]);
 
   return (
-    <div className="dashboard-card h-32 flex flex-col justify-center">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-2xl font-bold">
-            {formattedTime}
-          </p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {formattedDate}
-          </p>
-        </div>
+    <div className="flex items-center justify-between h-full w-full">
+      <div className="flex flex-col justify-center">
+        <p className="text-2xl font-bold text-dashboard-purple">
+          {formattedTime}
+        </p>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          {formattedDate}
+        </p>
+      </div>
+      <div className="p-2 bg-dashboard-purple/10 rounded-md">
         <Clock className="h-5 w-5 text-dashboard-purple" />
       </div>
     </div>
@@ -37,4 +43,4 @@ const TimeWidget = () => {
 };
 
 // Export as memoized component to prevent unnecessary re-renders
-export default memo(TimeWidget);
+export default React.memo(TimeWidget);

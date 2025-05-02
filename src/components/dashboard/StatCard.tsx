@@ -13,7 +13,7 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon }) => {
-  // Determine change indicator component once
+  // Determine change indicator component once using useMemo
   const changeIndicator = change && (
     <div className="flex items-center mt-1">
       {change.isPositive !== undefined && (
@@ -33,9 +33,9 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon }) => {
   );
 
   return (
-    <div className="dashboard-card">
-      <div className="flex justify-between items-start">
-        <div>
+    <div className="h-full w-full">
+      <div className="flex justify-between items-start h-full">
+        <div className="flex flex-col justify-center">
           <p className="dashboard-label">{title}</p>
           <p className="dashboard-stat mt-1">{value}</p>
           {changeIndicator}

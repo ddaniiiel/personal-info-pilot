@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -6,7 +5,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from '@/components/ui/button';
 import { Filter, Calendar, Upload, ArrowLeft } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
-import TopicSelector from '@/components/dashboard/TopicSelector';
 import SubcategoryNavigation from '@/components/dashboard/SubcategoryNavigation';
 
 // Lazy-loaded components for better performance
@@ -149,9 +147,8 @@ const Topic: React.FC = () => {
               return <WohnenContent activeSubcategory={activeSubcategory} />;
             case 'steuern':
               return <SteuernContent activeSubcategory={activeSubcategory} />;
-            case 'versicherungen':
-            case 'finanzen':
-              return <VersicherungenContent activeSubcategory={activeSubcategory} />;
+            case 'versicherungen': 
+            case 'finanzen': return <VersicherungenContent activeSubcategory={activeSubcategory} />;
             case 'energie':
               return <EnergieContent activeSubcategory={activeSubcategory} />;
             case 'recht':
@@ -205,8 +202,6 @@ const Topic: React.FC = () => {
             Zurück zum Dashboard
           </Button>
         </div>
-        
-        <TopicSelector />
         
         <div className="mt-6 animate-fade-in">
           <h1 className="text-2xl font-bold mb-6">{getTopicTitle()}</h1>

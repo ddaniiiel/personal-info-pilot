@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useUser } from '@/contexts/UserContext';
 import { Button } from '@/components/ui/button';
-import TopicSelector from './TopicSelector';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -26,7 +25,7 @@ const DashboardHeader: React.FC = () => {
   return (
     <div className="bg-white border-b border-border">
       <div className="container py-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold">Willkommen, {userName}!</h1>
             <p className="text-muted-foreground">
@@ -61,7 +60,7 @@ const DashboardHeader: React.FC = () => {
           </DropdownMenu>
         </div>
         
-        <TopicSelector />
+        {/* TopicSelector wurde entfernt, um Dopplung zu vermeiden */}
       </div>
       
       <Dialog open={showProfileSettings} onOpenChange={setShowProfileSettings}>
@@ -76,4 +75,4 @@ const DashboardHeader: React.FC = () => {
   );
 };
 
-export default DashboardHeader;
+export default React.memo(DashboardHeader);

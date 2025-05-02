@@ -7,6 +7,7 @@ import DashboardHeader from '../dashboard/DashboardHeader';
 import TimeWidget from '../dashboard/TimeWidget';
 import WeatherWidget from '../dashboard/WeatherWidget';
 import NewsWidget from '../dashboard/NewsWidget';
+import TopicSelector from '../dashboard/TopicSelector';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ interface DashboardLayoutProps {
 // Optimize static components with React.memo
 const MemoizedNotificationPanel = React.memo(NotificationPanel);
 const MemoizedDashboardHeader = React.memo(DashboardHeader);
+const MemoizedTopicSelector = React.memo(TopicSelector);
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -30,7 +32,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return (
       <div className="container py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="dashboard-card h-32">
+          <div className="dashboard-card">
             <TimeWidget />
           </div>
           <div className="dashboard-card h-32">
@@ -111,6 +113,13 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
         {/* Header with User Info */}
         <MemoizedDashboardHeader />
+        
+        {/* Zentrale TopicSelector-Navigation */}
+        <div className="bg-white border-b border-gray-200 py-2 sticky top-16 z-10">
+          <div className="container">
+            <MemoizedTopicSelector />
+          </div>
+        </div>
 
         {/* Dashboard Widgets - Only for main dashboard */}
         {dashboardWidgets}
