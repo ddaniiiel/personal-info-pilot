@@ -1,292 +1,177 @@
-
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import SubcategoryLayout from './SubcategoryLayout';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Scale, Calendar, FileText, AlertTriangle, ArrowRight, Upload } from 'lucide-react';
+import { FileText, BookOpen, Lawyer } from 'lucide-react';
 
-const RechtContent: React.FC = () => {
+interface RechtContentProps {
+  activeSubcategory: string | null;
+}
+
+const RechtContent: React.FC<RechtContentProps> = ({ activeSubcategory }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <Scale className="mr-2 h-5 w-5 text-dashboard-purple" /> 
-              Rechtliche Dokumente
-            </CardTitle>
-            <CardDescription>Verwaltung Ihrer wichtigen rechtlichen Unterlagen</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-4">
-                <div className="border rounded-md overflow-hidden">
-                  <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-                    <h3 className="font-medium">Verträge</h3>
-                    <Button variant="outline" size="sm">
-                      <Upload className="h-4 w-4 mr-2" />
-                      Hinzufügen
-                    </Button>
-                  </div>
-                  <div className="p-0">
-                    <div className="border-b flex items-center justify-between p-3 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                        <div>
-                          <p className="text-sm font-medium">Arbeitsvertrag</p>
-                          <p className="text-xs text-muted-foreground">Aktualisiert: 01.03.2024</p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">Anzeigen</Button>
-                    </div>
-                    <div className="border-b flex items-center justify-between p-3 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                        <div>
-                          <p className="text-sm font-medium">Kaufvertrag Immobilie</p>
-                          <p className="text-xs text-muted-foreground">Aktualisiert: 15.03.2019</p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">Anzeigen</Button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                        <div>
-                          <p className="text-sm font-medium">Versicherungsverträge</p>
-                          <p className="text-xs text-muted-foreground">Aktualisiert: 10.01.2025</p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">Anzeigen</Button>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="border rounded-md overflow-hidden">
-                  <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-                    <h3 className="font-medium">Vollmachten & Verfügungen</h3>
-                    <Button variant="outline" size="sm">
-                      <Upload className="h-4 w-4 mr-2" />
-                      Hinzufügen
-                    </Button>
-                  </div>
-                  <div className="p-0">
-                    <div className="border-b flex items-center justify-between p-3 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                        <div>
-                          <p className="text-sm font-medium">Patientenverfügung</p>
-                          <p className="text-xs text-muted-foreground">Aktualisiert: 12.06.2023</p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">Anzeigen</Button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                        <div>
-                          <p className="text-sm font-medium">Vorsorgeauftrag</p>
-                          <p className="text-xs text-muted-foreground">Aktualisiert: 12.06.2023</p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">Anzeigen</Button>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="border rounded-md overflow-hidden">
-                  <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-                    <h3 className="font-medium">Sonstige rechtliche Dokumente</h3>
-                    <Button variant="outline" size="sm">
-                      <Upload className="h-4 w-4 mr-2" />
-                      Hinzufügen
-                    </Button>
-                  </div>
-                  <div className="p-0">
-                    <div className="border-b flex items-center justify-between p-3 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                        <div>
-                          <p className="text-sm font-medium">Testament</p>
-                          <p className="text-xs text-muted-foreground">Aktualisiert: 05.11.2022</p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">Anzeigen</Button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                        <div>
-                          <p className="text-sm font-medium">Ehevertrag</p>
-                          <p className="text-xs text-muted-foreground">Aktualisiert: 20.05.2018</p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">Anzeigen</Button>
-                    </div>
+    <div>
+      <SubcategoryLayout 
+        title="Verträge" 
+        description="Verwalten Sie Ihre Verträge und Vereinbarungen"
+        isActive={activeSubcategory === '#vertraege'}
+        id="#vertraege"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <FileText className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="text-base font-medium">Mietvertrag</h3>
+                  <p className="text-sm text-muted-foreground">Gültig bis: 31.12.2025</p>
+                  <div className="flex space-x-2 mt-2">
+                    <Button size="sm">Anzeigen</Button>
+                    <Button variant="outline" size="sm">Bearbeiten</Button>
                   </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <AlertTriangle className="mr-2 h-5 w-5 text-dashboard-purple" />
-              Gesetzesänderungen
-            </CardTitle>
-            <CardDescription>Relevante rechtliche Änderungen für Sie</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="border-l-4 border-red-500 pl-4 py-2">
-                <h4 className="font-medium">Neue Datenschutzgesetzgebung</h4>
-                <p className="text-sm">Ab 01.09.2025 tritt die neue Schweizer Datenschutzgesetzgebung in Kraft. Prüfen Sie, ob Ihre Dokumente den neuen Anforderungen entsprechen.</p>
-                <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  <span>Veröffentlicht: 15.03.2025</span>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <FileText className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="text-base font-medium">Arbeitsvertrag</h3>
+                  <p className="text-sm text-muted-foreground">Beginn: 01.01.2023</p>
+                  <div className="flex space-x-2 mt-2">
+                    <Button size="sm">Anzeigen</Button>
+                    <Button variant="outline" size="sm">Bearbeiten</Button>
+                  </div>
                 </div>
-                <Button variant="link" size="sm" className="p-0 h-auto mt-1">
-                  Mehr erfahren <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
               </div>
-              
-              <div className="border-l-4 border-amber-500 pl-4 py-2">
-                <h4 className="font-medium">Änderungen im Mietrecht</h4>
-                <p className="text-sm">Die Gesetzesänderungen zum Mietrecht könnten Auswirkungen auf Ihre Vermieter- oder Mieterrechte haben.</p>
-                <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  <span>Veröffentlicht: 02.04.2025</span>
+            </CardContent>
+          </Card>
+          
+          <Card className="md:col-span-2">
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-2">Wichtige Vertragsdetails</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span>Mietzins:</span>
+                  <span className="font-medium">CHF 2'100</span>
                 </div>
-                <Button variant="link" size="sm" className="p-0 h-auto mt-1">
-                  Details ansehen <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
-              </div>
-              
-              <div className="border-l-4 border-blue-500 pl-4 py-2">
-                <h4 className="font-medium">Neue Regeln für Hypotheken</h4>
-                <p className="text-sm">Die Finanzmarktaufsicht hat neue Regelungen für die Hypothekenvergabe beschlossen.</p>
-                <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  <span>Veröffentlicht: 10.04.2025</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span>Kündigungsfrist:</span>
+                  <span className="font-medium">3 Monate</span>
                 </div>
-                <Button variant="link" size="sm" className="p-0 h-auto mt-1">
-                  Analyse lesen <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
+                <div className="flex justify-between items-center text-sm">
+                  <span>Nächste Mietzinsanpassung:</span>
+                  <span className="font-medium">01.01.2026</span>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
       
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <Calendar className="mr-2 h-5 w-5 text-dashboard-purple" />
-              Termine & Fristen
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-start">
-                <div className="bg-red-100 text-red-800 p-2 rounded mr-2 text-xs font-medium">
-                  15.05.
-                </div>
+      <SubcategoryLayout 
+        title="Dokumentenvorlagen" 
+        description="Nutzen Sie Vorlagen für rechtssichere Dokumente"
+        isActive={activeSubcategory === '#vorlagen'}
+        id="#vorlagen"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <BookOpen className="h-10 w-10 text-dashboard-purple" />
                 <div>
-                  <p className="text-sm font-medium">Frist: Einspruch Steuerbescheid</p>
-                  <p className="text-xs text-muted-foreground">30 Tage ab Zustellung</p>
+                  <h3 className="font-medium">Mietvertrag Vorlage</h3>
+                  <p className="text-sm">Erstellen Sie einen rechtssicheren Mietvertrag</p>
+                  <Button variant="outline" size="sm" className="mt-2">Vorlage herunterladen</Button>
                 </div>
               </div>
-              
-              <div className="flex items-start">
-                <div className="bg-amber-100 text-amber-800 p-2 rounded mr-2 text-xs font-medium">
-                  01.06.
-                </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-2">Weitere Vorlagen</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center justify-between">
+                  <span>Arbeitsvertrag Vorlage</span>
+                  <Button variant="ghost" size="sm">Herunterladen</Button>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Kaufvertrag Vorlage</span>
+                  <Button variant="ghost" size="sm">Herunterladen</Button>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Vollmacht Vorlage</span>
+                  <Button variant="ghost" size="sm">Herunterladen</Button>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Rechtliche Beratung" 
+        description="Finden Sie professionelle Unterstützung"
+        isActive={activeSubcategory === '#beratung'}
+        id="#beratung"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Lawyer className="h-10 w-10 text-dashboard-purple" />
                 <div>
-                  <p className="text-sm font-medium">Rechtsberatungstermin</p>
-                  <p className="text-xs text-muted-foreground">Erbrecht, 14:00 Uhr</p>
+                  <h3 className="font-medium">Online Rechtsberatung</h3>
+                  <p className="text-sm">Erhalten Sie schnell und unkompliziert Rat</p>
+                  <Button variant="outline" size="sm" className="mt-2">Beratung starten</Button>
                 </div>
               </div>
-              
-              <div className="flex items-start">
-                <div className="bg-blue-100 text-blue-800 p-2 rounded mr-2 text-xs font-medium">
-                  30.06.
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Empfohlene Anwälte</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-sm">
+                  <div>
+                    <h4 className="font-medium">Anwalt für Mietrecht</h4>
+                    <p className="text-xs text-muted-foreground">Zürich, Spezialgebiet Mietrecht</p>
+                  </div>
+                  <Button variant="outline" size="sm">Kontakt</Button>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">Frist: Aktualisierung Vorsorgedokumente</p>
-                  <p className="text-xs text-muted-foreground">Zweijährliche Überprüfung</p>
+                <div className="flex justify-between items-center text-sm">
+                  <div>
+                    <h4 className="font-medium">Anwalt für Arbeitsrecht</h4>
+                    <p className="text-xs text-muted-foreground">Bern, Spezialgebiet Arbeitsrecht</p>
+                  </div>
+                  <Button variant="outline" size="sm">Kontakt</Button>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <div>
+                    <h4 className="font-medium">Anwalt für Familienrecht</h4>
+                    <p className="text-xs text-muted-foreground">Luzern, Spezialgebiet Familienrecht</p>
+                  </div>
+                  <Button variant="outline" size="sm">Kontakt</Button>
                 </div>
               </div>
-              
-              <Button variant="outline" className="w-full mt-2">
-                Termin hinzufügen
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-purple-50 border-purple-200">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center text-md text-purple-800">
-              <Scale className="mr-2 h-4 w-4 text-purple-800" />
-              Rechtstipp
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-purple-800">Überprüfen Sie regelmässig Ihre Vorsorgedokumente und halten Sie sie aktuell. Besonders wichtig nach Lebensereignissen wie Heirat oder Geburt eines Kindes.</p>
-            <Button variant="link" size="sm" className="p-0 h-auto mt-2 text-purple-800">
-              Mehr Tipps <ArrowRight className="h-3 w-3 ml-1" />
-            </Button>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-md">Rechtliche Checkliste</CardTitle>
-            <CardDescription className="text-xs">Sind Ihre Dokumente vollständig?</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center p-2 border rounded-md">
-                <input type="checkbox" className="mr-2" id="testament" checked={true} />
-                <label htmlFor="testament" className="text-sm">Testament</label>
-              </div>
-              <div className="flex items-center p-2 border rounded-md">
-                <input type="checkbox" className="mr-2" id="vorsorgeauftrag" checked={true} />
-                <label htmlFor="vorsorgeauftrag" className="text-sm">Vorsorgeauftrag</label>
-              </div>
-              <div className="flex items-center p-2 border rounded-md">
-                <input type="checkbox" className="mr-2" id="patientenverfuegung" checked={true} />
-                <label htmlFor="patientenverfuegung" className="text-sm">Patientenverfügung</label>
-              </div>
-              <div className="flex items-center p-2 border rounded-md">
-                <input type="checkbox" className="mr-2" id="vollmachten" />
-                <label htmlFor="vollmachten" className="text-sm">Vollmachten</label>
-              </div>
-              <div className="flex items-center p-2 border rounded-md">
-                <input type="checkbox" className="mr-2" id="vollmachten" />
-                <label htmlFor="vollmachten" className="text-sm">Digitaler Nachlass</label>
-              </div>
-              
-              <Button variant="outline" className="w-full mt-2">
-                Dokumenten-Check starten
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-md">Rechtliche Beratung</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full mb-2">Beratung buchen</Button>
-            <Button variant="outline" className="w-full">Dokumentenanalyse starten</Button>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Rechtsschutzversicherung</h3>
+              <p className="text-sm mb-3">Schützen Sie sich vor hohen Anwaltskosten mit einer Rechtsschutzversicherung.</p>
+              <Button>Angebote vergleichen</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
     </div>
   );
 };

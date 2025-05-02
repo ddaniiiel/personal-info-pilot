@@ -1,281 +1,338 @@
-
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import SubcategoryLayout from './SubcategoryLayout';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Lightbulb, Calendar, ArrowRight, AlertTriangle, Zap, LineChart } from 'lucide-react';
+import { Lightbulb, Bolt, Leaf, GaugeCircle, Trash2 } from 'lucide-react';
 
-const EnergieContent: React.FC = () => {
+interface EnergieContentProps {
+  activeSubcategory: string | null;
+}
+
+const EnergieContent: React.FC<EnergieContentProps> = ({ activeSubcategory }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <Zap className="mr-2 h-5 w-5 text-dashboard-purple" /> 
-              Energieverbrauch
-            </CardTitle>
-            <CardDescription>Ihr Energieverbrauch auf einen Blick</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <h3 className="font-medium mb-1 text-sm">Stromverbrauch</h3>
-                  <p className="text-lg font-semibold">3'250 kWh</p>
-                  <div className="flex items-center mt-1">
-                    <span className="text-xs text-green-600">-8% zum Vorjahr</span>
-                    <svg className="w-3 h-3 text-green-600 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <h3 className="font-medium mb-1 text-sm">Heizenergie</h3>
-                  <p className="text-lg font-semibold">12'400 kWh</p>
-                  <div className="flex items-center mt-1">
-                    <span className="text-xs text-red-600">+2% zum Vorjahr</span>
-                    <svg className="w-3 h-3 text-red-600 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <h3 className="font-medium mb-1 text-sm">Kosten Total</h3>
-                  <p className="text-lg font-semibold">CHF 2'450</p>
-                  <div className="flex items-center mt-1">
-                    <span className="text-xs text-green-600">-5% zum Vorjahr</span>
-                    <svg className="w-3 h-3 text-green-600 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                    </svg>
-                  </div>
+    <div>
+      <SubcategoryLayout 
+        title="Verbrauchsanalyse" 
+        description="Analysieren Sie Ihren Energieverbrauch"
+        isActive={activeSubcategory === '#verbrauch'}
+        id="#verbrauch"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <GaugeCircle className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="font-medium">Stromverbrauch</h3>
+                  <p className="text-sm">Aktueller Verbrauch im Vergleich zum Vormonat</p>
+                  <Button variant="outline" size="sm" className="mt-2">Details anzeigen</Button>
                 </div>
               </div>
-              
-              <div className="h-60 w-full bg-gray-100 rounded flex items-center justify-center">
-                <p className="text-sm text-gray-500">Jahresverbrauch im Zeitverlauf</p>
-                {/* Hier könnte ein Chart eingebunden werden */}
-              </div>
-              
-              <div>
-                <h3 className="font-medium mb-2">Verbrauchsverteilung</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="border rounded-md p-4">
-                    <h4 className="text-sm font-medium mb-3">Strom nach Verbrauchern</h4>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Küche</span>
-                        <div className="flex items-center">
-                          <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-500 rounded-full" style={{ width: '45%' }}></div>
-                          </div>
-                          <span className="text-xs ml-2">45%</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Elektronik</span>
-                        <div className="flex items-center">
-                          <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-500 rounded-full" style={{ width: '25%' }}></div>
-                          </div>
-                          <span className="text-xs ml-2">25%</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Beleuchtung</span>
-                        <div className="flex items-center">
-                          <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-500 rounded-full" style={{ width: '20%' }}></div>
-                          </div>
-                          <span className="text-xs ml-2">20%</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Sonstiges</span>
-                        <div className="flex items-center">
-                          <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-500 rounded-full" style={{ width: '10%' }}></div>
-                          </div>
-                          <span className="text-xs ml-2">10%</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="border rounded-md p-4">
-                    <h4 className="text-sm font-medium mb-3">Heizenergie nach Nutzung</h4>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Raumheizung</span>
-                        <div className="flex items-center">
-                          <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-red-500 rounded-full" style={{ width: '70%' }}></div>
-                          </div>
-                          <span className="text-xs ml-2">70%</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Warmwasser</span>
-                        <div className="flex items-center">
-                          <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-red-500 rounded-full" style={{ width: '25%' }}></div>
-                          </div>
-                          <span className="text-xs ml-2">25%</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Lüftung</span>
-                        <div className="flex items-center">
-                          <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-red-500 rounded-full" style={{ width: '5%' }}></div>
-                          </div>
-                          <span className="text-xs ml-2">5%</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Verbrauchsübersicht</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-sm">
+                  <span>Strom:</span>
+                  <span className="font-medium">350 kWh</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>Wasser:</span>
+                  <span className="font-medium">45 m³</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>Heizung:</span>
+                  <span className="font-medium">120 l Öl</span>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <Lightbulb className="mr-2 h-5 w-5 text-dashboard-purple" />
-              Energieeinsparungspotenzial
-            </CardTitle>
-            <CardDescription>Optimieren Sie Ihren Energieverbrauch</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="border-l-4 border-green-500 pl-4 py-2">
-                <h4 className="font-medium">Hoher ROI: Beleuchtung</h4>
-                <p className="text-sm">Durch den Austausch der restlichen Glühlampen gegen LED könnten Sie jährlich ca. 180 kWh (CHF 45) sparen.</p>
-                <Button variant="link" size="sm" className="p-0 h-auto mt-1">
-                  Details anzeigen <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Verbrauchsprognose</h3>
+              <p className="text-sm mb-3">Basierend auf Ihrem bisherigen Verbrauch</p>
+              <div className="flex space-x-2">
+                <Button>Prognose anzeigen</Button>
+                <Button variant="outline">Verbrauch optimieren</Button>
               </div>
-              
-              <div className="border-l-4 border-blue-500 pl-4 py-2">
-                <h4 className="font-medium">Mittlerer ROI: Smart Home</h4>
-                <p className="text-sm">Mit smarten Heizkörperthermostaten könnten Sie bis zu 15% Heizenergie einsparen (ca. CHF 280 pro Jahr).</p>
-                <Button variant="link" size="sm" className="p-0 h-auto mt-1">
-                  Berechnung anzeigen <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
-              </div>
-              
-              <div className="border-l-4 border-amber-500 pl-4 py-2">
-                <h4 className="font-medium">Langfristig: Wärmepumpe</h4>
-                <p className="text-sm">Eine Umstellung von Gas auf Wärmepumpe würde ihre CO₂-Emissionen um 80% reduzieren. Amortisation nach ca. 8-10 Jahren.</p>
-                <Button variant="link" size="sm" className="p-0 h-auto mt-1">
-                  Förderungen prüfen <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
       
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <Calendar className="mr-2 h-5 w-5 text-dashboard-purple" />
-              Zahlungen & Termine
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-start">
-                <div className="bg-blue-100 text-blue-800 p-2 rounded mr-2 text-xs font-medium">
-                  15.05.
-                </div>
+      <SubcategoryLayout 
+        title="Einsparungspotenziale" 
+        description="Entdecken Sie Möglichkeiten, Energie zu sparen"
+        isActive={activeSubcategory === '#einsparung'}
+        id="#einsparung"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Lightbulb className="h-10 w-10 text-dashboard-purple" />
                 <div>
-                  <p className="text-sm font-medium">Stromrechnung</p>
-                  <p className="text-xs text-muted-foreground">CHF 120 (Q2)</p>
+                  <h3 className="font-medium">Energiespartipps</h3>
+                  <p className="text-sm">Einfache Massnahmen zur Reduktion des Verbrauchs</p>
+                  <Button variant="outline" size="sm" className="mt-2">Tipps anzeigen</Button>
                 </div>
               </div>
-              
-              <div className="flex items-start">
-                <div className="bg-amber-100 text-amber-800 p-2 rounded mr-2 text-xs font-medium">
-                  30.06.
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Individuelle Empfehlungen</h3>
+              <div className="space-y-3">
+                <div className="border-l-2 border-dashboard-purple pl-3">
+                  <h4 className="text-sm font-medium">LED-Lampen verwenden</h4>
+                  <p className="text-xs text-muted-foreground">Potenzielle Einsparung: CHF 50/Jahr</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Mehr erfahren</Button>
                 </div>
+                <div className="border-l-2 border-dashboard-purple pl-3">
+                  <h4 className="text-sm font-medium">Standby-Geräte ausschalten</h4>
+                  <p className="text-xs text-muted-foreground">Potenzielle Einsparung: CHF 30/Jahr</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Mehr erfahren</Button>
+                </div>
+                <div className="border-l-2 border-dashboard-purple pl-3">
+                  <h4 className="text-sm font-medium">Stosslüften statt Dauerlüften</h4>
+                  <p className="text-xs text-muted-foreground">Potenzielle Einsparung: CHF 80/Jahr</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Mehr erfahren</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Förderprogramme nutzen</h3>
+              <p className="text-sm mb-3">Profitieren Sie von Fördergeldern für energieeffiziente Massnahmen.</p>
+              <div className="flex space-x-2">
+                <Button>Programme anzeigen</Button>
+                <Button variant="outline">Beratung anfordern</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+      
+      <SubcategoryLayout 
+        title="Smart Home (Energie)" 
+        description="Integrieren Sie Energieeffizienz in Ihr Smart Home"
+        isActive={activeSubcategory === '#smart-home'}
+        id="#smart-home"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Bolt className="h-10 w-10 text-dashboard-purple" />
                 <div>
-                  <p className="text-sm font-medium">Gasrechnung</p>
-                  <p className="text-xs text-muted-foreground">CHF 95 (Sommerrate)</p>
+                  <h3 className="font-medium">Smarte Geräte</h3>
+                  <p className="text-sm">Steuern Sie Ihren Energieverbrauch mit intelligenten Geräten</p>
+                  <Button variant="outline" size="sm" className="mt-2">Geräte verwalten</Button>
                 </div>
               </div>
-              
-              <div className="flex items-start">
-                <div className="bg-green-100 text-green-800 p-2 rounded mr-2 text-xs font-medium">
-                  10.07.
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Automatisierungen</h3>
+              <div className="space-y-3">
+                <div className="border-l-2 border-gray-300 pl-3">
+                  <h4 className="text-sm font-medium">Automatische Heizungssteuerung</h4>
+                  <p className="text-xs text-muted-foreground">Reduziert den Verbrauch bei Abwesenheit</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Details anzeigen</Button>
                 </div>
+                <div className="border-l-2 border-gray-300 pl-3">
+                  <h4 className="text-sm font-medium">Intelligente Beleuchtung</h4>
+                  <p className="text-xs text-muted-foreground">Passt die Helligkeit automatisch an</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Details anzeigen</Button>
+                </div>
+                <div className="border-l-2 border-gray-300 pl-3">
+                  <h4 className="text-sm font-medium">Energiemanagement-System</h4>
+                  <p className="text-xs text-muted-foreground">Überwacht und optimiert den Gesamtverbrauch</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Details anzeigen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Integration mit erneuerbaren Energien</h3>
+              <p className="text-sm mb-3">Verbinden Sie Ihr Smart Home mit Ihrer Solaranlage.</p>
+              <div className="flex space-x-2">
+                <Button>Verbinden</Button>
+                <Button variant="outline">FAQ durchsuchen</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+
+      <SubcategoryLayout 
+        title="Erneuerbare Energien" 
+        description="Nutzen Sie erneuerbare Energiequellen"
+        isActive={activeSubcategory === '#erneuerbare'}
+        id="#erneuerbare"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Leaf className="h-10 w-10 text-dashboard-purple" />
                 <div>
-                  <p className="text-sm font-medium">Energieberatung</p>
-                  <p className="text-xs text-muted-foreground">Kostenlose Beratung vor Ort</p>
+                  <h3 className="font-medium">Solaranlage</h3>
+                  <p className="text-sm">Informationen zu Ihrer Solaranlage</p>
+                  <Button variant="outline" size="sm" className="mt-2">Details anzeigen</Button>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-blue-50 border-blue-200">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center text-md text-blue-800">
-              <Zap className="mr-2 h-4 w-4 text-blue-800" />
-              Aktuelle Energiesituation
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-blue-800">Die Strompreise sind um 3% gegenüber dem Vorjahr gesunken. Überprüfen Sie Ihre Tarife!</p>
-            <Button variant="link" size="sm" className="p-0 h-auto mt-2 text-blue-800">
-              Tarifvergleich starten <ArrowRight className="h-3 w-3 ml-1" />
-            </Button>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-md">Energieeffizienz</CardTitle>
-            <CardDescription className="text-xs">Ihre Immobilie im Vergleich</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="bg-gray-100 p-3 rounded-md flex items-center justify-between">
-                <span className="text-sm font-medium">Energieeffizienzklasse</span>
-                <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">C</Badge>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Erzeugung</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-sm">
+                  <span>Heutige Erzeugung:</span>
+                  <span className="font-medium">15 kWh</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>Monatliche Erzeugung:</span>
+                  <span className="font-medium">450 kWh</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>Jährliche Erzeugung:</span>
+                  <span className="font-medium">5400 kWh</span>
+                </div>
               </div>
-              
-              <div className="bg-gray-100 p-3 rounded-md flex items-center justify-between">
-                <span className="text-sm font-medium">CO₂-Emissionen</span>
-                <span className="text-sm">5.2 t / Jahr</span>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Einspeisevergütung</h3>
+              <p className="text-sm mb-3">Ihre Vergütung für eingespeisten Strom</p>
+              <div className="flex space-x-2">
+                <Button>Vergütung anzeigen</Button>
+                <Button variant="outline">FAQ durchsuchen</Button>
               </div>
-              
-              <div className="bg-gray-100 p-3 rounded-md flex items-center justify-between">
-                <span className="text-sm font-medium">Vergleich Umgebung</span>
-                <span className="text-sm text-green-600">-15%</span>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+
+      <SubcategoryLayout 
+        title="CO2-Fußabdruck" 
+        description="Reduzieren Sie Ihren CO2-Fußabdruck"
+        isActive={activeSubcategory === '#co2'}
+        id="#co2"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Leaf className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="font-medium">CO2-Rechner</h3>
+                  <p className="text-sm">Berechnen Sie Ihren persönlichen CO2-Fußabdruck</p>
+                  <Button variant="outline" size="sm" className="mt-2">Berechnen</Button>
+                </div>
               </div>
-              
-              <Button variant="outline" className="w-full">
-                Vollständigen Energiebericht
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-md">Energietrends</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-32 w-full bg-gray-100 rounded flex items-center justify-center">
-              <p className="text-sm text-gray-500">Ihre Einsparung: 320 kg CO₂ / Jahr</p>
-              {/* Hier könnte ein Chart eingebunden werden */}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Reduktionsmassnahmen</h3>
+              <div className="space-y-3">
+                <div className="border-l-2 border-gray-300 pl-3">
+                  <h4 className="text-sm font-medium">Weniger Fleisch konsumieren</h4>
+                  <p className="text-xs text-muted-foreground">Reduziert den CO2-Ausstoss der Landwirtschaft</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Details anzeigen</Button>
+                </div>
+                <div className="border-l-2 border-gray-300 pl-3">
+                  <h4 className="text-sm font-medium">Öffentliche Verkehrsmittel nutzen</h4>
+                  <p className="text-xs text-muted-foreground">Reduziert den CO2-Ausstoss des Verkehrs</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Details anzeigen</Button>
+                </div>
+                <div className="border-l-2 border-gray-300 pl-3">
+                  <h4 className="text-sm font-medium">Energieeffiziente Geräte verwenden</h4>
+                  <p className="text-xs text-muted-foreground">Reduziert den CO2-Ausstoss der Stromerzeugung</p>
+                  <Button variant="link" className="p-0 h-auto mt-1 text-xs">Details anzeigen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">CO2-Kompensation</h3>
+              <p className="text-sm mb-3">Kompensieren Sie Ihren CO2-Ausstoss durch Spenden.</p>
+              <div className="flex space-x-2">
+                <Button>Projekte anzeigen</Button>
+                <Button variant="outline">FAQ durchsuchen</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
+
+      <SubcategoryLayout 
+        title="Mülltrennung" 
+        description="Optimieren Sie Ihre Mülltrennung"
+        isActive={activeSubcategory === '#muell'}
+        id="#muell"
+      >
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Trash2 className="h-10 w-10 text-dashboard-purple" />
+                <div>
+                  <h3 className="font-medium">Mülltrennung</h3>
+                  <p className="text-sm">Informationen zur korrekten Mülltrennung</p>
+                  <Button variant="outline" size="sm" className="mt-2">Details anzeigen</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Abfallkalender</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-sm">
+                  <span>Nächste Abholung:</span>
+                  <span className="font-medium">15.05.2025</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>Art:</span>
+                  <span className="font-medium">Papier</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Recyclinghöfe</h3>
+              <p className="text-sm mb-3">Finden Sie Recyclinghöfe in Ihrer Nähe.</p>
+              <div className="flex space-x-2">
+                <Button>Standorte anzeigen</Button>
+                <Button variant="outline">FAQ durchsuchen</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </SubcategoryLayout>
     </div>
   );
 };

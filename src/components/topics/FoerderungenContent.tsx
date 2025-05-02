@@ -1,11 +1,11 @@
-
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Award, Calendar, FileText, CircleDollarSign, ArrowRight, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import SubcategoryLayout from './SubcategoryLayout';
 
-const FoerderungenContent: React.FC = () => {
+interface FoerderungenContentProps {
+  activeSubcategory: string | null;
+}
+
+const FoerderungenContent: React.FC<FoerderungenContentProps> = ({ activeSubcategory }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="md:col-span-2 space-y-6">

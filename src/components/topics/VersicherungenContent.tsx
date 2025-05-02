@@ -5,7 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Shield, Calendar, FileText, ArrowRight, AlertTriangle, Scale } from 'lucide-react';
 
-const VersicherungenContent: React.FC = () => {
+interface VersicherungenContentProps {
+  activeSubcategory: string | null;
+}
+
+const VersicherungenContent: React.FC<VersicherungenContentProps> = ({ activeSubcategory }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="md:col-span-2 space-y-6">
