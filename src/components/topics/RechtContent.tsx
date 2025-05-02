@@ -2,7 +2,7 @@ import React from 'react';
 import SubcategoryLayout from './SubcategoryLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, BookOpen, Lawyer } from 'lucide-react';
+import { FileText, BookOpen, Briefcase } from 'lucide-react';
 
 interface RechtContentProps {
   activeSubcategory: string | null;
@@ -124,7 +124,7 @@ const RechtContent: React.FC<RechtContentProps> = ({ activeSubcategory }) => {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <Lawyer className="h-10 w-10 text-dashboard-purple" />
+                <Briefcase className="h-10 w-10 text-dashboard-purple" />
                 <div>
                   <h3 className="font-medium">Online Rechtsberatung</h3>
                   <p className="text-sm">Erhalten Sie schnell und unkompliziert Rat</p>
