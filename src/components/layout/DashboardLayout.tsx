@@ -1,5 +1,5 @@
 
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useMemo } from 'react';
 import { Menu, Bell, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationPanel } from '../dashboard/NotificationPanel';
@@ -12,12 +12,67 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
+// Optimize static components with React.memo
+const MemoizedNotificationPanel = React.memo(NotificationPanel);
+const MemoizedDashboardHeader = React.memo(DashboardHeader);
+
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  // Only show the additional widgets on the main dashboard page
-  const isMainDashboard = window.location.pathname === '/';
+  // Use useMemo to avoid unnecessary recalculations
+  const isMainDashboard = useMemo(() => window.location.pathname === '/', []);
+
+  // Memoize the dashboard widgets section to prevent re-rendering
+  const dashboardWidgets = useMemo(() => {
+    if (!isMainDashboard) return null;
+    
+    return (
+      <div className="container py-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="dashboard-card h-32">
+            <TimeWidget />
+          </div>
+          <div className="dashboard-card h-32">
+            <WeatherWidget />
+          </div>
+          <div className="dashboard-card h-32">
+            <NewsWidget />
+          </div>
+        </div>
+      </div>
+    );
+  }, [isMainDashboard]);
+
+  // Memoize the notification panel to prevent re-rendering
+  const notificationPanel = useMemo(() => {
+    if (!notificationsOpen) return null;
+    
+    return (
+      <>
+        <div 
+          className="fixed inset-y-0 right-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-30 translate-x-0"
+        >
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h2 className="font-semibold">Benachrichtigungen</h2>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setNotificationsOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+          <MemoizedNotificationPanel />
+        </div>
+        
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-20 z-20"
+          onClick={() => setNotificationsOpen(false)}
+        />
+      </>
+    );
+  }, [notificationsOpen]);
 
   return (
     <div className="flex min-h-screen bg-dashboard-background">
@@ -55,24 +110,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
 
         {/* Header with User Info */}
-        <DashboardHeader />
+        <MemoizedDashboardHeader />
 
         {/* Dashboard Widgets - Only for main dashboard */}
-        {isMainDashboard && (
-          <div className="container py-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="dashboard-card h-32">
-                <TimeWidget />
-              </div>
-              <div className="dashboard-card h-32">
-                <WeatherWidget />
-              </div>
-              <div className="dashboard-card h-32">
-                <NewsWidget />
-              </div>
-            </div>
-          </div>
-        )}
+        {dashboardWidgets}
 
         {/* Main Content */}
         <div className="container py-6 flex-grow">
@@ -81,33 +122,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </div>
 
       {/* Notification Panel - Sliding from right */}
-      <div 
-        className={`fixed inset-y-0 right-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-30 ${
-          notificationsOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 className="font-semibold">Benachrichtigungen</h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setNotificationsOpen(false)}
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-        <NotificationPanel />
-      </div>
-      
-      {/* Overlay when notification panel is open */}
-      {notificationsOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-20 z-20"
-          onClick={() => setNotificationsOpen(false)}
-        />
-      )}
+      {notificationPanel}
     </div>
   );
 };
 
-export default DashboardLayout;
+export default React.memo(DashboardLayout);
