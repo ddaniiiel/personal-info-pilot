@@ -1,23 +1,37 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from '@/components/ui/button';
-import { Filter, Calendar, Upload } from 'lucide-react';
+import { Filter, Calendar, Upload, ArrowLeft } from 'lucide-react';
+import { toast } from "@/components/ui/use-toast";
 import TopicSelector from '@/components/dashboard/TopicSelector';
 import SubcategoryNavigation from '@/components/dashboard/SubcategoryNavigation';
 
-// Topic-specific content components
-import WohnenContent from '@/components/topics/WohnenContent';
-import SteuernContent from '@/components/topics/SteuernContent';
-import VersicherungenContent from '@/components/topics/VersicherungenContent';
-import EnergieContent from '@/components/topics/EnergieContent';
-import RechtContent from '@/components/topics/RechtContent';
-import FoerderungenContent from '@/components/topics/FoerderungenContent';
-import KinderContent from '@/components/topics/KinderContent';
-import MobilitaetContent from '@/components/topics/MobilitaetContent';
-import HaustiereContent from '@/components/topics/HaustiereContent';
+// Lazy-loaded components for better performance
+const WohnenContent = lazy(() => import('@/components/topics/WohnenContent'));
+const SteuernContent = lazy(() => import('@/components/topics/SteuernContent'));
+const VersicherungenContent = lazy(() => import('@/components/topics/VersicherungenContent'));
+const EnergieContent = lazy(() => import('@/components/topics/EnergieContent'));
+const RechtContent = lazy(() => import('@/components/topics/RechtContent'));
+const FoerderungenContent = lazy(() => import('@/components/topics/FoerderungenContent'));
+const KinderContent = lazy(() => import('@/components/topics/KinderContent'));
+const MobilitaetContent = lazy(() => import('@/components/topics/MobilitaetContent'));
+const HaustiereContent = lazy(() => import('@/components/topics/HaustiereContent'));
+
+// Loading fallback component
+const ContentLoader = () => (
+  <div className="space-y-4 animate-pulse">
+    <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+      <div className="h-40 bg-gray-200 rounded"></div>
+      <div className="h-40 bg-gray-200 rounded"></div>
+      <div className="h-24 bg-gray-200 rounded md:col-span-2"></div>
+    </div>
+  </div>
+);
 
 // Define the subcategory items for each main category
 const subcategories = {
@@ -93,6 +107,7 @@ const Topic: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Set active subcategory based on URL hash or default to the first subcategory
   useEffect(() => {
@@ -108,34 +123,53 @@ const Topic: React.FC = () => {
   }, [topicId, location.pathname, location.hash, navigate]);
   
   const handleSubcategoryChange = (href: string) => {
+    setIsLoading(true); // Show loading state
     setActiveSubcategory(href);
     navigate(`${location.pathname}${href}`);
+    
+    // Simulate content loading delay
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+  };
+
+  const handleUploadDocument = () => {
+    toast({
+      title: "Dokument-Upload",
+      description: "Die Upload-Funktion wird vorbereitet...",
+    });
   };
   
   const renderTopicContent = () => {
-    switch (topicId) {
-      case 'wohnen':
-        return <WohnenContent activeSubcategory={activeSubcategory} />;
-      case 'steuern':
-        return <SteuernContent activeSubcategory={activeSubcategory} />;
-      case 'versicherungen':
-      case 'finanzen':
-        return <VersicherungenContent activeSubcategory={activeSubcategory} />;
-      case 'energie':
-        return <EnergieContent activeSubcategory={activeSubcategory} />;
-      case 'recht':
-        return <RechtContent activeSubcategory={activeSubcategory} />;
-      case 'foerderungen':
-        return <FoerderungenContent activeSubcategory={activeSubcategory} />;
-      case 'kinder':
-        return <KinderContent activeSubcategory={activeSubcategory} />;
-      case 'mobilitaet':
-        return <MobilitaetContent activeSubcategory={activeSubcategory} />;
-      case 'haustiere':
-        return <HaustiereContent activeSubcategory={activeSubcategory} />;
-      default:
-        return <WohnenContent activeSubcategory={activeSubcategory} />;
-    }
+    return (
+      <Suspense fallback={<ContentLoader />}>
+        {(() => {
+          switch (topicId) {
+            case 'wohnen':
+              return <WohnenContent activeSubcategory={activeSubcategory} />;
+            case 'steuern':
+              return <SteuernContent activeSubcategory={activeSubcategory} />;
+            case 'versicherungen':
+            case 'finanzen':
+              return <VersicherungenContent activeSubcategory={activeSubcategory} />;
+            case 'energie':
+              return <EnergieContent activeSubcategory={activeSubcategory} />;
+            case 'recht':
+              return <RechtContent activeSubcategory={activeSubcategory} />;
+            case 'foerderungen':
+              return <FoerderungenContent activeSubcategory={activeSubcategory} />;
+            case 'kinder':
+              return <KinderContent activeSubcategory={activeSubcategory} />;
+            case 'mobilitaet':
+              return <MobilitaetContent activeSubcategory={activeSubcategory} />;
+            case 'haustiere':
+              return <HaustiereContent activeSubcategory={activeSubcategory} />;
+            default:
+              return <WohnenContent activeSubcategory={activeSubcategory} />;
+          }
+        })()}
+      </Suspense>
+    );
   };
 
   const getTopicTitle = () => {
@@ -160,9 +194,21 @@ const Topic: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="container py-6">
+        <div className="mb-6">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => navigate('/')}
+            className="mb-3"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Zurück zum Dashboard
+          </Button>
+        </div>
+        
         <TopicSelector />
         
-        <div className="mt-6">
+        <div className="mt-6 animate-fade-in">
           <h1 className="text-2xl font-bold mb-6">{getTopicTitle()}</h1>
           
           {/* Standardized Subcategory Navigation */}
@@ -186,7 +232,7 @@ const Topic: React.FC = () => {
                       Filter
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="right">
+                  <SheetContent side="right" className="w-full sm:w-[400px]">
                     <div className="py-4">
                       <h3 className="text-lg font-medium">Filter anwenden</h3>
                       <p className="text-sm text-muted-foreground mt-2">
@@ -219,13 +265,13 @@ const Topic: React.FC = () => {
                 </Sheet>
               </div>
               
-              <Button>
+              <Button onClick={handleUploadDocument}>
                 <Upload className="h-4 w-4 mr-2" />
                 Dokument hochladen
               </Button>
             </div>
             
-            {renderTopicContent()}
+            {isLoading ? <ContentLoader /> : renderTopicContent()}
           </div>
         </div>
       </div>

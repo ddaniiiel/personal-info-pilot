@@ -2,6 +2,7 @@
 import React, { ReactNode } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SubcategoryLayoutProps {
   title: string;
@@ -9,6 +10,7 @@ interface SubcategoryLayoutProps {
   children: ReactNode;
   isActive?: boolean;
   id: string; // This would match the href from subcategory (e.g., "#dokumente")
+  isLoading?: boolean;
 }
 
 const SubcategoryLayout: React.FC<SubcategoryLayoutProps> = ({ 
@@ -16,14 +18,15 @@ const SubcategoryLayout: React.FC<SubcategoryLayoutProps> = ({
   description, 
   children,
   isActive = false,
-  id
+  id,
+  isLoading = false
 }) => {
   return (
     <div 
       id={id.replace('#', '')} 
       className={cn(
         "scroll-mt-20 transition-all duration-300",
-        isActive ? "opacity-100" : "opacity-0 hidden"
+        isActive ? "opacity-100 animate-fade-in" : "opacity-0 hidden"
       )}
     >
       <Card className={cn(
@@ -42,7 +45,13 @@ const SubcategoryLayout: React.FC<SubcategoryLayoutProps> = ({
           )}
         </CardHeader>
         <CardContent>
-          {children}
+          {isLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-12 w-2/3" />
+            </div>
+          ) : children}
         </CardContent>
       </Card>
     </div>
