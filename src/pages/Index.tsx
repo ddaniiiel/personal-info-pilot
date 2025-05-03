@@ -5,12 +5,12 @@ import StatCard from '@/components/dashboard/StatCard';
 import InsightCard from '@/components/dashboard/InsightCard';
 import RecommendationCard from '@/components/dashboard/RecommendationCard';
 import ChartCard from '@/components/dashboard/ChartCard';
-import WeatherWidget from '@/components/dashboard/WeatherWidget';
-import TimeWidget from '@/components/dashboard/TimeWidget';
-import NewsWidget from '@/components/dashboard/NewsWidget'; // We'll create this component
+import NewsWidget from '@/components/dashboard/NewsWidget';
 import DocumentUploader from '@/components/dashboard/DocumentUploader';
 import FamilyEventsWidget from '@/components/dashboard/FamilyEventsWidget';
 import TasksWidget from '@/components/dashboard/TasksWidget';
+import TimeWeatherWidget from '@/components/dashboard/TimeWeatherWidget';
+import FinanceOverviewWidget from '@/components/dashboard/FinanceOverviewWidget';
 import { useToast } from '@/hooks/use-toast';
 import { Home, BarChart, FileText, AlertCircle, Calendar, CheckSquare, Utensils, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,17 +40,19 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardLayout>
-      {/* Time, Weather, and News Section - 3 columns */}
+      {/* Time/Weather and News Section - 3 columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div>
-          <TimeWidget />
-        </div>
-        <div>
-          <WeatherWidget />
+        <div className="md:col-span-2">
+          <TimeWeatherWidget />
         </div>
         <div>
           <NewsWidget />
         </div>
+      </div>
+
+      {/* Financial Overview Section */}
+      <div className="mb-8">
+        <FinanceOverviewWidget />
       </div>
 
       {/* Main Dashboard Row */}
