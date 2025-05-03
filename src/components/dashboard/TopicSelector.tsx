@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser, InterestTopic } from '@/contexts/UserContext';
 import { 
@@ -12,9 +12,16 @@ import {
   GraduationCap,
   Car,
   PawPrint,
-  Award
+  Award,
+  MoreHorizontal
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 
 export type MainCategory = 'dashboard' | 'familie' | 'wohnen' | 'energie' | 'finanzen' | 'steuern' | 'kinder' | 'mobilitaet' | 'haustiere' | 'recht' | 'foerderungen';
 
@@ -23,6 +30,7 @@ interface TopicOption {
   label: string;
   icon: React.ReactNode;
   path: string;
+  priority?: number; // Higher number = higher priority (shown in main menu)
 }
 
 const TopicSelector: React.FC = () => {
@@ -35,37 +43,43 @@ const TopicSelector: React.FC = () => {
       id: 'dashboard', 
       label: 'Dashboard', 
       icon: <Home className="h-4 w-4" />,
-      path: '/'
+      path: '/',
+      priority: 100
     },
     { 
       id: 'familie', 
       label: 'Familie & Gesundheit', 
       icon: <Users className="h-4 w-4" />,
-      path: '/family'
+      path: '/family',
+      priority: 90
     },
     { 
       id: 'wohnen', 
       label: 'Wohnen & Eigentum', 
       icon: <Home className="h-4 w-4" />,
-      path: '/topics/wohnen'
+      path: '/topics/wohnen',
+      priority: 80
     },
     { 
       id: 'energie', 
       label: 'Energie & Nachhaltigkeit', 
       icon: <Lightbulb className="h-4 w-4" />,
-      path: '/topics/energie'
+      path: '/topics/energie',
+      priority: 70
     },
     { 
       id: 'finanzen', 
       label: 'Finanzen & Versicherungen', 
       icon: <Landmark className="h-4 w-4" />,
-      path: '/topics/finanzen'
+      path: '/topics/finanzen',
+      priority: 60
     },
     { 
       id: 'steuern', 
       label: 'Steuern & Recht', 
       icon: <Scale className="h-4 w-4" />,
-      path: '/topics/steuern'
+      path: '/topics/steuern',
+      priority: 50
     },
     { 
       id: 'kinder', 
@@ -98,6 +112,15 @@ const TopicSelector: React.FC = () => {
       path: '/topics/foerderungen'
     },
   ];
+
+  // Sort topics by priority (higher priority first)
+  const sortedTopics = [...topics].sort((a, b) => 
+    (b.priority || 0) - (a.priority || 0)
+  );
+
+  // Split into main navigation and dropdown items
+  const mainNavItems = sortedTopics.slice(0, 6); // Show 6 main items
+  const dropdownItems = sortedTopics.slice(6);
   
   const currentPath = location.pathname;
   const activeTopic = topics.find(topic => 
@@ -112,16 +135,16 @@ const TopicSelector: React.FC = () => {
   
   return (
     <nav className="w-full border-b border-gray-200 bg-white py-2 sticky top-0 z-10">
-      <div className="overflow-x-auto pb-2">
-        <div className="flex min-w-max space-x-1 px-2">
-          {topics.map((topic) => {
+      <div className="container mx-auto">
+        <div className="flex items-center space-x-1">
+          {mainNavItems.map((topic) => {
             const isActive = topic.path === (activeTopic?.path || '/');
             return (
               <button
                 key={topic.id}
                 onClick={() => handleClick(topic.path)}
                 className={cn(
-                  "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-all",
+                  "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-all whitespace-nowrap",
                   isActive 
                     ? "bg-dashboard-purple text-white shadow-sm" 
                     : "text-gray-700 hover:bg-dashboard-purple/10"
@@ -134,6 +157,37 @@ const TopicSelector: React.FC = () => {
               </button>
             );
           })}
+          
+          {/* Dropdown for additional items */}
+          {dropdownItems.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center rounded-md px-3 py-2 text-sm font-medium transition-all text-gray-700 hover:bg-dashboard-purple/10">
+                  <MoreHorizontal className="h-4 w-4 text-dashboard-purple mr-1" />
+                  Mehr
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {dropdownItems.map((topic) => {
+                  const isActive = topic.path === (activeTopic?.path || '/');
+                  return (
+                    <DropdownMenuItem 
+                      key={topic.id}
+                      onClick={() => handleClick(topic.path)}
+                      className={cn(
+                        isActive ? "bg-dashboard-purple/10" : ""
+                      )}
+                    >
+                      <span className="mr-2 text-dashboard-purple">
+                        {topic.icon}
+                      </span>
+                      {topic.label}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
     </nav>

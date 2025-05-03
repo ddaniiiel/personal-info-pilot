@@ -40,22 +40,20 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardLayout>
-      {/* Time/Weather and News Section - 3 columns */}
+      {/* Time/Weather, Finance and News Section - 3 equal columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="md:col-span-2">
+        <div>
           <TimeWeatherWidget />
+        </div>
+        <div>
+          <FinanceOverviewWidget />
         </div>
         <div>
           <NewsWidget />
         </div>
       </div>
 
-      {/* Financial Overview Section */}
-      <div className="mb-8">
-        <FinanceOverviewWidget />
-      </div>
-
-      {/* Main Dashboard Row */}
+      {/* Main Dashboard Row - 2 columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Left Column - Family Information */}
         <div className="lg:col-span-2 space-y-6">
