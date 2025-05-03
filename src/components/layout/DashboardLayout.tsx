@@ -4,9 +4,6 @@ import { Menu, Bell, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationPanel } from '../dashboard/NotificationPanel';
 import DashboardHeader from '../dashboard/DashboardHeader';
-import TimeWidget from '../dashboard/TimeWidget';
-import WeatherWidget from '../dashboard/WeatherWidget';
-import NewsWidget from '../dashboard/NewsWidget';
 import TopicSelector from '../dashboard/TopicSelector';
 
 interface DashboardLayoutProps {
@@ -21,30 +18,6 @@ const MemoizedTopicSelector = React.memo(TopicSelector);
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-
-  // Use useMemo to avoid unnecessary recalculations
-  const isMainDashboard = useMemo(() => window.location.pathname === '/', []);
-
-  // Memoize the dashboard widgets section to prevent re-rendering
-  const dashboardWidgets = useMemo(() => {
-    if (!isMainDashboard) return null;
-    
-    return (
-      <div className="container py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="dashboard-card">
-            <TimeWidget />
-          </div>
-          <div className="dashboard-card h-32">
-            <WeatherWidget />
-          </div>
-          <div className="dashboard-card h-32">
-            <NewsWidget />
-          </div>
-        </div>
-      </div>
-    );
-  }, [isMainDashboard]);
 
   // Memoize the notification panel to prevent re-rendering
   const notificationPanel = useMemo(() => {
@@ -120,9 +93,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <MemoizedTopicSelector />
           </div>
         </div>
-
-        {/* Dashboard Widgets - Only for main dashboard */}
-        {dashboardWidgets}
 
         {/* Main Content */}
         <div className="container py-6 flex-grow">

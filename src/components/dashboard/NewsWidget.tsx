@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Newspaper } from 'lucide-react';
 
@@ -31,20 +30,27 @@ const NewsWidget = () => {
   ];
 
   return (
-    <div className="dashboard-card h-32 overflow-y-auto">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold">Aktuelle Nachrichten</h3>
-        <Newspaper className="h-5 w-5 text-dashboard-purple" />
+    <div className="h-full w-full bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 transition-all duration-300 hover:shadow-md">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-semibold text-dashboard-purple">Aktuelle Nachrichten</h3>
+        <div className="p-2 bg-dashboard-purple/10 rounded-md">
+          <Newspaper className="h-5 w-5 text-dashboard-purple" />
+        </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {newsItems.map((item) => (
-          <div key={item.id} className="text-sm border-b pb-1 last:border-b-0">
-            <div className="flex justify-between items-start">
-              <h4 className="font-medium text-xs">{item.title}</h4>
-              <Badge variant="outline" className="text-xs px-1 py-0">{item.category}</Badge>
+          <div 
+            key={item.id} 
+            className="bg-white p-3 rounded-md border-l-4 border-dashboard-purple shadow-sm hover:shadow transition-shadow duration-200"
+          >
+            <div className="flex justify-between items-start mb-1">
+              <h4 className="font-medium text-sm">{item.title}</h4>
+              <Badge variant="outline" className="text-xs px-1.5 py-0 ml-1 bg-dashboard-purple/5">
+                {item.category}
+              </Badge>
             </div>
-            <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
+            <div className="flex justify-between text-xs text-muted-foreground">
               <span>{item.source}</span>
               <span>{item.time}</span>
             </div>
@@ -55,4 +61,4 @@ const NewsWidget = () => {
   );
 };
 
-export default NewsWidget;
+export default React.memo(NewsWidget);

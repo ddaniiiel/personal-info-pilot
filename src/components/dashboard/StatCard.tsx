@@ -33,11 +33,11 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon }) => {
   );
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 transition-all duration-300 hover:shadow-md">
       <div className="flex justify-between items-start h-full">
         <div className="flex flex-col justify-center">
-          <p className="dashboard-label">{title}</p>
-          <p className="dashboard-stat mt-1">{value}</p>
+          <p className="text-sm text-muted-foreground font-medium">{title}</p>
+          <p className="text-2xl font-bold text-dashboard-purple mt-1">{value}</p>
           {changeIndicator}
         </div>
         
