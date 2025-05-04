@@ -1,13 +1,24 @@
 
 import React from 'react';
-import { PiggyBank, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
+import { PiggyBank, Calendar, ArrowUp, ArrowDown, Info, ExternalLink } from 'lucide-react';
 import { AreaChart, Area, XAxis, ResponsiveContainer } from 'recharts';
+import { Button } from '@/components/ui/button';
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipProvider, 
+  TooltipTrigger 
+} from '@/components/ui/tooltip';
+import { useToast } from '@/hooks/use-toast';
 
 const FinanceOverviewWidget: React.FC = () => {
+  const { toast } = useToast();
+  
   // Mock financial data
   const financialData = {
     savings: '€3,240',
     change: { value: 18, isPositive: true },
+    lastUpdated: 'Heute, 08:30',
     upcomingDeadlines: [
       { title: 'Steuervorauszahlung', date: '20.06', amount: '€650' },
       { title: 'Versicherungsbeitrag', date: '01.07', amount: '€230' }
@@ -21,6 +32,13 @@ const FinanceOverviewWidget: React.FC = () => {
     ]
   };
 
+  const handleViewDetails = () => {
+    toast({
+      title: "Finanzdetails",
+      description: "Detaillierte Finanzübersicht wird geladen...",
+    });
+  };
+
   return (
     <div className="h-full w-full bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-4 transition-all hover:shadow-md animate-fade-in">
       <div className="flex items-center justify-between mb-2">
@@ -28,6 +46,18 @@ const FinanceOverviewWidget: React.FC = () => {
           <PiggyBank className="h-4 w-4 text-dashboard-purple mr-1.5" />
           <h3 className="text-sm font-semibold text-dashboard-purple">Finanzübersicht</h3>
         </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">Finanzübersicht basierend auf Ihren verknüpften Konten</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       
       <div className="grid grid-cols-2 gap-3">
@@ -112,6 +142,18 @@ const FinanceOverviewWidget: React.FC = () => {
               <p className="text-[10px] mt-1 text-muted-foreground">{data.name}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-2 flex justify-between items-center text-[10px] text-muted-foreground">
+          <span>Stand: {financialData.lastUpdated}</span>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-6 p-1 text-dashboard-purple hover:text-dashboard-purple-dark"
+            onClick={handleViewDetails}
+          >
+            <span className="text-xs">Detaillierte Übersicht</span>
+            <ExternalLink className="ml-1 h-3 w-3" />
+          </Button>
         </div>
       </div>
     </div>

@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { Clock, Sun, Cloud, CloudRain, CloudLightning, MapPin } from 'lucide-react';
+import { Clock, Sun, Cloud, CloudRain, CloudLightning, MapPin, ExternalLink } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const TimeWeatherWidget: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -30,6 +31,8 @@ const TimeWeatherWidget: React.FC = () => {
     temperature: 22,
     condition: 'sunny',
     location: 'Zürich',
+    lastUpdated: '10:30',
+    source: 'MeteoSchweiz',
     forecast: [
       { day: 'Heute', temp: 22, condition: 'sunny' },
       { day: 'Morgen', temp: 20, condition: 'cloudy' },
@@ -105,6 +108,23 @@ const TimeWeatherWidget: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+      
+      {/* Data Source Information */}
+      <div className="mt-2 text-right">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="inline-flex items-center text-[10px] text-muted-foreground">
+                <span>Stand: {weatherData.lastUpdated}</span>
+                <ExternalLink className="ml-1 h-3 w-3" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" align="end">
+              <p className="text-xs">Datenquelle: {weatherData.source}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );
