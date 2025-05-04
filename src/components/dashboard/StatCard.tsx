@@ -13,17 +13,17 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon }) => {
-  // Determine change indicator component once using useMemo
+  // Determine change indicator component
   const changeIndicator = change && (
-    <div className="flex items-center mt-1">
+    <div className="flex items-center">
       {change.isPositive !== undefined && (
         change.isPositive ? (
-          <ArrowUp className="h-4 w-4 text-green-500 mr-1" />
+          <ArrowUp className="h-3 w-3 text-green-500 mr-1" />
         ) : (
-          <ArrowDown className="h-4 w-4 text-red-500 mr-1" />
+          <ArrowDown className="h-3 w-3 text-red-500 mr-1" />
         )
       )}
-      <span className={`text-sm font-medium ${
+      <span className={`text-xs font-medium ${
         change.isPositive ? 'text-green-500' : 
         change.isPositive === false ? 'text-red-500' : 'text-muted-foreground'
       }`}>
@@ -33,19 +33,19 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon }) => {
   );
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 transition-all duration-300 hover:shadow-md">
-      <div className="flex justify-between items-start h-full">
-        <div className="flex flex-col justify-center">
-          <p className="text-sm text-muted-foreground font-medium">{title}</p>
-          <p className="text-2xl font-bold text-dashboard-purple mt-1">{value}</p>
-          {changeIndicator}
-        </div>
-        
+    <div className="h-full w-full bg-white rounded-lg p-3 shadow-sm border border-gray-100 transition-all hover:shadow-md animate-fade-in">
+      <div className="flex justify-between items-start">
         {icon && (
-          <div className="p-2 bg-dashboard-purple/10 rounded-md">
+          <div className="p-1.5 bg-dashboard-purple/10 rounded">
             {icon}
           </div>
         )}
+        
+        <div className={`flex flex-col items-end ${icon ? 'text-right' : 'text-left w-full'}`}>
+          <p className="text-xs text-muted-foreground font-medium mb-0.5">{title}</p>
+          <p className="text-lg font-bold text-dashboard-purple leading-tight">{value}</p>
+          {changeIndicator}
+        </div>
       </div>
     </div>
   );

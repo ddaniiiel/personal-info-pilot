@@ -41,22 +41,22 @@ const Dashboard: React.FC = () => {
   return (
     <DashboardLayout>
       {/* Time/Weather, Finance and News Section - 3 equal columns */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="h-[220px]">
           <TimeWeatherWidget />
         </div>
-        <div>
+        <div className="h-[220px]">
           <FinanceOverviewWidget />
         </div>
-        <div>
+        <div className="h-[220px]">
           <NewsWidget />
         </div>
       </div>
 
       {/* Main Dashboard Row - 2 columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         {/* Left Column - Family Information */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4">
           {/* Family Events and Calendar */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -104,11 +104,12 @@ const Dashboard: React.FC = () => {
             title="Energieverbrauch der letzten 6 Monate"
             data={energyData}
             dataKey="value"
+            height={250}
           />
         </div>
 
         {/* Right Column - Stats and Document Upload */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Document Upload - More Compact */}
           <Card>
             <CardHeader className="pb-2">
@@ -128,7 +129,7 @@ const Dashboard: React.FC = () => {
           </Card>
 
           {/* Stats Overview - Now in right column */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <StatCard 
               title="Dokumente" 
               value="8"
@@ -200,9 +201,9 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Insights and Recommendations */}
-      <div className="mb-8">
+      <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4">Wichtige Informationen</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
           <InsightCard
             title="Neues Energieeffizienzgesetz"
             description="Ab 01.06.2025 müssen alle Wohngebäude neue Energiestandards erfüllen."
@@ -227,7 +228,7 @@ const Dashboard: React.FC = () => {
         </div>
         
         <h2 className="text-xl font-semibold mb-4">Handlungsempfehlungen</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <RecommendationCard
             title="Fördermittel für Solaranlage"
             description="Sie können für Ihre Immobilie Fördermittel für eine neue Solaranlage beantragen."

@@ -10,49 +10,66 @@ const NewsWidget = () => {
       id: 1, 
       title: 'Neues Energiegesetz tritt in Kraft',
       source: 'SRF News',
-      time: 'vor 2 Stunden',
+      time: '2 Std',
       category: 'Politik'
     },
     {
       id: 2, 
       title: 'Lokale Bauarbeiten verzögern sich',
       source: 'Zürich Tagesblatt',
-      time: 'vor 3 Stunden',
+      time: '3 Std',
       category: 'Lokal'
     },
     {
       id: 3, 
       title: 'Steuererhöhung für 2026 geplant',
       source: 'Finanz & Wirtschaft',
-      time: 'vor 5 Stunden',
+      time: '5 Std',
       category: 'Finanzen'
+    },
+    {
+      id: 4, 
+      title: 'Neuer Umweltschutz-Initiative lanciert',
+      source: 'Schweizer Umwelt',
+      time: '8 Std',
+      category: 'Umwelt'
     }
   ];
 
+  // Map categories to colors
+  const categoryColors: Record<string, string> = {
+    'Politik': 'bg-blue-500',
+    'Lokal': 'bg-green-500',
+    'Finanzen': 'bg-purple-500',
+    'Umwelt': 'bg-amber-500',
+    'default': 'bg-gray-500'
+  };
+
   return (
-    <div className="h-full w-full bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 transition-all duration-300 hover:shadow-md">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-dashboard-purple">Aktuelle Nachrichten</h3>
-        <div className="p-2 bg-dashboard-purple/10 rounded-md">
-          <Newspaper className="h-5 w-5 text-dashboard-purple" />
+    <div className="h-full w-full bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 transition-all hover:shadow-md animate-fade-in">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center">
+          <Newspaper className="h-4 w-4 text-dashboard-purple mr-1.5" />
+          <h3 className="text-sm font-semibold text-dashboard-purple">Aktuelle Nachrichten</h3>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {newsItems.map((item) => (
           <div 
             key={item.id} 
-            className="bg-white p-3 rounded-md border-l-4 border-dashboard-purple shadow-sm hover:shadow transition-shadow duration-200"
+            className="bg-white p-2.5 rounded-md border-l-2 border-dashboard-purple shadow-sm hover:shadow transition-shadow duration-200"
           >
-            <div className="flex justify-between items-start mb-1">
-              <h4 className="font-medium text-sm">{item.title}</h4>
-              <Badge variant="outline" className="text-xs px-1.5 py-0 ml-1 bg-dashboard-purple/5">
-                {item.category}
-              </Badge>
+            <div className="flex justify-between items-start mb-0.5">
+              <h4 className="font-medium text-sm line-clamp-1">{item.title}</h4>
+              <div 
+                className={`w-2 h-2 rounded-full ml-1 mt-1 ${categoryColors[item.category] || categoryColors.default}`}
+                title={item.category}
+              />
             </div>
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>{item.source}</span>
-              <span>{item.time}</span>
+              <span className="truncate">{item.source}</span>
+              <span className="text-dashboard-purple text-xs whitespace-nowrap">vor {item.time}</span>
             </div>
           </div>
         ))}
