@@ -24,16 +24,16 @@ const FamilyInfoSection: React.FC = () => {
   return (
     <>
       {/* Family Events and Calendar */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-medium flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-dashboard-purple" />
+      <Card className="border shadow-sm hover:shadow-md transition-shadow">
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-lg font-semibold flex items-center text-dashboard-purple">
+            <Calendar className="h-5 w-5 mr-2" />
             Familienkalender
           </CardTitle>
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="sm" 
-            className="text-dashboard-purple"
+            className="text-dashboard-purple border-dashboard-purple hover:bg-dashboard-purple/10"
             onClick={() => navigate('/family')}
           >
             Alle anzeigen
@@ -45,16 +45,16 @@ const FamilyInfoSection: React.FC = () => {
       </Card>
 
       {/* Tasks */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-medium flex items-center">
-            <CheckSquare className="h-5 w-5 mr-2 text-dashboard-purple" />
+      <Card className="border shadow-sm hover:shadow-md transition-shadow">
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-lg font-semibold flex items-center text-dashboard-purple">
+            <CheckSquare className="h-5 w-5 mr-2" />
             Aufgaben
           </CardTitle>
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="sm" 
-            className="text-dashboard-purple"
+            className="text-dashboard-purple border-dashboard-purple hover:bg-dashboard-purple/10"
             onClick={() => navigate('/family')}
           >
             Alle anzeigen

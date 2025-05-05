@@ -33,16 +33,16 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon }) => {
   );
 
   return (
-    <div className="h-full w-full bg-white rounded-lg p-3 shadow-sm border border-gray-100 transition-all hover:shadow-md animate-fade-in">
+    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 transition-all hover:shadow-md h-full">
       <div className="flex justify-between items-start">
         {icon && (
-          <div className="p-1.5 bg-dashboard-purple/10 rounded">
+          <div className="p-1.5 bg-dashboard-purple/10 rounded-md">
             {icon}
           </div>
         )}
         
         <div className={`flex flex-col items-end ${icon ? 'text-right' : 'text-left w-full'}`}>
-          <p className="text-xs text-muted-foreground font-medium mb-0.5">{title}</p>
+          <p className="text-xs text-muted-foreground font-medium mb-1">{title}</p>
           <p className="text-lg font-bold text-dashboard-purple leading-tight">{value}</p>
           {changeIndicator}
         </div>

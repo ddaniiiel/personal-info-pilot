@@ -32,17 +32,17 @@ const FinanceOverviewWidget: React.FC = () => {
   };
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-4 transition-all hover:shadow-md animate-fade-in">
-      <div className="flex items-center justify-between mb-3">
+    <div className="h-full w-full bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-5 shadow-sm border border-gray-100 transition-all hover:shadow-md">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <PiggyBank className="h-4 w-4 text-dashboard-purple mr-1.5" />
-          <h3 className="text-sm font-semibold text-dashboard-purple">Finanzübersicht</h3>
+          <PiggyBank className="h-5 w-5 text-dashboard-purple mr-2" />
+          <h3 className="text-base font-semibold text-dashboard-purple">Finanzübersicht</h3>
         </div>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                <Info className="h-4 w-4 text-muted-foreground" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -52,9 +52,9 @@ const FinanceOverviewWidget: React.FC = () => {
         </TooltipProvider>
       </div>
       
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-4">
         {/* Savings Overview */}
-        <div className="bg-white p-3 rounded-md shadow-sm">
+        <div className="bg-white p-4 rounded-md shadow-sm border border-gray-100">
           <p className="text-xs font-medium text-muted-foreground mb-1">Gesamtvermögen</p>
           <div className="flex items-end justify-between">
             <span className="text-2xl font-bold text-dashboard-purple leading-tight">{financialData.savings}</span>
@@ -74,14 +74,14 @@ const FinanceOverviewWidget: React.FC = () => {
         </div>
         
         {/* Upcoming Payments */}
-        <div className="bg-white p-3 rounded-md shadow-sm">
+        <div className="bg-white p-4 rounded-md shadow-sm border border-gray-100">
           <p className="text-xs font-medium text-muted-foreground mb-2">Anstehende Zahlungen</p>
           <div className="space-y-2">
             {financialData.upcomingPayments.map((payment, index) => (
-              <div key={index} className="flex justify-between items-center text-xs bg-gray-50 p-2 rounded">
+              <div key={index} className="flex justify-between items-center text-xs bg-gray-50 p-2.5 rounded-md border border-gray-100">
                 <div>
                   <p className="font-medium line-clamp-1">{payment.title}</p>
-                  <p className="text-muted-foreground text-[10px]">{payment.date}</p>
+                  <p className="text-muted-foreground text-[10px] mt-0.5">{payment.date}</p>
                 </div>
                 <span className="font-semibold text-dashboard-purple">{payment.amount}</span>
               </div>
@@ -90,7 +90,7 @@ const FinanceOverviewWidget: React.FC = () => {
         </div>
       </div>
       
-      <div className="mt-3 text-right">
+      <div className="mt-4 text-right">
         <Button 
           variant="ghost" 
           size="sm" 

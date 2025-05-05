@@ -21,14 +21,14 @@ const StatisticsSection: React.FC = () => {
   return (
     <>
       {/* Document Upload - More Compact */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-medium flex items-center">
-            <FileText className="h-5 w-5 mr-2 text-dashboard-purple" />
+      <Card className="border shadow-sm hover:shadow-md transition-shadow">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-medium flex items-center text-dashboard-purple">
+            <FileText className="h-5 w-5 mr-2" />
             Dokumente
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           <Button 
             className="w-full bg-dashboard-purple hover:bg-dashboard-purple-dark"
             onClick={() => handleAction("Dokument hochladen")}
@@ -38,8 +38,8 @@ const StatisticsSection: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Stats Overview - Now in right column */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Stats Overview with consistent spacing */}
+      <div className="grid grid-cols-2 gap-4 mt-6">
         <StatCard 
           title="Dokumente" 
           value="8"
@@ -66,21 +66,21 @@ const StatisticsSection: React.FC = () => {
       </div>
       
       {/* Meal Planner Widget */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-medium flex items-center">
-            <Utensils className="h-5 w-5 mr-2 text-dashboard-purple" />
+      <Card className="mt-6 border shadow-sm hover:shadow-md transition-shadow">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-medium flex items-center text-dashboard-purple">
+            <Utensils className="h-5 w-5 mr-2" />
             Essensplan heute
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="p-2 bg-gray-50 rounded">
+        <CardContent className="pt-0">
+          <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
             <p className="font-medium">Pasta mit Tomatensauce</p>
-            <div className="mt-2 flex justify-end">
+            <div className="mt-3 flex justify-end">
               <Button 
-                variant="ghost" 
+                variant="outline" 
                 size="sm" 
-                className="text-dashboard-purple"
+                className="text-dashboard-purple border-dashboard-purple hover:bg-dashboard-purple/10"
                 onClick={() => navigate('/family')}
               >
                 Wochenplan
@@ -91,16 +91,16 @@ const StatisticsSection: React.FC = () => {
       </Card>
       
       {/* Family Quick Access */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-medium flex items-center">
-            <Users className="h-5 w-5 mr-2 text-dashboard-purple" />
+      <Card className="mt-6 border shadow-sm hover:shadow-md transition-shadow">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-medium flex items-center text-dashboard-purple">
+            <Users className="h-5 w-5 mr-2" />
             Familie
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           <Button 
-            className="w-full bg-dashboard-purple hover:bg-dashboard-purple-dark mb-2"
+            className="w-full bg-dashboard-purple hover:bg-dashboard-purple-dark"
             onClick={() => navigate('/family')}
           >
             Familienübersicht

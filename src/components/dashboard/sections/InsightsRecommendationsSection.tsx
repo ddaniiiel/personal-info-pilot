@@ -15,9 +15,9 @@ const InsightsRecommendationsSection: React.FC = () => {
   };
 
   return (
-    <div className="mb-6">
-      <h2 className="text-xl font-semibold mb-4">Wichtige Informationen</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
+    <div className="mb-8">
+      <h2 className="text-xl font-semibold mb-5 text-dashboard-purple">Wichtige Informationen</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <InsightCard
           title="Neues Energieeffizienzgesetz"
           description="Ab 01.06.2025 müssen alle Wohngebäude neue Energiestandards erfüllen."
@@ -41,8 +41,8 @@ const InsightsRecommendationsSection: React.FC = () => {
         />
       </div>
       
-      <h2 className="text-xl font-semibold mb-4">Handlungsempfehlungen</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <h2 className="text-xl font-semibold mb-5 text-dashboard-purple">Handlungsempfehlungen</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <RecommendationCard
           title="Fördermittel für Solaranlage"
           description="Sie können für Ihre Immobilie Fördermittel für eine neue Solaranlage beantragen."
