@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Calendar, CheckSquare, Utensils, AlertTriangle, Phone } from 'lucide-react';
+import { Users, Calendar, CheckSquare, Utensils, AlertTriangle, Phone, Plus, CalendarDays } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -52,83 +52,242 @@ const AddFamilyMemberDialog = ({ onClose }: { onClose: () => void }) => (
   </DialogContent>
 );
 
-const FamilyCalendar = () => (
-  <div className="space-y-4">
-    <div className="bg-white p-4 rounded-md shadow-sm">
-      <h3 className="font-medium text-lg mb-2">Kommende Termine</h3>
-      <div className="space-y-2">
-        <div className="flex items-center p-2 border-l-4 border-blue-500 bg-blue-50 rounded">
-          <div className="ml-2">
-            <p className="font-medium">Arzttermin - Marie</p>
-            <p className="text-sm text-muted-foreground">Morgen, 14:30 - 15:30</p>
-          </div>
-        </div>
-        <div className="flex items-center p-2 border-l-4 border-green-500 bg-green-50 rounded">
-          <div className="ml-2">
-            <p className="font-medium">Fussballtraining - Thomas</p>
-            <p className="text-sm text-muted-foreground">Donnerstag, 17:00 - 18:30</p>
-          </div>
-        </div>
-        <div className="flex items-center p-2 border-l-4 border-purple-500 bg-purple-50 rounded">
-          <div className="ml-2">
-            <p className="font-medium">Elternabend Schule</p>
-            <p className="text-sm text-muted-foreground">Nächsten Dienstag, 19:00 - 21:00</p>
-          </div>
-        </div>
+// New task component
+const AddTaskDialog = ({ onClose }: { onClose: () => void }) => (
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>Neue Aufgabe hinzufügen</DialogTitle>
+    </DialogHeader>
+    <form className="grid gap-4 py-4">
+      <div className="grid grid-cols-4 items-center gap-4">
+        <label htmlFor="task-title" className="text-right">Aufgabe</label>
+        <input id="task-title" className="col-span-3 p-2 border rounded" placeholder="Aufgabentitel" />
       </div>
-      <Button className="mt-4 w-full" variant="outline">Alle Termine ansehen</Button>
-    </div>
-  </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <label htmlFor="deadline" className="text-right">Fälligkeitsdatum</label>
+        <input id="deadline" type="date" className="col-span-3 p-2 border rounded" />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <label htmlFor="priority" className="text-right">Priorität</label>
+        <select id="priority" className="col-span-3 p-2 border rounded">
+          <option value="high">Hoch</option>
+          <option value="medium">Mittel</option>
+          <option value="low">Niedrig</option>
+        </select>
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <label htmlFor="assignee" className="text-right">Zugewiesen an</label>
+        <select id="assignee" className="col-span-3 p-2 border rounded">
+          <option value="thomas">Thomas Müller</option>
+          <option value="anna">Anna Müller</option>
+          <option value="marie">Marie Müller</option>
+          <option value="family">Ganze Familie</option>
+        </select>
+      </div>
+      <div className="flex justify-end mt-4 gap-2">
+        <Button type="button" variant="outline" onClick={onClose}>Abbrechen</Button>
+        <Button type="submit">Hinzufügen</Button>
+      </div>
+    </form>
+  </DialogContent>
 );
 
-const TaskList = () => (
-  <div className="space-y-4">
-    <div className="bg-white p-4 rounded-md shadow-sm">
-      <h3 className="font-medium text-lg mb-2">Aufgaben</h3>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-3" />
-            <span>Einkaufsliste erstellen</span>
-          </div>
-          <span className="text-sm text-muted-foreground">Heute</span>
+const FamilyCalendar = () => {
+  const [showSyncDialog, setShowSyncDialog] = useState(false);
+  
+  return (
+    <div className="space-y-4">
+      <div className="bg-white p-4 rounded-md shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-medium text-lg">Kommende Termine</h3>
+          <Dialog open={showSyncDialog} onOpenChange={setShowSyncDialog}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="flex items-center">
+                <CalendarDays className="h-4 w-4 mr-2" /> 
+                Kalender synchronisieren
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Kalender synchronisieren</DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="google-cal" className="rounded" />
+                    <label htmlFor="google-cal">Google Kalender</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="outlook-cal" className="rounded" />
+                    <label htmlFor="outlook-cal">Outlook Kalender</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="apple-cal" className="rounded" />
+                    <label htmlFor="apple-cal">Apple Kalender</label>
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <Button onClick={() => setShowSyncDialog(false)}>Synchronisieren</Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
-        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-3" />
-            <span>Geschenk für Omas Geburtstag kaufen</span>
+        
+        <div className="space-y-2">
+          <div className="flex items-center p-2 border-l-4 border-blue-500 bg-blue-50 rounded">
+            <div className="ml-2">
+              <p className="font-medium">Arzttermin - Marie</p>
+              <p className="text-sm text-muted-foreground">Morgen, 14:30 - 15:30</p>
+            </div>
           </div>
-          <span className="text-sm text-muted-foreground">Diese Woche</span>
-        </div>
-        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-3" />
-            <span>Steuerformulare einreichen</span>
+          <div className="flex items-center p-2 border-l-4 border-green-500 bg-green-50 rounded">
+            <div className="ml-2">
+              <p className="font-medium">Fussballtraining - Thomas</p>
+              <p className="text-sm text-muted-foreground">Donnerstag, 17:00 - 18:30</p>
+            </div>
           </div>
-          <span className="text-sm text-rose-500">Überfällig</span>
+          <div className="flex items-center p-2 border-l-4 border-purple-500 bg-purple-50 rounded">
+            <div className="ml-2">
+              <p className="font-medium">Elternabend Schule</p>
+              <p className="text-sm text-muted-foreground">Nächsten Dienstag, 19:00 - 21:00</p>
+            </div>
+          </div>
         </div>
+        
+        {/* Calendar View */}
+        <div className="mt-4 bg-gray-100 rounded-md p-2">
+          <div className="grid grid-cols-7 gap-1 mb-2 text-center text-xs font-medium">
+            <div>Mo</div>
+            <div>Di</div>
+            <div>Mi</div>
+            <div>Do</div>
+            <div>Fr</div>
+            <div>Sa</div>
+            <div>So</div>
+          </div>
+          <div className="grid grid-cols-7 gap-1 text-center">
+            {Array.from({ length: 31 }, (_, i) => (
+              <div 
+                key={i} 
+                className={`aspect-square p-1 text-xs rounded-sm ${
+                  i === 14 ? 'bg-blue-200 font-medium' : 
+                  i === 21 ? 'bg-green-200 font-medium' : 
+                  i === 25 ? 'bg-purple-200 font-medium' : 
+                  'bg-white'
+                }`}
+              >
+                {i + 1}
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <Button className="mt-4 w-full" variant="outline">Alle Termine ansehen</Button>
       </div>
-      <Button className="mt-4 w-full" variant="outline">Alle Aufgaben ansehen</Button>
     </div>
-  </div>
-);
+  );
+};
+
+const TaskList = () => {
+  const [showAddTaskDialog, setShowAddTaskDialog] = useState(false);
+  
+  return (
+    <div className="space-y-4">
+      <div className="bg-white p-4 rounded-md shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-medium text-lg">Aufgaben</h3>
+          <Dialog open={showAddTaskDialog} onOpenChange={setShowAddTaskDialog}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-2" /> 
+                Aufgabe hinzufügen
+              </Button>
+            </DialogTrigger>
+            <AddTaskDialog onClose={() => setShowAddTaskDialog(false)} />
+          </Dialog>
+        </div>
+        
+        <div className="space-y-2">
+          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Einkaufsliste erstellen</span>
+            </div>
+            <span className="text-sm text-muted-foreground">Heute</span>
+          </div>
+          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Geschenk für Omas Geburtstag kaufen</span>
+            </div>
+            <span className="text-sm text-muted-foreground">Diese Woche</span>
+          </div>
+          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+            <div className="flex items-center">
+              <input type="checkbox" className="mr-3" />
+              <span>Steuerformulare einreichen</span>
+            </div>
+            <span className="text-sm text-rose-500">Überfällig</span>
+          </div>
+        </div>
+        <Button className="mt-4 w-full" variant="outline">Alle Aufgaben ansehen</Button>
+      </div>
+    </div>
+  );
+};
 
 const MealPlanner = () => (
   <div className="space-y-4">
     <div className="bg-white p-4 rounded-md shadow-sm">
       <h3 className="font-medium text-lg mb-2">Essensplan für diese Woche</h3>
-      <div className="space-y-2">
-        <div className="p-2 bg-gray-50 rounded">
-          <p className="font-medium">Montag</p>
-          <p>Pasta mit Tomatensauce</p>
+      <div className="space-y-4">
+        <div className="p-4 bg-gray-50 rounded">
+          <h4 className="font-medium">Montag</h4>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center mt-2">
+            <div className="w-24 h-24 mb-2 sm:mb-0 sm:mr-4 rounded-md bg-gray-200 overflow-hidden">
+              <img src="/placeholder.svg" alt="Pasta" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p className="font-medium">Pasta mit Tomatensauce</p>
+              <p className="text-sm text-muted-foreground mb-2">Einfach und schnell zubereitet</p>
+              <Button variant="link" className="p-0 h-auto text-dashboard-purple">
+                Rezept anzeigen
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="p-2 bg-gray-50 rounded">
-          <p className="font-medium">Dienstag</p>
-          <p>Hähnchen mit Gemüse</p>
+        
+        <div className="p-4 bg-gray-50 rounded">
+          <h4 className="font-medium">Dienstag</h4>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center mt-2">
+            <div className="w-24 h-24 mb-2 sm:mb-0 sm:mr-4 rounded-md bg-gray-200 overflow-hidden">
+              <img src="/placeholder.svg" alt="Hähnchen" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p className="font-medium">Hähnchen mit Gemüse</p>
+              <p className="text-sm text-muted-foreground mb-2">Proteinreich und gesund</p>
+              <Button variant="link" className="p-0 h-auto text-dashboard-purple">
+                Rezept anzeigen
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="p-2 bg-gray-50 rounded">
-          <p className="font-medium">Mittwoch</p>
-          <p>Gemüseauflauf</p>
+        
+        <div className="p-4 bg-gray-50 rounded">
+          <h4 className="font-medium">Mittwoch</h4>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center mt-2">
+            <div className="w-24 h-24 mb-2 sm:mb-0 sm:mr-4 rounded-md bg-gray-200 overflow-hidden">
+              <img src="/placeholder.svg" alt="Gemüseauflauf" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p className="font-medium">Gemüseauflauf</p>
+              <p className="text-sm text-muted-foreground mb-2">Vegetarisch und vollwertig</p>
+              <Button variant="link" className="p-0 h-auto text-dashboard-purple">
+                Rezept anzeigen
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
       <Button className="mt-4 w-full" variant="outline">Zum Essensplaner</Button>
@@ -194,9 +353,24 @@ const Family: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  <FamilyMember name="Thomas Müller" role="Vater" initials="TM" />
-                  <FamilyMember name="Anna Müller" role="Mutter" initials="AM" />
-                  <FamilyMember name="Marie Müller" role="Tochter" initials="MM" />
+                  <FamilyMember 
+                    name="Thomas Müller" 
+                    role="Vater" 
+                    photoUrl="/placeholder.svg" 
+                    initials="TM" 
+                  />
+                  <FamilyMember 
+                    name="Anna Müller" 
+                    role="Mutter" 
+                    photoUrl="/placeholder.svg" 
+                    initials="AM" 
+                  />
+                  <FamilyMember 
+                    name="Marie Müller" 
+                    role="Tochter" 
+                    photoUrl="/placeholder.svg" 
+                    initials="MM" 
+                  />
                   <div className="flex justify-center items-center">
                     <Dialog open={showAddMemberDialog} onOpenChange={setShowAddMemberDialog}>
                       <DialogTrigger asChild>
@@ -255,9 +429,24 @@ const Family: React.FC = () => {
           
           <TabsContent value="members" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <FamilyMember name="Thomas Müller" role="Vater" initials="TM" />
-              <FamilyMember name="Anna Müller" role="Mutter" initials="AM" />
-              <FamilyMember name="Marie Müller" role="Tochter" initials="MM" />
+              <FamilyMember 
+                name="Thomas Müller" 
+                role="Vater" 
+                photoUrl="/placeholder.svg" 
+                initials="TM" 
+              />
+              <FamilyMember 
+                name="Anna Müller" 
+                role="Mutter" 
+                photoUrl="/placeholder.svg" 
+                initials="AM" 
+              />
+              <FamilyMember 
+                name="Marie Müller" 
+                role="Tochter" 
+                photoUrl="/placeholder.svg" 
+                initials="MM" 
+              />
               <div className="flex justify-center items-center">
                 <Dialog open={showAddMemberDialog} onOpenChange={setShowAddMemberDialog}>
                   <DialogTrigger asChild>
