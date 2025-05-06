@@ -1,10 +1,12 @@
+
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Home, Users, Book, GraduationCap, Lightbulb, PiggyBank } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router-dom';
 
 const TopicSelector: React.FC = () => {
-  const pathname = usePathname() || '/';
+  const location = useLocation();
+  const pathname = location.pathname;
 
   return (
     <ScrollArea className="w-full max-w-full">
