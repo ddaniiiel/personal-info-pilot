@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -17,6 +18,11 @@ const FoerderungenContent = lazy(() => import('@/components/topics/FoerderungenC
 const KinderContent = lazy(() => import('@/components/topics/KinderContent'));
 const MobilitaetContent = lazy(() => import('@/components/topics/MobilitaetContent'));
 const HaustiereContent = lazy(() => import('@/components/topics/HaustiereContent'));
+const BildungContent = lazy(() => import('@/components/topics/BildungContent'));
+const VorsorgeContent = lazy(() => import('@/components/topics/VorsorgeContent'));
+const ArbeitContent = lazy(() => import('@/components/topics/ArbeitContent'));
+const GesundheitContent = lazy(() => import('@/components/topics/GesundheitContent'));
+const FreizeitContent = lazy(() => import('@/components/topics/FreizeitContent'));
 
 // Loading fallback component
 const ContentLoader = () => (
@@ -61,6 +67,34 @@ const subcategories = {
     { title: "Steuererklärungen", href: "#erklaerungen" },
     { title: "Steueroptimierung", href: "#optimierung" },
     { title: "Rechtliches", href: "#rechtliches" }
+  ],
+  bildung: [
+    { title: "Schulbildung", href: "#schule" },
+    { title: "Weiterbildung", href: "#weiterbildung" },
+    { title: "Finanzbildung", href: "#finanzbildung" }
+  ],
+  vorsorge: [
+    { title: "Altersvorsorge", href: "#altersvorsorge" },
+    { title: "Gesundheitsvorsorge", href: "#gesundheit" },
+    { title: "Absicherung", href: "#absicherung" },
+    { title: "Notfallplanung", href: "#notfall" }
+  ],
+  arbeit: [
+    { title: "Berufliche Entwicklung", href: "#entwicklung" },
+    { title: "Bewerbungsmanagement", href: "#bewerbung" },
+    { title: "Arbeitsorganisation", href: "#organisation" }
+  ],
+  gesundheit: [
+    { title: "Allgemeine Gesundheit", href: "#allgemein" },
+    { title: "Fitness & Sport", href: "#fitness" },
+    { title: "Ernährung", href: "#ernaehrung" },
+    { title: "Wohlbefinden", href: "#wohlbefinden" }
+  ],
+  freizeit: [
+    { title: "Reiseplanung", href: "#reisen" },
+    { title: "Lokale Aktivitäten", href: "#lokal" },
+    { title: "Veranstaltungskalender", href: "#veranstaltungen" },
+    { title: "Hobbys", href: "#hobbys" }
   ],
   kinder: [
     { title: "Schule/Kita", href: "#schule" },
@@ -161,6 +195,16 @@ const Topic: React.FC = () => {
               return <MobilitaetContent activeSubcategory={activeSubcategory} />;
             case 'haustiere':
               return <HaustiereContent activeSubcategory={activeSubcategory} />;
+            case 'bildung':
+              return <BildungContent activeSubcategory={activeSubcategory} />;
+            case 'vorsorge':
+              return <VorsorgeContent activeSubcategory={activeSubcategory} />;
+            case 'arbeit':
+              return <ArbeitContent activeSubcategory={activeSubcategory} />;
+            case 'gesundheit':
+              return <GesundheitContent activeSubcategory={activeSubcategory} />;
+            case 'freizeit':
+              return <FreizeitContent activeSubcategory={activeSubcategory} />;
             default:
               return <WohnenContent activeSubcategory={activeSubcategory} />;
           }
@@ -181,6 +225,11 @@ const Topic: React.FC = () => {
       case 'kinder': return 'Kinder & Bildung';
       case 'mobilitaet': return 'Mobilität';
       case 'haustiere': return 'Haustiere';
+      case 'bildung': return 'Bildung & Weiterbildung';
+      case 'vorsorge': return 'Vorsorge & Absicherung';
+      case 'arbeit': return 'Arbeit & Karriere';
+      case 'gesundheit': return 'Gesundheit & Wellness';
+      case 'freizeit': return 'Freizeit & Reisen';
       default: return 'Wohnen & Eigentum';
     }
   };

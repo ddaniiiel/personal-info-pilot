@@ -1,7 +1,10 @@
 
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Home, Users, Book, GraduationCap, Lightbulb, PiggyBank } from 'lucide-react';
+import { 
+  Home, Users, Book, GraduationCap, Lightbulb, PiggyBank, 
+  Briefcase, Heart, Globe, Settings 
+} from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 const TopicSelector: React.FC = () => {
@@ -73,8 +76,41 @@ const TopicSelector: React.FC = () => {
             'hover:bg-dashboard-purple/5 text-gray-700'
           }`}
         >
-          <GraduationCap className={`h-4 w-4 mr-1.5 ${pathname === '/topics/vorsorge' ? 'text-dashboard-purple' : ''}`} />
+          <Settings className={`h-4 w-4 mr-1.5 ${pathname === '/topics/vorsorge' ? 'text-dashboard-purple' : ''}`} />
           <span className="whitespace-nowrap font-medium">Vorsorge</span>
+        </a>
+
+        <a
+          href="/topics/arbeit"
+          className={`min-w-max flex items-center px-3 py-2 rounded-md transition-colors ${
+            pathname === '/topics/arbeit' ? 'bg-dashboard-purple/10 text-dashboard-purple' : 
+            'hover:bg-dashboard-purple/5 text-gray-700'
+          }`}
+        >
+          <Briefcase className={`h-4 w-4 mr-1.5 ${pathname === '/topics/arbeit' ? 'text-dashboard-purple' : ''}`} />
+          <span className="whitespace-nowrap font-medium">Arbeit & Karriere</span>
+        </a>
+
+        <a
+          href="/topics/gesundheit"
+          className={`min-w-max flex items-center px-3 py-2 rounded-md transition-colors ${
+            pathname === '/topics/gesundheit' ? 'bg-dashboard-purple/10 text-dashboard-purple' : 
+            'hover:bg-dashboard-purple/5 text-gray-700'
+          }`}
+        >
+          <Heart className={`h-4 w-4 mr-1.5 ${pathname === '/topics/gesundheit' ? 'text-dashboard-purple' : ''}`} />
+          <span className="whitespace-nowrap font-medium">Gesundheit</span>
+        </a>
+
+        <a
+          href="/topics/freizeit"
+          className={`min-w-max flex items-center px-3 py-2 rounded-md transition-colors ${
+            pathname === '/topics/freizeit' ? 'bg-dashboard-purple/10 text-dashboard-purple' : 
+            'hover:bg-dashboard-purple/5 text-gray-700'
+          }`}
+        >
+          <Globe className={`h-4 w-4 mr-1.5 ${pathname === '/topics/freizeit' ? 'text-dashboard-purple' : ''}`} />
+          <span className="whitespace-nowrap font-medium">Freizeit & Reisen</span>
         </a>
       </nav>
     </ScrollArea>
