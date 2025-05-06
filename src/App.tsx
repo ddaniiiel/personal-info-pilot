@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Topic from "./pages/Topic";
 import Family from "./pages/Family";
+import Finance from "./pages/Finance";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/topics/:topicId" element={<Topic />} />
             <Route path="/family" element={<Family />} />
+            <Route path="/finance" element={<Finance />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

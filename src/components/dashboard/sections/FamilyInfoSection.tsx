@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, CheckSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import FinanceAssistant from '@/components/finance/FinanceAssistant';
 
 // Mock data for charts
 const energyData = [
@@ -23,8 +24,11 @@ const FamilyInfoSection: React.FC = () => {
   
   return (
     <>
+      {/* Finance Assistant - New top component */}
+      <FinanceAssistant />
+      
       {/* Family Events and Calendar */}
-      <Card className="border shadow-sm hover:shadow-md transition-shadow">
+      <Card className="border shadow-sm hover:shadow-md transition-shadow mt-6">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle className="text-lg font-semibold flex items-center text-dashboard-purple">
             <Calendar className="h-5 w-5 mr-2" />
@@ -45,7 +49,7 @@ const FamilyInfoSection: React.FC = () => {
       </Card>
 
       {/* Tasks */}
-      <Card className="border shadow-sm hover:shadow-md transition-shadow">
+      <Card className="border shadow-sm hover:shadow-md transition-shadow mt-6">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle className="text-lg font-semibold flex items-center text-dashboard-purple">
             <CheckSquare className="h-5 w-5 mr-2" />

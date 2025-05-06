@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { FileText, AlertCircle, BarChart, Home, Utensils, Users } from 'lucide-react';
+import { FileText, AlertCircle, BarChart, Home, Utensils, Users, PiggyBank } from 'lucide-react';
 
 const StatisticsSection: React.FC = () => {
   const navigate = useNavigate();
@@ -87,6 +87,24 @@ const StatisticsSection: React.FC = () => {
               </Button>
             </div>
           </div>
+        </CardContent>
+      </Card>
+      
+      {/* Finance Quick Access */}
+      <Card className="mt-6 border shadow-sm hover:shadow-md transition-shadow">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-medium flex items-center text-dashboard-purple">
+            <PiggyBank className="h-5 w-5 mr-2" />
+            Finanzen
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <Button 
+            className="w-full bg-dashboard-purple hover:bg-dashboard-purple-dark"
+            onClick={() => navigate('/finance')}
+          >
+            Finanzübersicht
+          </Button>
         </CardContent>
       </Card>
       

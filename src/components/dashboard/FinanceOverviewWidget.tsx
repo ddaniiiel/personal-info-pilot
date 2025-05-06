@@ -9,9 +9,11 @@ import {
   TooltipTrigger 
 } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 const FinanceOverviewWidget: React.FC = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   // Mock financial data
   const financialData = {
@@ -25,10 +27,7 @@ const FinanceOverviewWidget: React.FC = () => {
   };
 
   const handleViewDetails = () => {
-    toast({
-      title: "Finanzdetails",
-      description: "Detaillierte Finanzübersicht wird geladen...",
-    });
+    navigate('/finance');
   };
 
   return (
