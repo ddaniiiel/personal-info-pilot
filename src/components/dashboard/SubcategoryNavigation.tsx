@@ -6,6 +6,7 @@ import { ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { useLocation } from 'react-router-dom';
 
 interface Subcategory {
   title: string;
@@ -24,6 +25,33 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
   onSubcategoryChange,
 }) => {
   const [isOpen, setIsOpen] = React.useState(true);
+  const location = useLocation();
+  
+  // Extract the current topic from the URL path
+  const pathSegments = location.pathname.split('/');
+  const currentTopic = pathSegments[pathSegments.length - 1];
+  
+  // Get proper topic display name based on URL
+  const getTopicDisplayName = () => {
+    switch (currentTopic) {
+      case 'energie': return 'Energie & Nachhaltigkeit';
+      case 'wohnen': return 'Wohnen & Eigentum';
+      case 'steuern': return 'Steuern & Recht';
+      case 'versicherungen': 
+      case 'finanzen': return 'Finanzen & Versicherungen';
+      case 'recht': return 'Recht & Compliance';
+      case 'foerderungen': return 'Förderprogramme';
+      case 'kinder': return 'Kinder & Bildung';
+      case 'mobilitaet': return 'Mobilität';
+      case 'haustiere': return 'Haustiere';
+      case 'bildung': return 'Bildung & Weiterbildung';
+      case 'vorsorge': return 'Vorsorge & Absicherung';
+      case 'arbeit': return 'Arbeit & Karriere';
+      case 'gesundheit': return 'Gesundheit & Wellness';
+      case 'freizeit': return 'Freizeit & Reisen';
+      default: return currentTopic.charAt(0).toUpperCase() + currentTopic.slice(1);
+    }
+  };
 
   if (!subcategories || subcategories.length === 0) {
     return null;
@@ -43,7 +71,7 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/topics/kinder">Kinder & Bildung</BreadcrumbLink>
+            <BreadcrumbLink href={`/topics/${currentTopic}`}>{getTopicDisplayName()}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -92,4 +120,4 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
   );
 };
 
-export default SubcategoryNavigation;
+export default React.memo(SubcategoryNavigation);
