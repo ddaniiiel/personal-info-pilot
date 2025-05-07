@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Home, PiggyBank, LineChart, CreditCard, TrendingUp, Calendar } from "lucide-react";
 import FinanceAssistant from '@/components/finance/FinanceAssistant';
+import FinanceCharts from '@/components/finance/FinanceCharts';
 
 const Finance: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -53,59 +54,9 @@ const Finance: React.FC = () => {
         </TabsList>
         
         <TabsContent value="overview" className="space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <TrendingUp className="h-5 w-5 mr-2 text-dashboard-purple" />
-                  Finanztrends
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px] bg-gray-50 rounded-md border border-gray-100 flex items-center justify-center">
-                  <div className="text-center">
-                    <LineChart className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
-                    <p className="text-muted-foreground">Transaktionen der letzten 30 Tage</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Calendar className="h-5 w-5 mr-2 text-dashboard-purple" />
-                  Anstehende Zahlungen
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-3 bg-gray-50 rounded-md border border-gray-100 flex justify-between">
-                    <div>
-                      <p className="text-sm font-medium">Versicherung</p>
-                      <p className="text-xs text-muted-foreground">15.05.2025</p>
-                    </div>
-                    <p className="font-medium">€245,00</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-md border border-gray-100 flex justify-between">
-                    <div>
-                      <p className="text-sm font-medium">Stromrechnung</p>
-                      <p className="text-xs text-muted-foreground">18.05.2025</p>
-                    </div>
-                    <p className="font-medium">€87,50</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-md border border-gray-100 flex justify-between">
-                    <div>
-                      <p className="text-sm font-medium">Internet & Telefon</p>
-                      <p className="text-xs text-muted-foreground">22.05.2025</p>
-                    </div>
-                    <p className="font-medium">€64,90</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
+          {/* Fügen die neue FinanceCharts-Komponente hinzu */}
+          <FinanceCharts activeTab={activeTab} />
+          
           <FinanceAssistant />
         </TabsContent>
         

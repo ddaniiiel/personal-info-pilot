@@ -1,50 +1,111 @@
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import SubcategoryLayout from '../SubcategoryLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GaugeCircle, TrendingDown, TrendingUp, Info } from 'lucide-react';
-import { ChartContainer } from '@/components/ui/chart';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, 
+  Tooltip, ResponsiveContainer, Legend, 
+  LineChart, Line, BarChart, Bar 
+} from 'recharts';
+import { useChartConfig } from '@/hooks/use-chart-config';
 
 interface VerbrauchsanalyseSectionProps {
   isActive: boolean;
 }
 
-// Sample data for electricity usage chart
+// Realistische Daten für Stromverbrauch
 const electricityData = [
-  { month: 'Jan', verbrauch: 320 },
-  { month: 'Feb', verbrauch: 300 },
-  { month: 'Mär', verbrauch: 290 },
-  { month: 'Apr', verbrauch: 270 },
-  { month: 'Mai', verbrauch: 250 },
-  { month: 'Jun', verbrauch: 220 },
-  { month: 'Jul', verbrauch: 230 },
-  { month: 'Aug', verbrauch: 240 },
-  { month: 'Sep', verbrauch: 260 },
-  { month: 'Okt', verbrauch: 280 },
-  { month: 'Nov', verbrauch: 310 },
-  { month: 'Dez', verbrauch: 350 }
+  { month: 'Jan', verbrauch: 320, vergleich: 340 },
+  { month: 'Feb', verbrauch: 300, vergleich: 310 },
+  { month: 'Mär', verbrauch: 290, vergleich: 305 },
+  { month: 'Apr', verbrauch: 270, vergleich: 290 },
+  { month: 'Mai', verbrauch: 250, vergleich: 280 },
+  { month: 'Jun', verbrauch: 220, vergleich: 260 },
+  { month: 'Jul', verbrauch: 230, vergleich: 255 },
+  { month: 'Aug', verbrauch: 240, vergleich: 260 },
+  { month: 'Sep', verbrauch: 260, vergleich: 275 },
+  { month: 'Okt', verbrauch: 280, vergleich: 290 },
+  { month: 'Nov', verbrauch: 310, vergleich: 330 },
+  { month: 'Dez', verbrauch: 350, vergleich: 360 }
 ];
 
-// Sample data for water usage chart
+// Realistische Daten für Wasserverbrauch
 const waterData = [
-  { month: 'Jan', verbrauch: 38 },
-  { month: 'Feb', verbrauch: 42 },
-  { month: 'Mär', verbrauch: 35 },
-  { month: 'Apr', verbrauch: 30 },
-  { month: 'Mai', verbrauch: 45 },
-  { month: 'Jun', verbrauch: 52 },
-  { month: 'Jul', verbrauch: 58 },
-  { month: 'Aug', verbrauch: 50 },
-  { month: 'Sep', verbrauch: 47 },
-  { month: 'Okt', verbrauch: 42 },
-  { month: 'Nov', verbrauch: 39 },
-  { month: 'Dez', verbrauch: 41 }
+  { month: 'Jan', verbrauch: 38, vergleich: 40 },
+  { month: 'Feb', verbrauch: 42, vergleich: 39 },
+  { month: 'Mär', verbrauch: 35, vergleich: 38 },
+  { month: 'Apr', verbrauch: 30, vergleich: 36 },
+  { month: 'Mai', verbrauch: 45, vergleich: 42 },
+  { month: 'Jun', verbrauch: 52, vergleich: 46 },
+  { month: 'Jul', verbrauch: 58, vergleich: 48 },
+  { month: 'Aug', verbrauch: 50, vergleich: 47 },
+  { month: 'Sep', verbrauch: 47, vergleich: 45 },
+  { month: 'Okt', verbrauch: 42, vergleich: 43 },
+  { month: 'Nov', verbrauch: 39, vergleich: 41 },
+  { month: 'Dez', verbrauch: 41, vergleich: 40 }
+];
+
+// Heizungsverbrauchsdaten
+const heatingData = [
+  { month: 'Jan', verbrauch: 95, vergleich: 110 },
+  { month: 'Feb', verbrauch: 85, vergleich: 100 },
+  { month: 'Mär', verbrauch: 65, vergleich: 80 },
+  { month: 'Apr', verbrauch: 45, vergleich: 50 },
+  { month: 'Mai', verbrauch: 25, vergleich: 30 },
+  { month: 'Jun', verbrauch: 10, vergleich: 15 },
+  { month: 'Jul', verbrauch: 5, vergleich: 10 },
+  { month: 'Aug', verbrauch: 5, vergleich: 10 },
+  { month: 'Sep', verbrauch: 15, vergleich: 25 },
+  { month: 'Okt', verbrauch: 40, vergleich: 50 },
+  { month: 'Nov', verbrauch: 65, vergleich: 75 },
+  { month: 'Dez', verbrauch: 90, vergleich: 105 }
+];
+
+// Tagesverbrauchsdaten für detaillierte Ansicht
+const dailyUsageData = [
+  { time: '00:00', value: 0.8 },
+  { time: '02:00', value: 0.5 },
+  { time: '04:00', value: 0.3 },
+  { time: '06:00', value: 0.9 },
+  { time: '08:00', value: 2.4 },
+  { time: '10:00', value: 1.8 },
+  { time: '12:00', value: 1.5 },
+  { time: '14:00', value: 1.2 },
+  { time: '16:00', value: 1.7 },
+  { time: '18:00', value: 2.8 },
+  { time: '20:00', value: 3.2 },
+  { time: '22:00', value: 1.9 }
+];
+
+// Geräteverteilungsdaten
+const deviceUsageData = [
+  { name: 'Heizung', value: 45 },
+  { name: 'Warmwasser', value: 15 },
+  { name: 'Kühlung', value: 10 },
+  { name: 'Beleuchtung', value: 8 },
+  { name: 'Küche', value: 12 },
+  { name: 'Andere', value: 10 }
 ];
 
 const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isActive }) => {
+  const { colors, areaChartConfig } = useChartConfig();
+  const [chartView, setChartView] = useState<'month' | 'day'>('month');
+  
+  // Formatierung für die Tooltip-Darstellung
+  const formatTooltipValue = (value: number, name: string) => {
+    switch(name) {
+      case 'verbrauch':
+        return [`${value} kWh`, 'Aktuell'];
+      case 'vergleich':
+        return [`${value} kWh`, 'Vorjahr'];
+      default:
+        return [`${value}`, name];
+    }
+  };
+
   return (
     <SubcategoryLayout 
       title="Verbrauchsanalyse" 
@@ -94,6 +155,28 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
           </CardContent>
         </Card>
         
+        {/* Zeitskalawechsel für die Diagrammanzeige */}
+        <div className="flex justify-end mb-2">
+          <div className="inline-flex rounded-md shadow-sm">
+            <Button 
+              variant={chartView === 'month' ? 'default' : 'outline'} 
+              size="sm"
+              onClick={() => setChartView('month')}
+              className="rounded-l-md rounded-r-none"
+            >
+              Monatlich
+            </Button>
+            <Button 
+              variant={chartView === 'day' ? 'default' : 'outline'} 
+              size="sm"
+              onClick={() => setChartView('day')}
+              className="rounded-l-none rounded-r-md"
+            >
+              Tageszeit
+            </Button>
+          </div>
+        </div>
+        
         <Tabs defaultValue="strom" className="w-full">
           <TabsList className="mb-2">
             <TabsTrigger value="strom">Strom</TabsTrigger>
@@ -118,16 +201,83 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
                 </div>
                 <div className="h-72">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={electricityData}
-                      margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Area type="monotone" dataKey="verbrauch" stroke="#4D7FE5" fill="#D2E1FA" />
-                    </AreaChart>
+                    {chartView === 'month' ? (
+                      <LineChart
+                        data={electricityData}
+                        margin={areaChartConfig.margin}
+                      >
+                        <defs>
+                          <linearGradient {...areaChartConfig.gradientConfig("colorElectricity", colors.primary)} />
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+                        <XAxis 
+                          dataKey="month" 
+                          tick={{ fill: colors.muted }}
+                          axisLine={{ stroke: colors.border }}
+                          tickLine={{ stroke: colors.border }}
+                        />
+                        <YAxis 
+                          tick={{ fill: colors.muted }}
+                          axisLine={{ stroke: colors.border }}
+                          tickLine={{ stroke: colors.border }}
+                        />
+                        <Tooltip 
+                          contentStyle={areaChartConfig.tooltipStyle}
+                          formatter={formatTooltipValue}
+                        />
+                        <Legend />
+                        <Line 
+                          type="monotone" 
+                          dataKey="verbrauch" 
+                          name="Aktuell" 
+                          stroke={colors.primary} 
+                          activeDot={{ r: 8 }}
+                          strokeWidth={2} 
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="vergleich" 
+                          name="Vorjahr" 
+                          stroke={colors.muted}
+                          strokeDasharray="5 5"  
+                        />
+                      </LineChart>
+                    ) : (
+                      <AreaChart
+                        data={dailyUsageData}
+                        margin={areaChartConfig.margin}
+                      >
+                        <defs>
+                          <linearGradient {...areaChartConfig.gradientConfig("colorDailyUsage", colors.primary)} />
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+                        <XAxis 
+                          dataKey="time" 
+                          tick={{ fill: colors.muted }}
+                          axisLine={{ stroke: colors.border }}
+                          tickLine={{ stroke: colors.border }}
+                        />
+                        <YAxis 
+                          tick={{ fill: colors.muted }}
+                          axisLine={{ stroke: colors.border }}
+                          tickLine={{ stroke: colors.border }}
+                        />
+                        <Tooltip 
+                          contentStyle={areaChartConfig.tooltipStyle}
+                          formatter={(value: number) => [`${value} kWh`, 'Verbrauch']}
+                          labelFormatter={(label) => `Uhrzeit: ${label}`}
+                        />
+                        <Legend />
+                        <Area 
+                          type="monotone" 
+                          dataKey="value" 
+                          name="Stromverbrauch" 
+                          stroke={colors.primary} 
+                          fillOpacity={0.6}
+                          fill={`url(#colorDailyUsage)`} 
+                        />
+                      </AreaChart>
+                    )}
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -144,19 +294,56 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
                       <div className="w-3 h-3 rounded bg-blue-400 mr-1"></div>
                       <span>2025</span>
                     </div>
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 rounded bg-gray-300 mr-1"></div>
+                      <span>2024</span>
+                    </div>
                   </div>
                 </div>
                 <div className="h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={waterData}
-                      margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                      margin={areaChartConfig.margin}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Area type="monotone" dataKey="verbrauch" stroke="#2E95CA" fill="#C1E6FF" />
+                      <defs>
+                        <linearGradient {...areaChartConfig.gradientConfig("colorWater", colors.secondary)} />
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: colors.muted }}
+                        axisLine={{ stroke: colors.border }}
+                        tickLine={{ stroke: colors.border }}
+                      />
+                      <YAxis 
+                        tick={{ fill: colors.muted }}
+                        axisLine={{ stroke: colors.border }}
+                        tickLine={{ stroke: colors.border }}
+                      />
+                      <Tooltip 
+                        contentStyle={areaChartConfig.tooltipStyle}
+                        formatter={(value: number, name: string) => {
+                          if (name === 'verbrauch') return [`${value} m³`, 'Aktuell'];
+                          return [`${value} m³`, 'Vorjahr'];
+                        }}
+                      />
+                      <Legend />
+                      <Area 
+                        type="monotone" 
+                        dataKey="verbrauch" 
+                        name="Aktuell" 
+                        stroke={colors.secondary} 
+                        fillOpacity={0.6}
+                        fill={`url(#colorWater)`} 
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="vergleich" 
+                        name="Vorjahr" 
+                        stroke={colors.muted}
+                        strokeDasharray="5 5" 
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -166,13 +353,60 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
           
           <TabsContent value="heizung">
             <Card>
-              <CardContent className="pt-6 text-center h-72 flex items-center justify-center">
-                <div>
-                  <Info className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <h4 className="text-lg font-medium mb-2">Heizdaten werden vorbereitet</h4>
-                  <p className="text-muted-foreground">
-                    Die Heizungsdaten werden derzeit aufbereitet und stehen in Kürze zur Verfügung.
-                  </p>
+              <CardContent className="pt-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <h4 className="font-medium">Heizungsverbrauch (kWh)</h4>
+                  <div className="flex items-center text-sm">
+                    <div className="flex items-center mr-4">
+                      <div className="w-3 h-3 rounded bg-orange-500 mr-1"></div>
+                      <span>2025</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 rounded bg-gray-300 mr-1"></div>
+                      <span>2024</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={heatingData}
+                      margin={areaChartConfig.margin}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: colors.muted }}
+                        axisLine={{ stroke: colors.border }}
+                        tickLine={{ stroke: colors.border }}
+                      />
+                      <YAxis 
+                        tick={{ fill: colors.muted }}
+                        axisLine={{ stroke: colors.border }}
+                        tickLine={{ stroke: colors.border }}
+                      />
+                      <Tooltip 
+                        contentStyle={areaChartConfig.tooltipStyle}
+                        formatter={(value: number, name: string) => {
+                          if (name === 'verbrauch') return [`${value} kWh`, 'Aktuell'];
+                          return [`${value} kWh`, 'Vorjahr'];
+                        }}
+                      />
+                      <Legend />
+                      <Bar 
+                        dataKey="verbrauch" 
+                        name="Aktuell" 
+                        fill={colors.quaternary} 
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <Bar 
+                        dataKey="vergleich" 
+                        name="Vorjahr" 
+                        fill={colors.muted}
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>

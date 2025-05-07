@@ -1,16 +1,21 @@
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import SubcategoryLayout from '../SubcategoryLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Leaf, Bike, Utensils, Home, ChevronRight, ArrowUpRight } from 'lucide-react';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { 
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, 
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
+  Tooltip, Legend, PieChart, Pie, Cell, Sector 
+} from 'recharts';
+import { useChartConfig } from '@/hooks/use-chart-config';
 
 interface CO2FootprintSectionProps {
   isActive: boolean;
 }
 
-// Sample data for CO2 footprint breakdown
+// Detaillierte Daten für CO2-Fußabdruck
 const footprintData = [
   { category: 'Mobilität', value: 2.4, fullMark: 5 },
   { category: 'Wohnen', value: 1.8, fullMark: 5 },
@@ -19,7 +24,7 @@ const footprintData = [
   { category: 'Freizeit', value: 1.5, fullMark: 5 },
 ];
 
-// Sample data for CO2 reduction potential
+// Daten für CO2-Reduktionspotenzial
 const reductionData = [
   { name: 'Ernährung', aktuell: 3.1, potenzial: 1.8 },
   { name: 'Mobilität', aktuell: 2.4, potenzial: 0.9 },
@@ -27,7 +32,93 @@ const reductionData = [
   { name: 'Konsum', aktuell: 2.2, potenzial: 1.4 },
 ];
 
+// Detaillierte Mobilitätsdaten
+const mobilityData = [
+  { name: 'Auto', value: 1.8 },
+  { name: 'ÖPNV', value: 0.3 },
+  { name: 'Flüge', value: 0.3 },
+];
+
+// Detaillierte Ernährungsdaten
+const foodData = [
+  { name: 'Fleisch', value: 1.6 },
+  { name: 'Milchprodukte', value: 0.8 },
+  { name: 'Gemüse', value: 0.3 },
+  { name: 'Getreide', value: 0.2 },
+  { name: 'Sonstiges', value: 0.2 },
+];
+
+// Detaillierte Mobilitätsdaten für das Kreisdiagramm
+const mobilityPieData = [
+  { name: 'Auto', value: 75 },
+  { name: 'Öffentliche', value: 12 },
+  { name: 'Flugzeug', value: 10 },
+  { name: 'Fahrrad', value: 3 },
+];
+
 const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) => {
+  const { colors } = useChartConfig();
+  const [activePieIndex, setActivePieIndex] = useState<number | undefined>();
+  
+  // Chart-Farbschemata
+  const RADAR_COLORS = {
+    area: '#10b981',
+    stroke: '#059669',
+  };
+  
+  const BAR_COLORS = {
+    actual: '#6366f1', 
+    potential: '#10b981',
+  };
+  
+  const PIE_COLORS = ['#f97316', '#0ea5e9', '#8b5cf6', '#10b981'];
+  
+  // Formatierung für Tooltips
+  const formatTooltipValue = (value: number) => [`${value} t CO₂`, 'Ausstoß'];
+  
+  // Aktiver Sektor im Kreisdiagramm
+  const renderActiveShape = (props: any) => {
+    const { 
+      cx, cy, innerRadius, outerRadius, startAngle, endAngle,
+      fill, payload, percent, value
+    } = props;
+  
+    return (
+      <g>
+        <text x={cx} y={cy} dy={-20} textAnchor="middle" fill={colors.muted} className="text-xs">
+          {payload.name}
+        </text>
+        <text x={cx} y={cy} textAnchor="middle" fill={fill} className="text-base font-medium">
+          {`${value}%`}
+        </text>
+        <text x={cx} y={cy} dy={18} textAnchor="middle" fill={colors.muted} className="text-xs">
+          {`${(percent * 100).toFixed(0)}% Anteil`}
+        </text>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius + 6}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+        <Sector
+          cx={cx}
+          cy={cy}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          innerRadius={outerRadius + 6}
+          outerRadius={outerRadius + 10}
+          fill={fill}
+        />
+      </g>
+    );
+  };
+
+  // Berechnung des Gesamtfußabdrucks
+  const totalFootprint = footprintData.reduce((sum, item) => sum + item.value, 0);
+  
   return (
     <SubcategoryLayout 
       title="CO2-Fußabdruck" 
@@ -51,7 +142,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                 <div className="flex justify-between">
                   <h4 className="font-semibold">Gesamtbilanz pro Jahr:</h4>
                   <div className="text-right">
-                    <span className="text-2xl font-bold">11.0</span>
+                    <span className="text-2xl font-bold">{totalFootprint.toFixed(1)}</span>
                     <span className="text-sm font-medium text-muted-foreground"> t CO₂</span>
                   </div>
                 </div>
@@ -82,17 +173,34 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart outerRadius={90} data={footprintData}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="category" />
-                    <PolarRadiusAxis domain={[0, 5]} tick={{ fill: '#888' }} axisLine={false} />
+                    <PolarGrid stroke={colors.border} />
+                    <PolarAngleAxis 
+                      dataKey="category" 
+                      tick={{ fill: colors.muted, fontSize: 12 }}
+                    />
+                    <PolarRadiusAxis 
+                      domain={[0, 5]} 
+                      tick={{ fill: colors.muted, fontSize: 10 }} 
+                      axisLine={{ stroke: colors.border }}
+                      tickLine={{ stroke: colors.border }}
+                    />
+                    <Tooltip 
+                      formatter={formatTooltipValue}
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: '6px',
+                        padding: '8px',
+                        fontSize: '12px',
+                      }}
+                    />
                     <Radar
-                      name="CO₂-Ausstoß (t)"
+                      name="CO₂-Ausstoß"
                       dataKey="value"
-                      stroke="#10b981"
-                      fill="#10b981"
+                      stroke={RADAR_COLORS.stroke}
+                      fill={RADAR_COLORS.area}
                       fillOpacity={0.5}
                     />
-                    <Tooltip />
                     <Legend />
                   </RadarChart>
                 </ResponsiveContainer>
@@ -113,12 +221,41 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
               </div>
             </CardHeader>
             <CardContent className="pb-4">
-              <img 
-                src="https://images.unsplash.com/photo-1556122071-e404eaae03bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
-                alt="Fahrrad statt Auto" 
-                className="w-full h-32 object-cover rounded-md mb-3"
-                loading="lazy"
-              />
+              <div className="h-32 mb-3">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      activeIndex={activePieIndex}
+                      activeShape={renderActiveShape}
+                      data={mobilityPieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={30}
+                      outerRadius={45}
+                      dataKey="value"
+                      onMouseEnter={(_, index) => setActivePieIndex(index)}
+                      onMouseLeave={() => setActivePieIndex(undefined)}
+                    >
+                      {mobilityPieData.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={PIE_COLORS[index % PIE_COLORS.length]} 
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number) => `${value}%`}
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: '6px',
+                        padding: '8px',
+                        fontSize: '12px',
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
               <div className="space-y-2">
                 <div className="flex items-start">
                   <ChevronRight className="h-5 w-5 text-green-500 shrink-0 mr-1" />
@@ -146,12 +283,43 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
               </div>
             </CardHeader>
             <CardContent className="pb-4">
-              <img 
-                src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
-                alt="Pflanzliche Ernährung" 
-                className="w-full h-32 object-cover rounded-md mb-3"
-                loading="lazy"
-              />
+              <div className="h-32 mb-3">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={foodData}
+                    layout="vertical"
+                    margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
+                  >
+                    <XAxis 
+                      type="number" 
+                      hide
+                    />
+                    <YAxis 
+                      dataKey="name" 
+                      type="category" 
+                      tick={{ fill: colors.muted, fontSize: 10 }}
+                      axisLine={{ stroke: 'none' }}
+                      tickLine={{ stroke: 'none' }}
+                      width={60}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value} t CO₂`, 'Ausstoß']}
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: '6px',
+                        padding: '8px',
+                        fontSize: '12px',
+                      }}
+                    />
+                    <Bar 
+                      dataKey="value" 
+                      fill={colors.quaternary} 
+                      radius={[0, 4, 4, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
               <div className="space-y-2">
                 <div className="flex items-start">
                   <ChevronRight className="h-5 w-5 text-green-500 shrink-0 mr-1" />
@@ -213,15 +381,59 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   data={reductionData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fill: colors.muted }}
+                    axisLine={{ stroke: colors.border }}
+                    tickLine={{ stroke: colors.border }}
+                  />
+                  <YAxis 
+                    tick={{ fill: colors.muted }}
+                    axisLine={{ stroke: colors.border }}
+                    tickLine={{ stroke: colors.border }}
+                    label={{ 
+                      value: 'CO₂ in Tonnen', 
+                      angle: -90, 
+                      position: 'insideLeft',
+                      fill: colors.muted,
+                      fontSize: 12
+                    }}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [`${value} t CO₂`, '']}
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: '6px',
+                      padding: '8px',
+                      fontSize: '12px',
+                    }}
+                  />
                   <Legend />
-                  <Bar name="Aktueller CO₂-Ausstoß" dataKey="aktuell" fill="#6366f1" />
-                  <Bar name="Möglicher CO₂-Ausstoß" dataKey="potenzial" fill="#10b981" />
+                  <Bar 
+                    name="Aktueller CO₂-Ausstoß" 
+                    dataKey="aktuell" 
+                    fill={BAR_COLORS.actual}
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar 
+                    name="Möglicher CO₂-Ausstoß" 
+                    dataKey="potenzial" 
+                    fill={BAR_COLORS.potential}
+                    radius={[4, 4, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+            <div className="mt-4">
+              <p className="text-sm text-muted-foreground">
+                Durch die vorgeschlagenen Maßnahmen könnten Sie Ihren jährlichen CO₂-Ausstoß um 
+                <span className="font-semibold text-green-600"> 4.4 Tonnen </span> 
+                reduzieren, was einer Einsparung von 
+                <span className="font-semibold text-green-600"> 40% </span> 
+                entspricht.
+              </p>
             </div>
           </CardContent>
         </Card>
