@@ -159,10 +159,10 @@ const Topic: React.FC = () => {
     setActiveSubcategory(href);
     navigate(`${location.pathname}${href}`);
     
-    // Simulate content loading delay
+    // Kürzere Ladezeit, da die Komponenten optimiert wurden
     setTimeout(() => {
       setIsLoading(false);
-    }, 300);
+    }, 200);
   };
 
   const handleUploadDocument = () => {
@@ -217,7 +217,7 @@ const Topic: React.FC = () => {
     switch (topicId) {
       case 'wohnen': return 'Wohnen & Eigentum';
       case 'steuern': return 'Steuern & Recht';
-      case 'versicherungen': 
+      case 'versicherungen': return 'Versicherungen';
       case 'finanzen': return 'Finanzen & Versicherungen';
       case 'energie': return 'Energie & Nachhaltigkeit';
       case 'recht': return 'Recht & Compliance';
@@ -245,7 +245,7 @@ const Topic: React.FC = () => {
             variant="outline" 
             size="sm" 
             onClick={() => navigate('/')}
-            className="mb-3"
+            className="mb-3 hover:bg-dashboard-purple/10 hover:text-dashboard-purple transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Zurück zum Dashboard
@@ -253,9 +253,9 @@ const Topic: React.FC = () => {
         </div>
         
         <div className="mt-6 animate-fade-in">
-          <h1 className="text-2xl font-bold mb-6">{getTopicTitle()}</h1>
+          <h1 className="text-2xl font-bold mb-6 text-dashboard-purple">{getTopicTitle()}</h1>
           
-          {/* Standardized Subcategory Navigation */}
+          {/* Standardisierte Unterkategorie-Navigation */}
           <SubcategoryNavigation 
             subcategories={currentSubcategories}
             activeSubcategory={activeSubcategory}
@@ -263,8 +263,8 @@ const Topic: React.FC = () => {
           />
           
           <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
+              <div className="flex flex-wrap items-center space-x-2">
                 <Button variant="outline" size="sm">
                   <Calendar className="h-4 w-4 mr-2" />
                   Heute
@@ -309,7 +309,7 @@ const Topic: React.FC = () => {
                 </Sheet>
               </div>
               
-              <Button onClick={handleUploadDocument}>
+              <Button onClick={handleUploadDocument} className="bg-dashboard-purple hover:bg-dashboard-purple/90">
                 <Upload className="h-4 w-4 mr-2" />
                 Dokument hochladen
               </Button>

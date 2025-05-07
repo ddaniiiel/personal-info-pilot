@@ -37,7 +37,7 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
       case 'energie': return 'Energie & Nachhaltigkeit';
       case 'wohnen': return 'Wohnen & Eigentum';
       case 'steuern': return 'Steuern & Recht';
-      case 'versicherungen': 
+      case 'versicherungen': return 'Versicherungen';
       case 'finanzen': return 'Finanzen & Versicherungen';
       case 'recht': return 'Recht & Compliance';
       case 'foerderungen': return 'Förderprogramme';
@@ -92,7 +92,7 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
         </div>
         
         <CollapsibleContent className="mt-1 transition-all duration-300">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto py-1">
             <NavigationMenu>
               <NavigationMenuList className="flex space-x-2 p-2 bg-white rounded-lg shadow-sm border">
                 {subcategories.map((subcategory, index) => (

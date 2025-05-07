@@ -1,5 +1,5 @@
 
-import React, { ReactNode, useState, useMemo } from 'react';
+import React, { ReactNode, useState, useMemo, useEffect } from 'react';
 import { Menu, Bell, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationPanel } from '../dashboard/NotificationPanel';
@@ -18,6 +18,23 @@ const MemoizedTopicSelector = React.memo(TopicSelector);
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Event-Handler für Scroll-Erkennung
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Optimierte Toggle-Handler
+  const toggleNotifications = () => setNotificationsOpen(!notificationsOpen);
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const closeNotifications = () => setNotificationsOpen(false);
 
   // Memoize the notification panel to prevent re-rendering
   const notificationPanel = useMemo(() => {
@@ -26,14 +43,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return (
       <>
         <div 
-          className="fixed inset-y-0 right-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-30 translate-x-0"
+          className="fixed inset-y-0 right-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-30 translate-x-0 border-l"
         >
           <div className="flex items-center justify-between p-4 border-b border-border">
             <h2 className="font-semibold">Benachrichtigungen</h2>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setNotificationsOpen(false)}
+              onClick={closeNotifications}
+              className="hover:bg-gray-100"
             >
               <X className="h-5 w-5" />
             </Button>
@@ -42,8 +60,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
         
         <div 
-          className="fixed inset-0 bg-black bg-opacity-20 z-20"
-          onClick={() => setNotificationsOpen(false)}
+          className="fixed inset-0 bg-black bg-opacity-20 z-20 animate-fade-in"
+          onClick={closeNotifications}
         />
       </>
     );
@@ -53,14 +71,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <div className="flex min-h-screen bg-dashboard-background">
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Top Navigation */}
-        <div className="bg-white border-b border-border sticky top-0 z-10">
+        {/* Top Navigation - mit leichtem Schatten beim Scrollen */}
+        <div className={`bg-white border-b border-border sticky top-0 z-10 transition-shadow ${isScrolled ? 'shadow-sm' : ''}`}>
           <div className="container flex items-center justify-between h-16">
             <div className="flex items-center">
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
+                onClick={toggleSidebar}
                 className="md:hidden"
               >
                 <Menu className="h-5 w-5" />
@@ -74,7 +92,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                onClick={toggleNotifications}
                 className="relative"
               >
                 <Bell className="h-5 w-5" />

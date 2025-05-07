@@ -26,9 +26,26 @@ const SectionLoader = () => (
   </div>
 );
 
+// Optimiertes scrollTo-Verhalten für Sektion-Wechsel
+const scrollToActiveSection = (id: string) => {
+  setTimeout(() => {
+    const element = document.getElementById(id.replace('#', ''));
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 100);
+};
+
 const EnergieContent: React.FC<EnergieContentProps> = ({ activeSubcategory }) => {
+  // Effekt für Scroll-Verhalten
+  React.useEffect(() => {
+    if (activeSubcategory) {
+      scrollToActiveSection(activeSubcategory);
+    }
+  }, [activeSubcategory]);
+  
   return (
-    <div>
+    <div className="space-y-8 animate-fade-in">
       <Suspense fallback={<SectionLoader />}>
         <VerbrauchsanalyseSection isActive={activeSubcategory === '#verbrauch'} />
       </Suspense>
