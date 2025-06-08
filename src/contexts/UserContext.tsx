@@ -49,17 +49,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (data.session?.user) {
         try {
           const { data: profileData, error } = await supabase
-            .from('profiles' as any)
+            .from('profiles')
             .select('*')
             .eq('id', data.session.user.id)
-            .single();
+            .maybeSingle();
           
           if (!error && profileData) {
             setUser({
               firstName: profileData.first_name || '',
               lastName: profileData.last_name || '',
               email: data.session.user.email || '',
-              // Ensure userType is of type UserType
               userType: (profileData.user_type as UserType) || 'private',
               location: profileData.location || '',
               interests: ['wohnen', 'steuern'], // Default interests, could be stored in profile
@@ -81,17 +80,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           // User signed in, update context
           try {
             const { data: profileData, error } = await supabase
-              .from('profiles' as any)
+              .from('profiles')
               .select('*')
               .eq('id', session.user.id)
-              .single();
+              .maybeSingle();
             
             if (!error && profileData) {
               setUser({
                 firstName: profileData.first_name || '',
                 lastName: profileData.last_name || '',
                 email: session.user.email || '',
-                // Ensure userType is of type UserType
                 userType: (profileData.user_type as UserType) || 'private',
                 location: profileData.location || '',
                 interests: ['wohnen', 'steuern'],
@@ -123,7 +121,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const { data: { user: authUser } } = await supabase.auth.getUser();
           
           if (authUser) {
-            await supabase.from('profiles' as any).update({
+            await supabase.from('profiles').update({
               first_name: updates.firstName || user.firstName,
               last_name: updates.lastName || user.lastName,
               user_type: updates.userType || user.userType,

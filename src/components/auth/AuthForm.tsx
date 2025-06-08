@@ -46,10 +46,10 @@ const AuthForm = () => {
         // Fetch profile data
         try {
           const { data: profileData, error: profileError } = await supabase
-            .from('profiles' as any)
+            .from('profiles')
             .select('*')
             .eq('id', data.user.id)
-            .single();
+            .maybeSingle();
           
           if (!profileError && profileData) {
             registerUser({
