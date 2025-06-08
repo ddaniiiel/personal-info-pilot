@@ -44,22 +44,26 @@ const AuthForm = () => {
       
       if (data.user) {
         // Fetch profile data
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-        
-        if (profileData) {
-          registerUser({
-            firstName: profileData.first_name || '',
-            lastName: profileData.last_name || '',
-            email: data.user.email || '',
-            userType: (profileData.user_type as UserType) || 'private',
-            location: profileData.location || '',
-            interests: ['wohnen', 'steuern'],
-            isRegistered: true
-          });
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles' as any)
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
+          
+          if (!profileError && profileData) {
+            registerUser({
+              firstName: profileData.first_name || '',
+              lastName: profileData.last_name || '',
+              email: data.user.email || '',
+              userType: (profileData.user_type as UserType) || 'private',
+              location: profileData.location || '',
+              interests: ['wohnen', 'steuern'],
+              isRegistered: true
+            });
+          }
+        } catch (profileError) {
+          console.error('Error fetching profile:', profileError);
         }
         
         toast({

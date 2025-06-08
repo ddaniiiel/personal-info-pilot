@@ -47,23 +47,27 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { data } = await supabase.auth.getSession();
       
       if (data.session?.user) {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.session.user.id)
-          .single();
-        
-        if (profileData) {
-          setUser({
-            firstName: profileData.first_name || '',
-            lastName: profileData.last_name || '',
-            email: data.session.user.email || '',
-            // Ensure userType is of type UserType
-            userType: (profileData.user_type as UserType) || 'private',
-            location: profileData.location || '',
-            interests: ['wohnen', 'steuern'], // Default interests, could be stored in profile
-            isRegistered: true
-          });
+        try {
+          const { data: profileData, error } = await supabase
+            .from('profiles' as any)
+            .select('*')
+            .eq('id', data.session.user.id)
+            .single();
+          
+          if (!error && profileData) {
+            setUser({
+              firstName: profileData.first_name || '',
+              lastName: profileData.last_name || '',
+              email: data.session.user.email || '',
+              // Ensure userType is of type UserType
+              userType: (profileData.user_type as UserType) || 'private',
+              location: profileData.location || '',
+              interests: ['wohnen', 'steuern'], // Default interests, could be stored in profile
+              isRegistered: true
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error);
         }
       }
     };
@@ -75,23 +79,27 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
           // User signed in, update context
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          
-          if (profileData) {
-            setUser({
-              firstName: profileData.first_name || '',
-              lastName: profileData.last_name || '',
-              email: session.user.email || '',
-              // Ensure userType is of type UserType
-              userType: (profileData.user_type as UserType) || 'private',
-              location: profileData.location || '',
-              interests: ['wohnen', 'steuern'],
-              isRegistered: true
-            });
+          try {
+            const { data: profileData, error } = await supabase
+              .from('profiles' as any)
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+            
+            if (!error && profileData) {
+              setUser({
+                firstName: profileData.first_name || '',
+                lastName: profileData.last_name || '',
+                email: session.user.email || '',
+                // Ensure userType is of type UserType
+                userType: (profileData.user_type as UserType) || 'private',
+                location: profileData.location || '',
+                interests: ['wohnen', 'steuern'],
+                isRegistered: true
+              });
+            }
+          } catch (error) {
+            console.error('Error fetching profile on sign in:', error);
           }
         } else if (event === 'SIGNED_OUT') {
           // User signed out, reset context
@@ -111,15 +119,19 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // If logged in, update profile in database
     if (isLoggedIn) {
       const updateProfile = async () => {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        
-        if (authUser) {
-          await supabase.from('profiles').update({
-            first_name: updates.firstName || user.firstName,
-            last_name: updates.lastName || user.lastName,
-            user_type: updates.userType || user.userType,
-            location: updates.location || user.location,
-          }).eq('id', authUser.id);
+        try {
+          const { data: { user: authUser } } = await supabase.auth.getUser();
+          
+          if (authUser) {
+            await supabase.from('profiles' as any).update({
+              first_name: updates.firstName || user.firstName,
+              last_name: updates.lastName || user.lastName,
+              user_type: updates.userType || user.userType,
+              location: updates.location || user.location,
+            }).eq('id', authUser.id);
+          }
+        } catch (error) {
+          console.error('Error updating profile:', error);
         }
       };
       
