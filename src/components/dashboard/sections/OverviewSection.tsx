@@ -4,8 +4,9 @@ import TimeWeatherWidget from '../TimeWeatherWidget';
 import FinanceOverviewWidget from '../FinanceOverviewWidget';
 import NewsWidget from '../NewsWidget';
 import { Card, CardContent } from '@/components/ui/card';
-import { Lightbulb, Bolt, Droplet, Flame, Trash2 } from 'lucide-react';
+import { Lightbulb, Bolt, Droplet, Flame, Trash2, TrendingUp, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface ConsumptionStat {
   title: string;
@@ -14,17 +15,21 @@ interface ConsumptionStat {
   unit: string;
   icon: React.ReactNode;
   color: string;
+  trend: 'up' | 'down';
+  status: 'good' | 'warning' | 'critical';
 }
 
 const OverviewSection: React.FC = () => {
   const consumptionStats: ConsumptionStat[] = [
     {
       title: 'Strom',
-      value: '350',
+      value: '28.5',
       change: -5.2,
       unit: 'kWh',
       icon: <Bolt className="h-4 w-4 text-white" />,
-      color: 'bg-yellow-500'
+      color: 'bg-amber-500',
+      trend: 'down',
+      status: 'good'
     },
     {
       title: 'Wasser',
@@ -32,7 +37,9 @@ const OverviewSection: React.FC = () => {
       change: 2.1,
       unit: 'm³',
       icon: <Droplet className="h-4 w-4 text-white" />,
-      color: 'bg-blue-500'
+      color: 'bg-blue-500',
+      trend: 'up',
+      status: 'warning'
     },
     {
       title: 'Heizung',
@@ -40,7 +47,9 @@ const OverviewSection: React.FC = () => {
       change: -10.5,
       unit: 'l',
       icon: <Flame className="h-4 w-4 text-white" />,
-      color: 'bg-red-500'
+      color: 'bg-red-500',
+      trend: 'down',
+      status: 'good'
     },
     {
       title: 'Recycling',
@@ -48,16 +57,34 @@ const OverviewSection: React.FC = () => {
       change: 15.3,
       unit: '%',
       icon: <Trash2 className="h-4 w-4 text-white" />,
-      color: 'bg-green-500'
+      color: 'bg-green-500',
+      trend: 'up',
+      status: 'good'
     }
   ];
 
+  const getStatusBadge = (status: ConsumptionStat['status']) => {
+    switch (status) {
+      case 'good': return <Badge variant="outline" className="text-green-600 border-green-200">Gut</Badge>;
+      case 'warning': return <Badge variant="outline" className="text-amber-600 border-amber-200">Achtung</Badge>;
+      case 'critical': return <Badge variant="destructive">Kritisch</Badge>;
+    }
+  };
+
   return (
     <div className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-dashboard-purple">Übersicht</h2>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-xl font-semibold text-dashboard-purple">Aktuelle Übersicht</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Ihre wichtigsten Kennzahlen auf einen Blick
+          </p>
+        </div>
         <div className="text-sm text-muted-foreground">
-          Letzte Aktualisierung: {new Date().toLocaleTimeString('de-DE')}
+          Aktualisiert: {new Date().toLocaleTimeString('de-DE', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          })}
         </div>
       </div>
       
@@ -88,13 +115,13 @@ const OverviewSection: React.FC = () => {
             size="sm" 
             className="text-dashboard-purple hover:bg-dashboard-purple/10 border-dashboard-purple"
           >
-            Alle Details anzeigen
+            Detailanalyse anzeigen
           </Button>
         </div>
         
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {consumptionStats.map((stat, index) => (
-            <Card key={index} className="bg-white border shadow-sm hover:shadow-md transition-shadow">
+            <Card key={index} className="bg-white border shadow-sm hover:shadow-md transition-all duration-200 group">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center">
@@ -103,22 +130,35 @@ const OverviewSection: React.FC = () => {
                     </div>
                     <h3 className="text-sm font-medium">{stat.title}</h3>
                   </div>
-                  <div className={`text-xs font-medium ${stat.change < 0 ? 'text-green-600' : 'text-amber-600'}`}>
-                    {stat.change < 0 ? '↓' : '↑'} {Math.abs(stat.change)}%
+                  {getStatusBadge(stat.status)}
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between items-end">
+                    <div className="text-2xl font-bold text-dashboard-purple">{stat.value}</div>
+                    <div className="text-xs text-muted-foreground">{stat.unit}</div>
                   </div>
-                </div>
-                <div className="flex justify-between items-end mb-2">
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                  <div className="text-xs text-muted-foreground">{stat.unit}</div>
-                </div>
-                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full ${stat.color}`} 
-                    style={{ width: `${stat.change < 0 ? 75 : 60}%` }}
-                  ></div>
-                </div>
-                <div className="mt-2 text-[11px] text-muted-foreground">
-                  Verglichen mit dem Vormonat
+                  
+                  <div className="flex items-center justify-between">
+                    <div className={`flex items-center text-xs font-medium ${
+                      stat.change < 0 ? 'text-green-600' : 'text-amber-600'
+                    }`}>
+                      {stat.trend === 'down' ? (
+                        <TrendingDown className="h-3 w-3 mr-1" />
+                      ) : (
+                        <TrendingUp className="h-3 w-3 mr-1" />
+                      )}
+                      {Math.abs(stat.change)}%
+                    </div>
+                    <div className="text-xs text-muted-foreground">vs. Vormonat</div>
+                  </div>
+                  
+                  <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${stat.color} transition-all duration-500`} 
+                      style={{ width: `${Math.min(100, Math.abs(stat.change) * 5 + 40)}%` }}
+                    ></div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

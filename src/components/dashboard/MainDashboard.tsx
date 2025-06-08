@@ -5,6 +5,10 @@ import OverviewSection from './sections/OverviewSection';
 import FamilyInfoSection from './sections/FamilyInfoSection';
 import StatisticsSection from './sections/StatisticsSection';
 import InsightsRecommendationsSection from './sections/InsightsRecommendationsSection';
+import PersonalizedGreeting from './PersonalizedGreeting';
+import TodayPrioritiesSection from './TodayPrioritiesSection';
+import QuickStatsSection from './QuickStatsSection';
+import { useDashboardData } from '@/hooks/useDashboardData';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,6 +20,14 @@ import {
 import { Home } from "lucide-react";
 
 const Dashboard: React.FC = () => {
+  const { 
+    currentTime, 
+    greeting, 
+    todayPriorities, 
+    dashboardStats, 
+    isLoggedIn 
+  } = useDashboardData();
+
   return (
     <DashboardLayout>
       {/* Breadcrumb navigation */}
@@ -35,6 +47,19 @@ const Dashboard: React.FC = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+
+      {/* Personalized Greeting */}
+      <PersonalizedGreeting 
+        greeting={greeting}
+        currentTime={currentTime}
+        isLoggedIn={isLoggedIn}
+      />
+      
+      {/* Today's Priorities */}
+      <TodayPrioritiesSection priorities={todayPriorities} />
+      
+      {/* Quick Stats Overview */}
+      <QuickStatsSection stats={dashboardStats} />
       
       {/* Time/Weather, Finance and News Section */}
       <OverviewSection />
