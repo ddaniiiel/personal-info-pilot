@@ -113,8 +113,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 KI-Dashboard
               </h1>
               {user.isGuest && (
-                <span className="ml-2 px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
-                  Gastmodus
+                <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full border border-green-200">
+                  Kostenloses Testen
                 </span>
               )}
             </div>
@@ -134,7 +134,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className={`${user.isGuest ? 'bg-gray-500' : 'bg-dashboard-purple'} text-white text-xs`}>
+                      <AvatarFallback className={`${user.isGuest ? 'bg-green-500' : 'bg-dashboard-purple'} text-white text-xs`}>
                         {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
@@ -144,10 +144,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
-                        {user.isGuest ? 'Gast' : `${user.firstName} ${user.lastName}`}
+                        {user.isGuest ? 'Gast-Nutzer' : `${user.firstName} ${user.lastName}`}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        {user.isGuest ? 'Nicht angemeldet' : user.email}
+                        {user.isGuest ? 'Kostenlos testen' : user.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
@@ -165,7 +165,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   ) : (
                     <DropdownMenuItem onClick={handleLoginRedirect}>
                       <UserPlus className="mr-2 h-4 w-4" />
-                      <span>Anmelden</span>
+                      <span>Kostenloses Konto erstellen</span>
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
@@ -189,17 +189,63 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           {children}
         </div>
 
-        {/* Footer */}
-        <footer className="bg-white border-t border-border py-6 mt-auto">
-          <div className="container text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 KI-Dashboard. Alle Rechte vorbehalten.</p>
-            {user.isGuest && (
-              <p className="mt-1">
-                <Button variant="link" className="p-0 h-auto text-xs" onClick={handleLoginRedirect}>
-                  Registrieren Sie sich für erweiterte Funktionen
-                </Button>
-              </p>
-            )}
+        {/* Enhanced Footer */}
+        <footer className="bg-white border-t border-border py-8 mt-auto">
+          <div className="container">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+              <div>
+                <h3 className="font-semibold text-dashboard-purple mb-2">KI-Dashboard</h3>
+                <p className="text-muted-foreground">
+                  Ihr persönlicher Assistent für alle Lebensbereiche - 
+                  kostenlos und ohne Anmeldung nutzbar.
+                </p>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-2">Schnellzugriff</h4>
+                <div className="space-y-1">
+                  <Button variant="link" className="p-0 h-auto text-sm justify-start" onClick={() => navigate('/finance')}>
+                    Finanzen verwalten
+                  </Button>
+                  <Button variant="link" className="p-0 h-auto text-sm justify-start" onClick={() => navigate('/family')}>
+                    Familie organisieren  
+                  </Button>
+                  <Button variant="link" className="p-0 h-auto text-sm justify-start" onClick={() => navigate('/topics/energie')}>
+                    Energie sparen
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-2">Ihr Vorteil</h4>
+                {user.isGuest ? (
+                  <div className="space-y-2">
+                    <p className="text-muted-foreground">
+                      ✓ Kostenlos alle Funktionen testen<br/>
+                      ✓ Keine Anmeldung erforderlich<br/>
+                      ✓ Sofort loslegen
+                    </p>
+                    <Button 
+                      size="sm" 
+                      className="bg-dashboard-purple hover:bg-dashboard-purple-dark"
+                      onClick={handleLoginRedirect}
+                    >
+                      Einstellungen dauerhaft speichern
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground">
+                    ✓ Personalisierte Empfehlungen<br/>
+                    ✓ Gespeicherte Einstellungen<br/>
+                    ✓ Vollzugriff auf alle Features
+                  </p>
+                )}
+              </div>
+            </div>
+            
+            <div className="border-t border-border mt-6 pt-6 text-center text-muted-foreground">
+              <p>&copy; 2024 KI-Dashboard. Alle Rechte vorbehalten.</p>
+            </div>
           </div>
         </footer>
       </div>

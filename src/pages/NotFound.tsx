@@ -1,5 +1,7 @@
+
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import NotFoundSection from "@/components/dashboard/sections/NotFoundSection";
 
 const NotFound = () => {
   const location = useLocation();
@@ -11,15 +13,25 @@ const NotFound = () => {
     );
   }, [location.pathname]);
 
+  // Check if it's a topic-related 404
+  const isTopicRoute = location.pathname.startsWith('/topics/');
+  const topicName = isTopicRoute ? location.pathname.split('/topics/')[1] : '';
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-dashboard-background p-4">
+      {isTopicRoute ? (
+        <NotFoundSection
+          title={`Thema "${topicName}" nicht gefunden`}
+          description="Dieses Thema ist derzeit nicht verfügbar oder wurde möglicherweise verschoben."
+          showBackButton={true}
+        />
+      ) : (
+        <NotFoundSection
+          title="Seite nicht gefunden"
+          description="Die angeforderte Seite existiert nicht oder wurde verschoben."
+          showBackButton={true}
+        />
+      )}
     </div>
   );
 };

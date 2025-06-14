@@ -8,7 +8,9 @@ import InsightsRecommendationsSection from './sections/InsightsRecommendationsSe
 import PersonalizedGreeting from './PersonalizedGreeting';
 import TodayPrioritiesSection from './TodayPrioritiesSection';
 import QuickStatsSection from './QuickStatsSection';
+import GuestWelcomeCard from './GuestWelcomeCard';
 import { useDashboardData } from '@/hooks/useDashboardData';
+import { useUser } from '@/contexts/UserContext';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,6 +29,8 @@ const Dashboard: React.FC = () => {
     dashboardStats, 
     isLoggedIn 
   } = useDashboardData();
+  
+  const { user } = useUser();
 
   return (
     <DashboardLayout>
@@ -47,6 +51,9 @@ const Dashboard: React.FC = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+
+      {/* Guest Welcome Card - only show for guests */}
+      {user.isGuest && <GuestWelcomeCard />}
 
       {/* Personalized Greeting */}
       <PersonalizedGreeting 

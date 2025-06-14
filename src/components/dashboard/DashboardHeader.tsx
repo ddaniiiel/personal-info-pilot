@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
-import { Settings, LogOut, User, UserPlus } from 'lucide-react';
+import { Settings, LogOut, User, UserPlus, Star } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import ProfileSettings from './ProfileSettings';
 import { useNavigate } from 'react-router-dom';
@@ -36,16 +36,17 @@ const DashboardHeader: React.FC = () => {
             <p className="text-muted-foreground">
               {user.isGuest && (
                 <>
-                  Entdecken Sie unser Dashboard als Gast. 
-                  <Button variant="link" className="p-0 h-auto ml-1" onClick={handleLoginRedirect}>
-                    Registrieren Sie sich für personalisierte Funktionen.
+                  Entdecken Sie unser KI-Dashboard kostenlos im Gastmodus. 
+                  <Button variant="link" className="p-0 h-auto ml-1 text-dashboard-purple" onClick={handleLoginRedirect}>
+                    <Star className="h-3 w-3 mr-1" />
+                    Jetzt kostenloses Konto erstellen und Einstellungen speichern
                   </Button>
                 </>
               )}
               {!user.isGuest && (
                 <>
                   {userType === 'private' ? 'Ihr persönliches' : 'Ihr Unternehmens-'} 
-                  Dashboard mit aktuellen Informationen und Empfehlungen
+                  Dashboard mit personalisierten Empfehlungen und Tools
                 </>
               )}
             </p>
@@ -55,17 +56,22 @@ const DashboardHeader: React.FC = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2">
                 <User size={16} />
-                {user.isGuest ? 'Gast' : 'Profil'}
+                {user.isGuest ? 'Gast-Profil' : 'Mein Profil'}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>
-                {user.isGuest ? 'Gast' : (isLoggedIn ? `${user.firstName} ${user.lastName}` : 'Besucher')}
+                {user.isGuest ? 'Gast-Modus' : (isLoggedIn ? `${user.firstName} ${user.lastName}` : 'Besucher')}
+                {user.isGuest && (
+                  <div className="text-xs font-normal text-muted-foreground">
+                    Alle Funktionen verfügbar
+                  </div>
+                )}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setShowProfileSettings(true)}>
                 <Settings className="mr-2 h-4 w-4" />
-                {user.isGuest ? 'Gasteinstellungen' : 'Einstellungen'}
+                {user.isGuest ? 'Gast-Einstellungen' : 'Profileinstellungen'}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               {isLoggedIn ? (
@@ -76,7 +82,10 @@ const DashboardHeader: React.FC = () => {
               ) : (
                 <DropdownMenuItem onClick={handleLoginRedirect}>
                   <UserPlus className="mr-2 h-4 w-4" />
-                  Anmelden / Registrieren
+                  <div className="flex flex-col items-start">
+                    <span>Kostenloses Konto erstellen</span>
+                    <span className="text-xs text-muted-foreground">Einstellungen speichern</span>
+                  </div>
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>
@@ -88,8 +97,20 @@ const DashboardHeader: React.FC = () => {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {user.isGuest ? 'Gasteinstellungen' : 'Profileinstellungen'}
+              {user.isGuest ? 'Gast-Einstellungen' : 'Profileinstellungen'}
             </DialogTitle>
+            {user.isGuest && (
+              <p className="text-sm text-muted-foreground">
+                Im Gastmodus können Sie temporäre Einstellungen vornehmen. 
+                <Button 
+                  variant="link" 
+                  className="p-0 h-auto ml-1 text-dashboard-purple text-sm"
+                  onClick={handleLoginRedirect}
+                >
+                  Erstellen Sie ein Konto, um Einstellungen dauerhaft zu speichern.
+                </Button>
+              </p>
+            )}
           </DialogHeader>
           <ProfileSettings />
         </DialogContent>
