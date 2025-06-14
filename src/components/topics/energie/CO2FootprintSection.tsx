@@ -1,4 +1,3 @@
-
 import React, { memo, useState } from 'react';
 import SubcategoryLayout from '../SubcategoryLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -222,7 +221,16 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
             </CardHeader>
             <CardContent className="pb-4">
               <div className="h-32 mb-3">
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer
+                  config={{
+                    ...chartConfig,
+                    mobilität: { label: "Mobilität", color: colors.primary },
+                    ernährung: { label: "Ernährung", color: colors.secondary },
+                    wohnen: { label: "Wohnen", color: colors.accent },
+                    konsum: { label: "Konsum", color: colors.muted }, // Replaced quaternary with muted
+                  }}
+                  className="mx-auto aspect-square max-h-[350px]"
+                >
                   <PieChart>
                     <Pie
                       activeIndex={activePieIndex}
@@ -254,7 +262,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                       }}
                     />
                   </PieChart>
-                </ResponsiveContainer>
+                </ChartContainer>
               </div>
               <div className="space-y-2">
                 <div className="flex items-start">
@@ -518,6 +526,59 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
           <CardFooter>
             <Button className="w-full md:w-auto">Alle Projekte anzeigen</Button>
           </CardFooter>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>CO₂-Vergleichsdurchschnitt</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ChartContainer
+                config={{
+                  ...chartConfig,
+                  durchschnitt: { label: "Durchschnitt DE", color: colors.muted },
+                  benutzer: { label: "Dein Fußabdruck", color: colors.primary },
+                }}
+                className="h-[200px] w-full"
+              >
+                <BarChart
+                  accessibilityLayer
+                  data={comparisonData}
+                  layout="vertical"
+                  margin={{ left: 10, right: 30 }}
+                >
+                  <CartesianGrid horizontal={false} />
+                  <XAxis type="number" dataKey="value" tickFormatter={(val) => `${val} t`} />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    className="capitalize"
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Bar dataKey="value" layout="vertical" radius={5}>
+                    {comparisonData.map((entry) => (
+                      <Cell
+                        key={entry.name}
+                        fill={entry.name === "Dein Fußabdruck" ? colors.primary : colors.muted} // Replaced quaternary with muted
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            </div>
+            <div className="mt-4">
+              <p className="text-sm text-muted-foreground">
+                Vergleich mit dem Durchschnitt der Schweizer Bevölkerung:
+              </p>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </SubcategoryLayout>
