@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -11,9 +10,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Home, PiggyBank, LineChart, CreditCard, TrendingUp, Calendar } from "lucide-react";
+import { Home, PiggyBank, LineChart, CreditCard, TrendingUp } from "lucide-react";
 import FinanceAssistant from '@/components/finance/FinanceAssistant';
 import FinanceCharts from '@/components/finance/FinanceCharts';
+import TransactionsContent from '@/components/finance/TransactionsContent';
+import BudgetsContent from '@/components/finance/BudgetsContent';
+import GoalsContent from '@/components/finance/GoalsContent';
 
 const Finance: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -39,73 +41,43 @@ const Finance: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">Finanzübersicht</h1>
+        <h1 className="text-2xl font-bold mb-2 text-primary">Finanzübersicht</h1>
         <p className="text-muted-foreground">
-          Analysiere und verwalte deine persönlichen Finanzen mit KI-gestützten Einsichten
+          Analysiere und verwalte deine persönlichen Finanzen mit KI-gestützten Einsichten und detaillierten Übersichten.
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-8">
-        <TabsList className="grid grid-cols-4 mb-8">
-          <TabsTrigger value="overview">Übersicht</TabsTrigger>
-          <TabsTrigger value="transactions">Transaktionen</TabsTrigger>
-          <TabsTrigger value="budgets">Budgets</TabsTrigger>
-          <TabsTrigger value="goals">Ziele</TabsTrigger>
+        <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 p-1 bg-surface-secondary rounded-xl">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-lg">
+            <LineChart className="h-4 w-4 mr-2" /> Übersicht
+          </TabsTrigger>
+          <TabsTrigger value="transactions" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-lg">
+            <CreditCard className="h-4 w-4 mr-2" /> Transaktionen
+          </TabsTrigger>
+          <TabsTrigger value="budgets" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-lg">
+            <PiggyBank className="h-4 w-4 mr-2" /> Budgets
+          </TabsTrigger>
+          <TabsTrigger value="goals" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-lg">
+            <TrendingUp className="h-4 w-4 mr-2" /> Ziele
+          </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="overview" className="space-y-8">
-          {/* Fügen die neue FinanceCharts-Komponente hinzu */}
+        <TabsContent value="overview" className="space-y-8 animate-fade-in">
           <FinanceCharts activeTab={activeTab} />
-          
           <FinanceAssistant />
         </TabsContent>
         
-        <TabsContent value="transactions">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <CreditCard className="h-5 w-5 mr-2 text-dashboard-purple" />
-                Transaktionen
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center p-8 text-muted-foreground">
-                <p>Detaillierte Transaktionsübersicht wird hier angezeigt</p>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="transactions" className="animate-fade-in">
+          <TransactionsContent />
         </TabsContent>
         
-        <TabsContent value="budgets">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <PiggyBank className="h-5 w-5 mr-2 text-dashboard-purple" />
-                Budgetplanung
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center p-8 text-muted-foreground">
-                <p>Budget-Planung und -Verfolgung wird hier angezeigt</p>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="budgets" className="animate-fade-in">
+          <BudgetsContent />
         </TabsContent>
         
-        <TabsContent value="goals">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <TrendingUp className="h-5 w-5 mr-2 text-dashboard-purple" />
-                Finanzielle Ziele
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center p-8 text-muted-foreground">
-                <p>Zielverfolgung und -fortschritt wird hier angezeigt</p>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="goals" className="animate-fade-in">
+          <GoalsContent />
         </TabsContent>
       </Tabs>
     </DashboardLayout>

@@ -1,17 +1,21 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Pill } from 'lucide-react';
+import { Pill, PlusCircle } from 'lucide-react';
 import SubcategoryLayout from '../SubcategoryLayout';
+import AddAppointmentDialog from './AddAppointmentDialog';
+import { useToast } from '@/components/ui/use-toast';
 
 interface GesundheitSectionProps {
   isActive: boolean;
 }
 
 const GesundheitSection: React.FC<GesundheitSectionProps> = ({ isActive }) => {
+  const { toast } = useToast();
+  const [isAddAppointmentDialogOpen, setIsAddAppointmentDialogOpen] = useState(false);
+
   const appointments = [
     { id: 1, type: 'Tierarzt', date: '12.06.2025', time: '14:30', pet: 'Luna', reason: 'Jährliche Kontrolle' },
     { id: 2, type: 'Impfung', date: '22.07.2025', time: '10:00', pet: 'Felix', reason: 'Auffrischung' },
@@ -23,18 +27,28 @@ const GesundheitSection: React.FC<GesundheitSectionProps> = ({ isActive }) => {
     { id: 2, name: 'Wurmkur', schedule: 'Vierteljährlich', nextDue: '15.07.2025', pet: 'Luna' },
     { id: 3, name: 'Flohschutz', schedule: 'Monatlich', nextDue: '05.06.2025', pet: 'Felix' },
   ];
-  
+
+  const handleAddMedication = () => {
+    toast({
+      title: "Funktion in Arbeit",
+      description: "Das Hinzufügen von Medikamenten wird bald möglich sein.",
+      variant: "default",
+    });
+  };
+
   return (
     <SubcategoryLayout 
       title="Gesundheit" 
-      description="Termine und Medikamente"
+      description="Termine und Medikamente für Ihre Haustiere"
       isActive={isActive}
       id="#gesundheit"
+      category="haustiere"
     >
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-lg text-foreground">Kommende Termine</h3>
-          <Button variant="outline" size="sm" className="apple-button-secondary">
+          <Button variant="outline" size="sm" className="apple-button-secondary" onClick={() => setIsAddAppointmentDialogOpen(true)}>
+            <PlusCircle className="h-4 w-4 mr-2" />
             Termin hinzufügen
           </Button>
         </div>
@@ -69,7 +83,8 @@ const GesundheitSection: React.FC<GesundheitSectionProps> = ({ isActive }) => {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-semibold text-lg text-foreground">Medikamentenplan</h3>
-            <Button variant="outline" size="sm" className="apple-button-secondary">
+            <Button variant="outline" size="sm" className="apple-button-secondary" onClick={handleAddMedication}>
+              <PlusCircle className="h-4 w-4 mr-2" />
               Medikament hinzufügen
             </Button>
           </div>
@@ -95,6 +110,7 @@ const GesundheitSection: React.FC<GesundheitSectionProps> = ({ isActive }) => {
           </div>
         </div>
       </div>
+      <AddAppointmentDialog isOpen={isAddAppointmentDialogOpen} onOpenChange={setIsAddAppointmentDialogOpen} />
     </SubcategoryLayout>
   );
 };
