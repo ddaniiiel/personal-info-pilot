@@ -90,7 +90,8 @@ const RegistrationForm: React.FC = () => {
     registerUser({
       ...formData,
       interests: selectedInterests,
-      isRegistered: true
+      isRegistered: true,
+      isGuest: false
     });
     
     toast({
