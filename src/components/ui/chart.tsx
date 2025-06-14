@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
@@ -360,4 +361,6 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
+  useChart, // Added useChart here
 }
+
