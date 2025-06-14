@@ -13,6 +13,7 @@ interface UserProfile {
   location: string;
   interests: InterestTopic[];
   isRegistered: boolean;
+  isGuest: boolean;
 }
 
 interface UserContextType {
@@ -23,7 +24,19 @@ interface UserContextType {
   registerUser: (profile: UserProfile) => void;
   isLoggedIn: boolean;
   logout: () => Promise<void>;
+  switchToGuestMode: () => void;
 }
+
+const defaultGuestState: UserProfile = {
+  firstName: 'Gast',
+  lastName: '',
+  email: '',
+  userType: 'private',
+  location: 'Deutschland',
+  interests: ['wohnen', 'steuern'],
+  isRegistered: false,
+  isGuest: true,
+};
 
 const defaultUserState: UserProfile = {
   firstName: '',
@@ -33,13 +46,14 @@ const defaultUserState: UserProfile = {
   location: '',
   interests: ['wohnen', 'steuern'],
   isRegistered: false,
+  isGuest: false,
 };
 
 export const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile>(defaultUserState);
-  const isLoggedIn = user.isRegistered;
+  const [user, setUser] = useState<UserProfile>(defaultGuestState);
+  const isLoggedIn = user.isRegistered && !user.isGuest;
 
   // Check for existing session on load
   useEffect(() => {
@@ -61,14 +75,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               email: data.session.user.email || '',
               userType: (profileData.user_type as UserType) || 'private',
               location: profileData.location || '',
-              interests: ['wohnen', 'steuern'], // Default interests, could be stored in profile
-              isRegistered: true
+              interests: ['wohnen', 'steuern'],
+              isRegistered: true,
+              isGuest: false
             });
           }
         } catch (error) {
           console.error('Error fetching profile:', error);
+          // Falls Fehler beim Laden der Profildaten, bleibe im Gastmodus
         }
       }
+      // Wenn keine Session vorhanden, bleibe im Gastmodus (defaultGuestState ist bereits gesetzt)
     };
     
     checkSession();
@@ -77,7 +94,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
-          // User signed in, update context
           try {
             const { data: profileData, error } = await supabase
               .from('profiles')
@@ -93,15 +109,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 userType: (profileData.user_type as UserType) || 'private',
                 location: profileData.location || '',
                 interests: ['wohnen', 'steuern'],
-                isRegistered: true
+                isRegistered: true,
+                isGuest: false
               });
             }
           } catch (error) {
             console.error('Error fetching profile on sign in:', error);
           }
         } else if (event === 'SIGNED_OUT') {
-          // User signed out, reset context
-          setUser(defaultUserState);
+          // Bei Abmeldung zum Gastmodus wechseln
+          setUser(defaultGuestState);
         }
       }
     );
@@ -115,7 +132,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser((prev) => ({ ...prev, ...updates }));
     
     // If logged in, update profile in database
-    if (isLoggedIn) {
+    if (isLoggedIn && !user.isGuest) {
       const updateProfile = async () => {
         try {
           const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -154,20 +171,33 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const registerUser = (profile: UserProfile) => {
-    setUser({ ...profile, isRegistered: true });
+    setUser({ ...profile, isRegistered: true, isGuest: false });
+  };
+
+  const switchToGuestMode = () => {
+    setUser(defaultGuestState);
   };
   
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error) {
-      setUser(defaultUserState);
+      setUser(defaultGuestState);
     }
     return error ? Promise.reject(error) : Promise.resolve();
   };
 
   return (
     <UserContext.Provider
-      value={{ user, updateUser, addInterest, removeInterest, registerUser, isLoggedIn, logout }}
+      value={{ 
+        user, 
+        updateUser, 
+        addInterest, 
+        removeInterest, 
+        registerUser, 
+        isLoggedIn, 
+        logout,
+        switchToGuestMode
+      }}
     >
       {children}
     </UserContext.Provider>

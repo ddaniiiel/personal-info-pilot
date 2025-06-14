@@ -1,6 +1,6 @@
 
 import React, { ReactNode, useState, useMemo, useEffect } from 'react';
-import { Menu, Bell, X, User, LogOut } from 'lucide-react';
+import { Menu, Bell, X, User, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationPanel } from '../dashboard/NotificationPanel';
 import DashboardHeader from '../dashboard/DashboardHeader';
@@ -33,12 +33,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/auth');
-    }
-  }, [isLoggedIn, navigate]);
-
-  useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       setIsScrolled(scrollPosition > 0);
@@ -55,14 +49,18 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/auth');
+      // Nach Logout bleiben wir im Dashboard als Gast
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
+  const handleLoginRedirect = () => {
+    navigate('/auth');
+  };
+
   const getUserInitials = () => {
-    if (!user.firstName && !user.lastName) return 'U';
+    if (!user.firstName && !user.lastName) return user.isGuest ? 'G' : 'U';
     return `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase();
   };
 
@@ -96,14 +94,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     );
   }, [notificationsOpen]);
 
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-dashboard-purple"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex min-h-screen bg-dashboard-background">
       <div className="flex-1 flex flex-col">
@@ -122,6 +112,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <h1 className="text-xl font-semibold text-dashboard-purple ml-2">
                 KI-Dashboard
               </h1>
+              {user.isGuest && (
+                <span className="ml-2 px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
+                  Gastmodus
+                </span>
+              )}
             </div>
             
             <div className="flex items-center space-x-2">
@@ -139,7 +134,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-dashboard-purple text-white text-xs">
+                      <AvatarFallback className={`${user.isGuest ? 'bg-gray-500' : 'bg-dashboard-purple'} text-white text-xs`}>
                         {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
@@ -149,10 +144,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
-                        {user.firstName} {user.lastName}
+                        {user.isGuest ? 'Gast' : `${user.firstName} ${user.lastName}`}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
+                        {user.isGuest ? 'Nicht angemeldet' : user.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
@@ -162,10 +157,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     <span>Profil</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Abmelden</span>
-                  </DropdownMenuItem>
+                  {isLoggedIn ? (
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Abmelden</span>
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem onClick={handleLoginRedirect}>
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      <span>Anmelden</span>
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -191,6 +193,13 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <footer className="bg-white border-t border-border py-6 mt-auto">
           <div className="container text-center text-sm text-muted-foreground">
             <p>&copy; 2024 KI-Dashboard. Alle Rechte vorbehalten.</p>
+            {user.isGuest && (
+              <p className="mt-1">
+                <Button variant="link" className="p-0 h-auto text-xs" onClick={handleLoginRedirect}>
+                  Registrieren Sie sich für erweiterte Funktionen
+                </Button>
+              </p>
+            )}
           </div>
         </footer>
       </div>

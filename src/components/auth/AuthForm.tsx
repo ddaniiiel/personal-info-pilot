@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUser, UserType } from '@/contexts/UserContext';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AuthForm = () => {
@@ -21,7 +20,7 @@ const AuthForm = () => {
   const [activeTab, setActiveTab] = useState('login');
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { updateUser, registerUser } = useUser();
+  const { updateUser, registerUser, switchToGuestMode } = useUser();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -33,6 +32,11 @@ const AuthForm = () => {
     
     checkSession();
   }, [navigate]);
+
+  const handleGuestMode = () => {
+    switchToGuestMode();
+    navigate('/');
+  };
 
   const validateForm = () => {
     if (!email || !password) {
@@ -94,7 +98,8 @@ const AuthForm = () => {
               userType: (profileData.user_type as UserType) || 'private',
               location: profileData.location || '',
               interests: ['wohnen', 'steuern'],
-              isRegistered: true
+              isRegistered: true,
+              isGuest: false
             });
           }
         } catch (profileError) {
@@ -166,6 +171,17 @@ const AuthForm = () => {
     <div className="min-h-screen bg-gradient-to-br from-dashboard-background via-white to-dashboard-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
+          <div className="flex items-center justify-between mb-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleGuestMode}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Als Gast fortfahren
+            </Button>
+          </div>
           <CardTitle className="text-2xl font-bold text-dashboard-purple">
             KI-Dashboard
           </CardTitle>
@@ -309,6 +325,16 @@ const AuthForm = () => {
               </form>
             </TabsContent>
           </Tabs>
+          
+          <div className="mt-4 text-center">
+            <Button
+              variant="link"
+              onClick={handleGuestMode}
+              className="text-sm text-muted-foreground"
+            >
+              Oder das Dashboard als Gast erkunden
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
