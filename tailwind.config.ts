@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -12,6 +11,7 @@ export default {
 	prefix: "",
 	theme: {
 		container: {
+			// ... keep existing code (container theme)
 			center: true,
 			padding: '2rem',
 			screens: {
@@ -20,6 +20,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
+				// ... keep existing code (fontFamily theme)
 				'inter': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
 				'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
 			},
@@ -58,6 +59,7 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				sidebar: {
+					// ... keep existing code (sidebar colors)
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
 					primary: 'hsl(var(--sidebar-primary))',
@@ -69,6 +71,7 @@ export default {
 				},
 				// Apple color system
 				apple: {
+					// ... keep existing code (apple colors)
 					blue: 'hsl(var(--apple-blue))',
 					'blue-light': 'hsl(var(--apple-blue-light))',
 					green: 'hsl(var(--apple-green))',
@@ -81,12 +84,28 @@ export default {
 					'purple-light': 'hsl(var(--apple-purple-light))',
 				},
 				surface: {
+					// ... keep existing code (surface colors)
 					primary: 'hsl(var(--surface-primary))',
 					secondary: 'hsl(var(--surface-secondary))',
 					tertiary: 'hsl(var(--surface-tertiary))',
-				}
+				},
+        // Chart specific colors (can be aligned with your theme's CSS variables)
+        'chart-primary': 'hsl(var(--chart-primary))', // e.g. var(--primary)
+        'chart-secondary': 'hsl(var(--chart-secondary))', // e.g. var(--secondary)
+        'chart-accent': 'hsl(var(--chart-accent))', // e.g. var(--accent)
+        'chart-muted': 'hsl(var(--chart-muted))', // e.g. var(--muted)
+        'chart-income': 'hsl(var(--chart-income))', // e.g. HSL for Green
+        'chart-expense': 'hsl(var(--chart-expense))', // e.g. HSL for Red
+        'chart-savings': 'hsl(var(--chart-savings))', // e.g. HSL for Blue
+        'chart-cat-wohnen': 'hsl(var(--chart-cat-wohnen))',
+        'chart-cat-lebensmittel': 'hsl(var(--chart-cat-lebensmittel))',
+        'chart-cat-transport': 'hsl(var(--chart-cat-transport))',
+        'chart-cat-versicherungen': 'hsl(var(--chart-cat-versicherungen))',
+        'chart-cat-freizeit': 'hsl(var(--chart-cat-freizeit))',
+        'chart-cat-sonstiges': 'hsl(var(--chart-cat-sonstiges))',
 			},
 			borderRadius: {
+				// ... keep existing code (borderRadius theme)
 				'lg': '12px',
 				'md': '8px',
 				'sm': '6px',
@@ -95,6 +114,7 @@ export default {
 				'3xl': '24px'
 			},
 			boxShadow: {
+				// ... keep existing code (boxShadow theme)
 				'apple': '0 4px 16px rgba(0, 0, 0, 0.08)',
 				'apple-lg': '0 8px 32px rgba(0, 0, 0, 0.12)',
 				'apple-xl': '0 16px 64px rgba(0, 0, 0, 0.16)',
@@ -102,9 +122,11 @@ export default {
 				'apple-card': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
 			},
 			backdropBlur: {
+				// ... keep existing code (backdropBlur theme)
 				'apple': '20px',
 			},
 			keyframes: {
+				// ... keep existing code (keyframes theme)
 				'accordion-down': {
 					from: {
 						height: '0'
@@ -171,6 +193,7 @@ export default {
 				}
 			},
 			animation: {
+				// ... keep existing code (animation theme)
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'apple-scale-in': 'apple-scale-in 0.2s ease-out',
@@ -180,10 +203,12 @@ export default {
 				'apple-pulse': 'apple-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
 			},
 			spacing: {
+				// ... keep existing code (spacing theme)
 				'18': '4.5rem',
 				'88': '22rem',
 			},
 			fontSize: {
+				// ... keep existing code (fontSize theme)
 				'xxs': '0.625rem',
 			}
 		}

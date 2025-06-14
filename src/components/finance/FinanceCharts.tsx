@@ -1,12 +1,19 @@
-
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useChartConfig } from '@/hooks/use-chart-config';
 import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
+import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
   PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend
+  Tooltip as RechartsTooltip, ResponsiveContainer, Legend as RechartsLegend, Sector
 } from 'recharts';
+import { TrendingUp, PieChart as PieIcon, BarChart2, Target } from 'lucide-react';
 
 interface FinanceChartsProps {
   activeTab: string;
@@ -30,12 +37,12 @@ const financialTrendsData = [
 
 // Ausgabenverteilung nach Kategorien für das Kreisdiagramm
 const expenseBreakdownData = [
-  { name: 'Wohnen', value: 1200, color: '#7E69AB' },  // dashboard-purple
-  { name: 'Lebensmittel', value: 450, color: '#0EA5E9' }, // blue
-  { name: 'Transport', value: 280, color: '#10b981' }, // green
-  { name: 'Versicherungen', value: 320, color: '#F97316' }, // orange
-  { name: 'Freizeit', value: 150, color: '#8b5cf6' }, // violet
-  { name: 'Sonstiges', value: 220, color: '#6b7280' }, // gray
+  { name: 'Wohnen', value: 1200, color: 'hsl(var(--chart-cat-wohnen))' },  // dashboard-purple
+  { name: 'Lebensmittel', value: 450, color: 'hsl(var(--chart-cat-lebensmittel))' }, // blue
+  { name: 'Transport', value: 280, color: 'hsl(var(--chart-cat-transport))' }, // green
+  { name: 'Versicherungen', value: 320, color: 'hsl(var(--chart-cat-versicherungen))' }, // orange
+  { name: 'Freizeit', value: 150, color: 'hsl(var(--chart-cat-freizeit))' }, // violet
+  { name: 'Sonstiges', value: 220, color: 'hsl(var(--chart-cat-sonstiges))' }, // gray
 ];
 
 // Wöchentliche Transaktionen der letzten 4 Wochen
@@ -55,11 +62,14 @@ const savingsGoalsData = [
 ];
 
 const FinanceCharts: React.FC<FinanceChartsProps> = ({ activeTab }) => {
-  const { colors, areaChartConfig } = useChartConfig();
+  const { colors, financeChartConfig } = useChartConfig();
 
-  // Formatierung für die Tooltip-Darstellung
   const formatCurrency = (value: number) => {
-    return `€${value.toLocaleString('de-DE')}`;
+    return `€${value.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  };
+  
+  const formatCurrencyWithDigits = (value: number) => {
+    return `€${value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   if (activeTab !== 'overview') return null;
@@ -67,208 +77,231 @@ const FinanceCharts: React.FC<FinanceChartsProps> = ({ activeTab }) => {
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl">
           <CardHeader>
-            <CardTitle className="flex items-center text-lg">
+            <CardTitle className="flex items-center text-lg font-semibold text-foreground">
+              <TrendingUp className="h-5 w-5 mr-2 text-primary" />
               Finanztrends (letzte 12 Monate)
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={financialTrendsData}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="colorEinnahmen" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors.income} stopOpacity={0.8} />
-                      <stop offset="95%" stopColor={colors.income} stopOpacity={0.1} />
-                    </linearGradient>
-                    <linearGradient id="colorAusgaben" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors.expense} stopOpacity={0.8} />
-                      <stop offset="95%" stopColor={colors.expense} stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
-                  <XAxis 
-                    dataKey="month" 
-                    tick={{ fill: colors.muted }}
-                    axisLine={{ stroke: colors.border }}
-                    tickLine={{ stroke: colors.border }}
-                  />
-                  <YAxis 
-                    tickFormatter={formatCurrency}
-                    tick={{ fill: colors.muted }}
-                    axisLine={{ stroke: colors.border }}
-                    tickLine={{ stroke: colors.border }}
-                  />
-                  <Tooltip 
-                    formatter={(value: number) => [formatCurrency(value), '']}
-                    contentStyle={areaChartConfig.tooltipStyle}
-                  />
-                  <Legend />
-                  <Area
-                    type="monotone"
-                    dataKey="einnahmen"
-                    name="Einnahmen"
-                    stroke={colors.income}
-                    fill="url(#colorEinnahmen)"
-                    strokeWidth={2}
-                    activeDot={{ r: 6 }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="ausgaben"
-                    name="Ausgaben"
-                    stroke={colors.expense}
-                    fill="url(#colorAusgaben)"
-                    strokeWidth={2}
-                    activeDot={{ r: 6 }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            <ChartContainer config={financeChartConfig} className="h-[300px] w-full">
+              <AreaChart
+                accessibilityLayer
+                data={financialTrendsData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="fillEinnahmen" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-einnahmen)" stopOpacity={0.6} />
+                    <stop offset="95%" stopColor="var(--color-einnahmen)" stopOpacity={0.1} />
+                  </linearGradient>
+                  <linearGradient id="fillAusgaben" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-ausgaben)" stopOpacity={0.6} />
+                    <stop offset="95%" stopColor="var(--color-ausgaben)" stopOpacity={0.1} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border/50" />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => value.slice(0, 3)}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={formatCurrency}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="dot" formatter={(value, name) => ({ value: formatCurrencyWithDigits(value as number), name })} />}
+                />
+                <Area
+                  dataKey="einnahmen"
+                  type="natural"
+                  fill="url(#fillEinnahmen)"
+                  stroke="var(--color-einnahmen)"
+                  stackId="a"
+                  strokeWidth={2}
+                  activeDot={{ r: 5 }}
+                />
+                <Area
+                  dataKey="ausgaben"
+                  type="natural"
+                  fill="url(#fillAusgaben)"
+                  stroke="var(--color-ausgaben)"
+                  stackId="b"
+                  strokeWidth={2}
+                  activeDot={{ r: 5 }}
+                />
+                <ChartLegend content={<ChartLegendContent />} />
+              </AreaChart>
+            </ChartContainer>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl">
           <CardHeader>
-            <CardTitle className="text-lg">Ausgabenverteilung</CardTitle>
+            <CardTitle className="flex items-center text-lg font-semibold text-foreground">
+              <PieIcon className="h-5 w-5 mr-2 text-primary" />
+              Ausgabenverteilung
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={expenseBreakdownData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    nameKey="name"
-                    label={({name, value, percent}) => {
-                      return `${name}: ${(percent * 100).toFixed(0)}%`;
-                    }}
-                  >
-                    {expenseBreakdownData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value: number) => [formatCurrency(value), 'Ausgaben']}
-                    contentStyle={areaChartConfig.tooltipStyle}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <ChartContainer config={financeChartConfig} className="h-[300px] w-full">
+              <PieChart accessibilityLayer margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel formatter={(value, name, props) => {
+                    const percentage = ((props.payload?.percent || 0) * 100).toFixed(0);
+                    return ({value: `${formatCurrencyWithDigits(value as number)} (${percentage}%)`, name: props.name})
+                  }}/>}
+                />
+                <Pie
+                  data={expenseBreakdownData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  innerRadius={50}
+                  paddingAngle={2}
+                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+                  labelLine={false}
+                >
+                  {expenseBreakdownData.map((entry) => (
+                    <Cell key={`cell-${entry.name}`} fill={entry.color} className="stroke-background focus:outline-none" strokeWidth={2}/>
+                  ))}
+                </Pie>
+                <ChartLegend content={<ChartLegendContent nameKey="name" />} className="mt-2" />
+              </PieChart>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <Card>
+        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl">
           <CardHeader>
-            <CardTitle className="text-lg">Wöchentliche Transaktionen</CardTitle>
+            <CardTitle className="flex items-center text-lg font-semibold text-foreground">
+              <BarChart2 className="h-5 w-5 mr-2 text-primary" />
+              Wöchentliche Transaktionen
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[250px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={weeklyTransactionsData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+             <ChartContainer config={financeChartConfig} className="h-[250px] w-full">
+              <BarChart 
+                accessibilityLayer 
+                data={weeklyTransactionsData} 
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                barGap={6}
+              >
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border/50" />
+                <XAxis
+                  dataKey="name"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={formatCurrency}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="dot" formatter={(value, name) => ({ value: formatCurrencyWithDigits(value as number), name })} />}
+                />
+                <Bar
+                  dataKey="einnahmen"
+                  fill="var(--color-einnahmen)"
+                  radius={[4, 4, 0, 0]}
                   barSize={25}
-                  barGap={10}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fill: colors.muted }}
-                    axisLine={{ stroke: colors.border }}
-                    tickLine={{ stroke: colors.border }}
-                  />
-                  <YAxis 
-                    tickFormatter={formatCurrency}
-                    tick={{ fill: colors.muted }}
-                    axisLine={{ stroke: colors.border }}
-                    tickLine={{ stroke: colors.border }}
-                  />
-                  <Tooltip 
-                    formatter={(value: number) => [formatCurrency(value), '']}
-                    contentStyle={areaChartConfig.tooltipStyle}
-                  />
-                  <Legend />
-                  <Bar 
-                    dataKey="einnahmen" 
-                    name="Einnahmen" 
-                    fill={colors.income} 
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <Bar 
-                    dataKey="ausgaben" 
-                    name="Ausgaben" 
-                    fill={colors.expense} 
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+                />
+                <Bar
+                  dataKey="ausgaben"
+                  fill="var(--color-ausgaben)"
+                  radius={[4, 4, 0, 0]}
+                  barSize={25}
+                />
+                <ChartLegend content={<ChartLegendContent />} />
+              </BarChart>
+            </ChartContainer>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl">
           <CardHeader>
-            <CardTitle className="text-lg">Sparziele</CardTitle>
+            <CardTitle className="flex items-center text-lg font-semibold text-foreground">
+              <Target className="h-5 w-5 mr-2 text-primary" />
+              Sparziele
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[250px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={savingsGoalsData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  barSize={25}
-                  layout="vertical"
+            <ChartContainer config={financeChartConfig} className="h-[250px] w-full">
+                <BarChart 
+                  accessibilityLayer 
+                  data={savingsGoalsData} 
+                  layout="vertical" 
+                  margin={{ top: 0, right: 20, left: 10, bottom: 0 }}
+                  barGap={6}
                 >
-                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke={colors.border} />
-                  <XAxis 
+                  <CartesianGrid horizontal={false} strokeDasharray="3 3" className="stroke-border/50" />
+                  <XAxis
                     type="number"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
                     tickFormatter={formatCurrency}
-                    tick={{ fill: colors.muted }}
-                    axisLine={{ stroke: colors.border }}
-                    tickLine={{ stroke: colors.border }}
                   />
-                  <YAxis 
+                  <YAxis
                     dataKey="name"
                     type="category"
-                    tick={{ fill: colors.muted }}
-                    axisLine={false}
                     tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    width={80} 
+                    className="text-xs"
                   />
-                  <Tooltip 
-                    formatter={(value: number) => [formatCurrency(value), '']}
-                    contentStyle={areaChartConfig.tooltipStyle}
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent 
+                        formatter={(value, name, item) => {
+                          if (name === "aktuell") {
+                            const goalValue = item.payload.ziel;
+                            const percentage = goalValue ? ((value as number / goalValue) * 100).toFixed(0) : 0;
+                            return { value: `${formatCurrencyWithDigits(value as number)} (${percentage}%)`, name: "Aktueller Stand" };
+                          }
+                          return { value: formatCurrencyWithDigits(value as number), name: "Sparziel" };
+                        }}
+                        indicator="dot" 
+                      />
+                    }
                   />
-                  <Legend />
-                  <Bar 
-                    dataKey="aktuell" 
-                    name="Aktueller Stand" 
-                    fill={colors.primary} 
+                  <Bar
+                    dataKey="aktuell"
+                    name="Aktueller Stand"
+                    fill="var(--color-aktuell)"
                     radius={[0, 4, 4, 0]}
-                    stackId="a"
+                    barSize={18}
                   />
-                  <Bar 
-                    dataKey="ziel" 
-                    name="Sparziel" 
-                    fill={colors.muted}
-                    fillOpacity={0.3}
+                   {/* Background bar for the goal - not directly supported by ChartLegend, so we handle it visually only */}
+                  <Bar
+                    dataKey="ziel"
+                    name="Sparziel"
+                    fill="var(--color-ziel)"
                     radius={[0, 4, 4, 0]}
+                    barSize={18}
+                    className="opacity-30"
                   />
+                   <ChartLegend content={<ChartLegendContent payload={[{value: 'aktuell', type: 'square', id: 'aktuell', color: 'var(--color-aktuell)'}, {value: 'ziel', type: 'square', id: 'ziel', color: 'var(--color-ziel)', payload: {color: 'var(--color-ziel)'}}].map(p => ({...p, dataKey: p.value}))} />} />
                 </BarChart>
-              </ResponsiveContainer>
-            </div>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
