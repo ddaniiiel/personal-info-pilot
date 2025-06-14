@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from 'recharts';
 import { Droplets, Zap,Flame, Trash2 } from 'lucide-react';
-import { useChartConfig } from '@/hooks/use-chart-config'; // Ensure this is imported
+import { useChartConfig } from '@/hooks/use-chart-config';
 
 const waterData = [
   { month: 'Jan', verbrauch: 25 },
@@ -63,9 +63,13 @@ const wasteData = [
   },
 ];
 
-const VerbrauchsanalyseSection: React.FC = () => {
-  const { colors, financeChartConfig, areaChartConfig } = useChartConfig(); // Destructure areaChartConfig here
-  const chartConfig = financeChartConfig; // alias for easier use if needed
+interface VerbrauchsanalyseSectionProps {
+  isActive: boolean;
+}
+
+const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isActive }) => {
+  const { colors, financeChartConfig, areaChartConfig } = useChartConfig(); 
+  const chartConfig = financeChartConfig;
 
   const formatValue = (value: number, unit: string) => `${value.toLocaleString('de-DE')} ${unit}`;
 
@@ -87,8 +91,7 @@ const VerbrauchsanalyseSection: React.FC = () => {
           <AreaChart
             accessibilityLayer
             data={data}
-            margin={{ top: 10, right: 20, left: 0, bottom: 0 }} // Margin applied directly
-            // Removed {...areaChartConfig} spread if it only contains tooltipStyle and we handle tooltip below
+            margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
           >
             <defs>
               <linearGradient id={`fill-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
@@ -117,10 +120,12 @@ const VerbrauchsanalyseSection: React.FC = () => {
               cursor={true}
               content={
                 <ChartTooltipContent 
-                  style={areaChartConfig.tooltipStyle} // Apply tooltipStyle from areaChartConfig
+                  style={areaChartConfig.tooltipStyle}
                   indicator="dot"
-                  formatter={(value, name) => {
-                    const itemLabel = chartConfig[name as keyof typeof chartConfig]?.label || name;
+                  formatter={(value, name, props) => { // Adjusted formatter signature
+                    // The 'name' here is actually the dataKey, like "verbrauch"
+                    // The 'config' for the chartContainer has the mapping for this dataKey
+                    const itemLabel = props.chartnextProps?.config?.[name as string]?.label || name;
                     const formattedValue = formatValue(value as number, unit);
                     return (
                       <div className="flex w-full justify-between items-center gap-4">
@@ -140,7 +145,6 @@ const VerbrauchsanalyseSection: React.FC = () => {
               strokeWidth={2}
               activeDot={{ r: 5, strokeWidth: 2, className: "stroke-primary fill-background" }}
             />
-            {/* <ChartLegend content={<ChartLegendContent className="text-xs"/>} /> Removed if only one data series */}
           </AreaChart>
         </ChartContainer>
       </CardContent>
@@ -192,10 +196,10 @@ const VerbrauchsanalyseSection: React.FC = () => {
             <CardContent className="pt-6">
               <ChartContainer 
                 config={{
-                    restmuell: { label: "Restmüll", color: colors.muted }, // Replaced quaternary with muted
-                    papier: { label: "Papier", color: colors.transport }, // Example color
-                    bio: { label: "Bioabfall", color: colors.income }, // Example color
-                    gelberSack: { label: "Gelber Sack", color: colors.expense } // Example color
+                    restmuell: { label: "Restmüll", color: colors.muted },
+                    papier: { label: "Papier", color: colors.transport },
+                    bio: { label: "Bioabfall", color: colors.income },
+                    gelberSack: { label: "Gelber Sack", color: colors.expense }
                 }} 
                 className="h-[300px] w-full"
               >
@@ -212,8 +216,8 @@ const VerbrauchsanalyseSection: React.FC = () => {
                     cursor={{fill: 'hsl(var(--muted))', opacity: 0.3}}
                     content={
                         <ChartTooltipContent 
-                            formatter={(value, name) => {
-                                const itemConfig = chartConfig[name as keyof typeof chartConfig];
+                            formatter={(value, name, props) => { // Adjusted formatter signature
+                                const itemConfig = props.chartnextProps?.config?.[name as string];
                                 const itemLabel = itemConfig?.label || name;
                                 const formattedValue = `${value} kg`;
                                 return (

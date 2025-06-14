@@ -9,6 +9,7 @@ import {
   Tooltip, Legend, PieChart, Pie, Cell, Sector 
 } from 'recharts';
 import { useChartConfig } from '@/hooks/use-chart-config';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 interface CO2FootprintSectionProps {
   isActive: boolean;
@@ -55,8 +56,14 @@ const mobilityPieData = [
   { name: 'Fahrrad', value: 3 },
 ];
 
+// Define comparisonData
+const comparisonData = [
+  { name: 'Dein Fußabdruck', value: 7.5 }, // Example value
+  { name: 'Durchschnitt DE', value: 11.2 } // Example value
+];
+
 const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) => {
-  const { colors } = useChartConfig();
+  const { colors, financeChartConfig } = useChartConfig();
   const [activePieIndex, setActivePieIndex] = useState<number | undefined>();
   
   // Chart-Farbschemata
@@ -222,14 +229,8 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
             <CardContent className="pb-4">
               <div className="h-32 mb-3">
                 <ChartContainer
-                  config={{
-                    ...chartConfig,
-                    mobilität: { label: "Mobilität", color: colors.primary },
-                    ernährung: { label: "Ernährung", color: colors.secondary },
-                    wohnen: { label: "Wohnen", color: colors.accent },
-                    konsum: { label: "Konsum", color: colors.muted }, // Replaced quaternary with muted
-                  }}
-                  className="mx-auto aspect-square max-h-[350px]"
+                  config={mobilityPieChartConfig}
+                  className="mx-auto aspect-square max-h-[250px]"
                 >
                   <PieChart>
                     <Pie
@@ -251,8 +252,11 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                         />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      formatter={(value: number) => `${value}%`}
+                    <ChartTooltip 
+                      formatter={(value: number, name, props) => {
+                        const itemLabel = props.payload?.name || name;
+                        return [`${value}% ${itemLabel}`, 'Anteil'];
+                      }}
                       contentStyle={{
                         backgroundColor: 'white',
                         border: `1px solid ${colors.border}`,
@@ -298,10 +302,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                     layout="vertical"
                     margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
                   >
-                    <XAxis 
-                      type="number" 
-                      hide
-                    />
+                    <XAxis type="number" hide />
                     <YAxis 
                       dataKey="name" 
                       type="category" 
@@ -322,7 +323,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                     />
                     <Bar 
                       dataKey="value" 
-                      fill={colors.quaternary} 
+                      fill={colors.accent} 
                       radius={[0, 4, 4, 0]}
                     />
                   </BarChart>
@@ -535,12 +536,8 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
           <CardContent>
             <div className="h-64">
               <ChartContainer
-                config={{
-                  ...chartConfig,
-                  durchschnitt: { label: "Durchschnitt DE", color: colors.muted },
-                  benutzer: { label: "Dein Fußabdruck", color: colors.primary },
-                }}
-                className="h-[200px] w-full"
+                config={co2ComparisonChartConfig}
+                className="h-[200px] w-full" 
               >
                 <BarChart
                   accessibilityLayer
@@ -560,13 +557,20 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   />
                   <ChartTooltip
                     cursor={false}
-                    content={<ChartTooltipContent hideLabel />}
+                    content={<ChartTooltipContent 
+                        formatter={(value, name, props) => {
+                            const itemConfig = props.chartnextProps?.config?.[props.payload?.name as string];
+                            const itemLabel = itemConfig?.label || props.payload?.name;
+                            return `${itemLabel}: ${value} t`;
+                        }}
+                        hideLabel={false} // Show label from formatter
+                    />}
                   />
                   <Bar dataKey="value" layout="vertical" radius={5}>
                     {comparisonData.map((entry) => (
                       <Cell
                         key={entry.name}
-                        fill={entry.name === "Dein Fußabdruck" ? colors.primary : colors.muted} // Replaced quaternary with muted
+                        fill={entry.name === "Dein Fußabdruck" ? `var(--color-benutzer)` : `var(--color-durchschnitt)`}
                       />
                     ))}
                   </Bar>
