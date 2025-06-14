@@ -9,6 +9,7 @@ import PersonalizedGreeting from './PersonalizedGreeting';
 import TodayPrioritiesSection from './TodayPrioritiesSection';
 import QuickStatsSection from './QuickStatsSection';
 import GuestWelcomeCard from './GuestWelcomeCard';
+import OfflineIndicator from './OfflineIndicator';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useUser } from '@/contexts/UserContext';
 import {
@@ -39,7 +40,7 @@ const Dashboard: React.FC = () => {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">
+              <BreadcrumbLink href="/" className="focus-modern">
                 <Home className="h-3.5 w-3.5 mr-1" />
                 <span className="sr-only">Home</span>
               </BreadcrumbLink>
@@ -55,37 +56,51 @@ const Dashboard: React.FC = () => {
       {/* Guest Welcome Card - only show for guests */}
       {user.isGuest && <GuestWelcomeCard />}
 
-      {/* Personalized Greeting */}
-      <PersonalizedGreeting 
-        greeting={greeting}
-        currentTime={currentTime}
-        isLoggedIn={isLoggedIn}
-      />
-      
-      {/* Today's Priorities */}
-      <TodayPrioritiesSection priorities={todayPriorities} />
-      
-      {/* Quick Stats Overview */}
-      <QuickStatsSection stats={dashboardStats} />
-      
-      {/* Time/Weather, Finance and News Section */}
-      <OverviewSection />
-      
-      {/* Main Dashboard Content - Responsive Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Left Column - Family Information */}
-        <div className="lg:col-span-2 space-y-6">
-          <FamilyInfoSection />
+      {/* Content with improved animations */}
+      <div className="space-y-6 animate-fade-in">
+        {/* Personalized Greeting */}
+        <PersonalizedGreeting 
+          greeting={greeting}
+          currentTime={currentTime}
+          isLoggedIn={isLoggedIn}
+        />
+        
+        {/* Today's Priorities */}
+        <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <TodayPrioritiesSection priorities={todayPriorities} />
+        </div>
+        
+        {/* Quick Stats Overview */}
+        <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <QuickStatsSection stats={dashboardStats} />
+        </div>
+        
+        {/* Time/Weather, Finance and News Section */}
+        <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <OverviewSection />
+        </div>
+        
+        {/* Main Dashboard Content - Responsive Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+          {/* Left Column - Family Information */}
+          <div className="lg:col-span-2 space-y-6">
+            <FamilyInfoSection />
+          </div>
+
+          {/* Right Column - Stats and Document Upload */}
+          <div className="space-y-6">
+            <StatisticsSection />
+          </div>
         </div>
 
-        {/* Right Column - Stats and Document Upload */}
-        <div className="space-y-6">
-          <StatisticsSection />
+        {/* Insights and Recommendations */}
+        <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
+          <InsightsRecommendationsSection />
         </div>
       </div>
 
-      {/* Insights and Recommendations */}
-      <InsightsRecommendationsSection />
+      {/* Offline Indicator */}
+      <OfflineIndicator />
     </DashboardLayout>
   );
 };
