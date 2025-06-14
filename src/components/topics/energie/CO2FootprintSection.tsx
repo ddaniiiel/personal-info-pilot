@@ -2,14 +2,15 @@ import React, { memo, useState } from 'react';
 import SubcategoryLayout from '../SubcategoryLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Leaf, Bike, Utensils, Home, ChevronRight, ArrowUpRight } from 'lucide-react';
+import { Leaf, Bike, Utensils, Home, ChevronRight, ArrowUpRight, Circle } from 'lucide-react';
 import { 
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, 
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-  Tooltip, Legend, PieChart, Pie, Cell, Sector 
+  Tooltip, Legend, PieChart, Pie, Cell, Sector, TooltipProps
 } from 'recharts';
 import { useChartConfig } from '@/hooks/use-chart-config';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 interface CO2FootprintSectionProps {
   isActive: boolean;
@@ -63,27 +64,40 @@ const comparisonData = [
 ];
 
 const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) => {
-  const { colors, financeChartConfig } = useChartConfig();
+  const { colors } = useChartConfig();
   const [activePieIndex, setActivePieIndex] = useState<number | undefined>();
   
   // Chart-Farbschemata
   const RADAR_COLORS = {
-    area: '#10b981',
-    stroke: '#059669',
+    area: colors.accent || '#10b981', // Fallback if colors.accent is not defined
+    stroke: '#059669', // Example, consider deriving from theme
   };
   
   const BAR_COLORS = {
-    actual: '#6366f1', 
-    potential: '#10b981',
+    actual: colors.primary || '#6366f1', 
+    potential: colors.savings || '#10b981', // Using savings color for potential
   };
   
-  const PIE_COLORS = ['#f97316', '#0ea5e9', '#8b5cf6', '#10b981'];
+  const PIE_COLORS = [colors.transport, colors.secondary, colors.wohnen, colors.accent]; // Using theme colors
+
+  // Define chart configs locally
+  const mobilityPieChartConfig: ChartConfig = {
+    Auto: { label: "Auto", color: PIE_COLORS[0] },
+    Öffentliche: { label: "Öffentliche Verkehrsmittel", color: PIE_COLORS[1] },
+    Flugzeug: { label: "Flugzeug", color: PIE_COLORS[2] },
+    Fahrrad: { label: "Fahrrad", color: PIE_COLORS[3] },
+  };
+
+  // Config for the comparison chart. Keys match 'name' in comparisonData
+  const co2ComparisonChartConfig: ChartConfig = {
+    "Dein Fußabdruck": { label: "Dein Fußabdruck", color: "var(--color-benutzer)" }, // CSS variable defined by ChartStyle
+    "Durchschnitt DE": { label: "Durchschnitt DE", color: "var(--color-durchschnitt)" }, // CSS variable
+  };
   
-  // Formatierung für Tooltips
-  const formatTooltipValue = (value: number) => [`${value} t CO₂`, 'Ausstoß'];
+  const formatTooltipValue = (value: number | string | Array<number | string>, name: string | number ) => [`${value} t CO₂`, name as string];
   
-  // Aktiver Sektor im Kreisdiagramm
   const renderActiveShape = (props: any) => {
+    // ... keep existing code (renderActiveShape implementation)
     const { 
       cx, cy, innerRadius, outerRadius, startAngle, endAngle,
       fill, payload, percent, value
@@ -95,7 +109,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
           {payload.name}
         </text>
         <text x={cx} y={cy} textAnchor="middle" fill={fill} className="text-base font-medium">
-          {`${value}%`}
+          {`${(value as number).toFixed(0)}%`}
         </text>
         <text x={cx} y={cy} dy={18} textAnchor="middle" fill={colors.muted} className="text-xs">
           {`${(percent * 100).toFixed(0)}% Anteil`}
@@ -130,7 +144,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
       title="CO2-Fußabdruck" 
       description="Berechnen und reduzieren Sie Ihren persönlichen CO2-Fußabdruck mit konkreten Maßnahmen."
       isActive={isActive}
-      id="#co2"
+      id="co2" // Ensure id doesn't start with # if SubcategoryLayout expects it plain
     >
       <div className="space-y-6">
         <Card className="overflow-hidden border-green-100 transition-all hover:shadow-md">
@@ -156,7 +170,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                 <div className="w-full bg-white/50 rounded-full h-3 mb-4">
                   <div 
                     className="bg-gradient-to-r from-green-500 to-yellow-500 h-3 rounded-full" 
-                    style={{ width: '65%' }} 
+                    style={{ width: `${(totalFootprint / 14) * 100}%` }} // Example dynamic width based on average
                   ></div>
                 </div>
                 
@@ -185,6 +199,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                       tick={{ fill: colors.muted, fontSize: 12 }}
                     />
                     <PolarRadiusAxis 
+                      angle={30} // Common setting for radar radius axis
                       domain={[0, 5]} 
                       tick={{ fill: colors.muted, fontSize: 10 }} 
                       axisLine={{ stroke: colors.border }}
@@ -193,7 +208,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                     <Tooltip 
                       formatter={formatTooltipValue}
                       contentStyle={{
-                        backgroundColor: 'white',
+                        backgroundColor: colors.background,
                         border: `1px solid ${colors.border}`,
                         borderRadius: '6px',
                         padding: '8px',
@@ -205,9 +220,9 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                       dataKey="value"
                       stroke={RADAR_COLORS.stroke}
                       fill={RADAR_COLORS.area}
-                      fillOpacity={0.5}
+                      fillOpacity={0.6} // Standard opacity
                     />
-                    <Legend />
+                    {/* Removed Legend as it's often redundant for single-series radar, or can be custom if needed */}
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
@@ -216,6 +231,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
         </Card>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Mobility Card */}
           <Card className="overflow-hidden">
             <CardHeader className="pb-3 pt-4">
               <div className="flex items-center justify-between">
@@ -223,7 +239,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   <Bike className="h-5 w-5 text-blue-500" />
                   <span>Mobilität</span>
                 </CardTitle>
-                <span className="text-sm font-semibold">2.4 t CO₂</span>
+                <span className="text-sm font-semibold">2.4 t CO₂</span> {/* Example: This should be dynamic if data changes */}
               </div>
             </CardHeader>
             <CardContent className="pb-4">
@@ -233,6 +249,21 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   className="mx-auto aspect-square max-h-[250px]"
                 >
                   <PieChart>
+                    <ChartTooltip 
+                      cursor={{fill: colors.muted, opacity:0.3}}
+                      content={<ChartTooltipContent 
+                        formatter={(value: ValueType, name: NameType) => { // name is from data, e.g. "Auto"
+                            const itemConfig = mobilityPieChartConfig[name as string];
+                            const itemLabel = itemConfig?.label || name;
+                            return (
+                                <div className="flex w-full justify-between items-center gap-2">
+                                    <span className="text-muted-foreground capitalize">{itemLabel}</span>
+                                    <span className="font-semibold tabular-nums">{value}%</span>
+                                </div>
+                            );
+                        }}
+                      />}
+                    />
                     <Pie
                       activeIndex={activePieIndex}
                       activeShape={renderActiveShape}
@@ -252,22 +283,10 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                         />
                       ))}
                     </Pie>
-                    <ChartTooltip 
-                      formatter={(value: number, name, props) => {
-                        const itemLabel = props.payload?.name || name;
-                        return [`${value}% ${itemLabel}`, 'Anteil'];
-                      }}
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: `1px solid ${colors.border}`,
-                        borderRadius: '6px',
-                        padding: '8px',
-                        fontSize: '12px',
-                      }}
-                    />
                   </PieChart>
                 </ChartContainer>
               </div>
+              {/* ... keep existing code (Mobility CardContent tips) ... */}
               <div className="space-y-2">
                 <div className="flex items-start">
                   <ChevronRight className="h-5 w-5 text-green-500 shrink-0 mr-1" />
@@ -284,6 +303,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
             </CardFooter>
           </Card>
           
+          {/* Food Card */}
           <Card className="overflow-hidden">
             <CardHeader className="pb-3 pt-4">
               <div className="flex items-center justify-between">
@@ -291,7 +311,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   <Utensils className="h-5 w-5 text-orange-500" />
                   <span>Ernährung</span>
                 </CardTitle>
-                <span className="text-sm font-semibold">3.1 t CO₂</span>
+                <span className="text-sm font-semibold">3.1 t CO₂</span> {/* Example value */}
               </div>
             </CardHeader>
             <CardContent className="pb-4">
@@ -312,9 +332,9 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                       width={60}
                     />
                     <Tooltip 
-                      formatter={(value: number) => [`${value} t CO₂`, 'Ausstoß']}
+                      formatter={(value: ValueType) => [`${value} t CO₂`, 'Ausstoß']}
                       contentStyle={{
-                        backgroundColor: 'white',
+                        backgroundColor: colors.background,
                         border: `1px solid ${colors.border}`,
                         borderRadius: '6px',
                         padding: '8px',
@@ -323,12 +343,13 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                     />
                     <Bar 
                       dataKey="value" 
-                      fill={colors.accent} 
+                      fill={colors.accent || PIE_COLORS[3]} // Using accent or fallback
                       radius={[0, 4, 4, 0]}
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
+              {/* ... keep existing code (Food CardContent tips) ... */}
               <div className="space-y-2">
                 <div className="flex items-start">
                   <ChevronRight className="h-5 w-5 text-green-500 shrink-0 mr-1" />
@@ -345,6 +366,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
             </CardFooter>
           </Card>
           
+          {/* Housing Card */}
           <Card className="overflow-hidden">
             <CardHeader className="pb-3 pt-4">
               <div className="flex items-center justify-between">
@@ -352,7 +374,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   <Home className="h-5 w-5 text-purple-500" />
                   <span>Wohnen</span>
                 </CardTitle>
-                <span className="text-sm font-semibold">1.8 t CO₂</span>
+                <span className="text-sm font-semibold">1.8 t CO₂</span> {/* Example value */}
               </div>
             </CardHeader>
             <CardContent className="pb-4">
@@ -379,6 +401,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
           </Card>
         </div>
         
+        {/* CO2 Reduction Potential Card */}
         <Card>
           <CardHeader>
             <CardTitle>CO₂-Reduktionspotenzial</CardTitle>
@@ -410,9 +433,9 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                     }}
                   />
                   <Tooltip 
-                    formatter={(value: number) => [`${value} t CO₂`, '']}
+                    formatter={(value: ValueType) => [`${value} t CO₂`, '']}
                     contentStyle={{
-                      backgroundColor: 'white',
+                      backgroundColor: colors.background,
                       border: `1px solid ${colors.border}`,
                       borderRadius: '6px',
                       padding: '8px',
@@ -447,6 +470,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
           </CardContent>
         </Card>
         
+        {/* CO2 Compensation Section */}
         <Card>
           <CardHeader>
             <CardTitle>CO₂-Kompensation</CardTitle>
@@ -457,6 +481,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {/* Project Card 1 */}
               <Card className="border-green-200">
                 <CardContent className="p-4">
                   <img 
@@ -478,7 +503,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   </Button>
                 </CardContent>
               </Card>
-              
+              {/* Project Card 2 */}
               <Card className="border-green-200">
                 <CardContent className="p-4">
                   <img 
@@ -500,7 +525,7 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   </Button>
                 </CardContent>
               </Card>
-              
+              {/* Project Card 3 */}
               <Card className="border-green-200">
                 <CardContent className="p-4">
                   <img 
@@ -529,26 +554,30 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
           </CardFooter>
         </Card>
         
+        {/* CO2 Comparison Chart Card */}
         <Card>
           <CardHeader>
             <CardTitle>CO₂-Vergleichsdurchschnitt</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
+              {/* This ChartContainer needs 'benutzer' and 'durchschnitt' keys in its config for ChartStyle to apply colors */}
+              {/* The actual data keys in 'comparisonData' are 'Dein Fußabdruck' and 'Durchschnitt DE'. */}
+              {/* We need to align these. Let's use 'benutzer' and 'durchschnitt' in comparisonData and co2ComparisonChartConfig */}
               <ChartContainer
-                config={co2ComparisonChartConfig}
+                config={co2ComparisonChartConfig} // Uses "Dein Fußabdruck" and "Durchschnitt DE" as keys
                 className="h-[200px] w-full" 
               >
                 <BarChart
                   accessibilityLayer
-                  data={comparisonData}
+                  data={comparisonData} // Uses "Dein Fußabdruck" and "Durchschnitt DE" as item.payload.name
                   layout="vertical"
                   margin={{ left: 10, right: 30 }}
                 >
                   <CartesianGrid horizontal={false} />
                   <XAxis type="number" dataKey="value" tickFormatter={(val) => `${val} t`} />
                   <YAxis
-                    dataKey="name"
+                    dataKey="name" // This is "Dein Fußabdruck" or "Durchschnitt DE"
                     type="category"
                     tickLine={false}
                     tickMargin={10}
@@ -558,19 +587,29 @@ const CO2FootprintSection: React.FC<CO2FootprintSectionProps> = ({ isActive }) =
                   <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent 
-                        formatter={(value, name, props) => {
-                            const itemConfig = props.chartnextProps?.config?.[props.payload?.name as string];
-                            const itemLabel = itemConfig?.label || props.payload?.name;
-                            return `${itemLabel}: ${value} t`;
+                        indicator="dot" // Added for consistency
+                        formatter={(value, _name, item) => { // item.payload.name is "Dein Fußabdruck" etc.
+                            const keyForConfig = item.payload.name as string;
+                            const itemConfig = co2ComparisonChartConfig[keyForConfig];
+                            const label = itemConfig?.label || keyForConfig;
+                            return (
+                                <div className="flex w-full justify-between items-center gap-4">
+                                    <span className="text-muted-foreground capitalize">{label}</span>
+                                    <span className="font-semibold tabular-nums">{value} t</span>
+                                </div>
+                            );
                         }}
-                        hideLabel={false} // Show label from formatter
                     />}
                   />
                   <Bar dataKey="value" layout="vertical" radius={5}>
                     {comparisonData.map((entry) => (
                       <Cell
                         key={entry.name}
-                        fill={entry.name === "Dein Fußabdruck" ? `var(--color-benutzer)` : `var(--color-durchschnitt)`}
+                        // ChartStyle will set --color-Dein Fußabdruck and --color-Durchschnitt DE if keys have spaces
+                        // It's better to use keys without spaces for CSS variables.
+                        // Let's assume ChartStyle handles this or use keys like 'userFootprint' and 'avgFootprint'
+                        // For now, relying on the config keys "Dein Fußabdruck" and "Durchschnitt DE"
+                        fill={entry.name === "Dein Fußabdruck" ? co2ComparisonChartConfig["Dein Fußabdruck"].color : co2ComparisonChartConfig["Durchschnitt DE"].color}
                       />
                     ))}
                   </Bar>

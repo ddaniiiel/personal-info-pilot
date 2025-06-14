@@ -1,5 +1,6 @@
+
 import type { ChartConfig } from "@/components/ui/chart"
-import { ArrowUp, ArrowDown, Circle, Home, ShoppingCart, Car, Shield, Smile, HelpCircle } from "lucide-react"; // Added icons
+import { ArrowUp, ArrowDown, Circle, Home, ShoppingCart, Car, Shield, Smile, HelpCircle } from "lucide-react";
 
 export function useChartConfig() {
   // TODO: Diese Farben sollten idealerweise aus den CSS-Variablen des Themes gelesen werden
@@ -21,6 +22,9 @@ export function useChartConfig() {
     versicherungen: 'hsl(var(--chart-cat-versicherungen))',
     freizeit: 'hsl(var(--chart-cat-freizeit))',
     sonstiges: 'hsl(var(--chart-cat-sonstiges))',
+    // Adding specific colors for CO2 comparison chart if needed, or use existing ones
+    user: 'hsl(var(--chart-user))', // Example: define if needed in CSS
+    average: 'hsl(var(--chart-average))', // Example: define if needed in CSS
   };
 
   const areaChartConfig = {
@@ -43,11 +47,12 @@ export function useChartConfig() {
     Versicherungen: { label: "Versicherungen", color: colors.versicherungen, icon: Shield },
     Freizeit: { label: "Freizeit", color: colors.freizeit, icon: Smile },
     Sonstiges: { label: "Sonstiges", color: colors.sonstiges, icon: HelpCircle },
-    aktuell: { label: "Aktueller Stand", color: colors.primary, icon: Circle }, // Added generic icon
-    ziel: { label: "Sparziel", color: colors.muted, icon: Circle }, // Added generic icon
-    value: { label: "Wert" } 
+    aktuell: { label: "Aktueller Stand", color: colors.primary, icon: Circle },
+    ziel: { label: "Sparziel", color: colors.muted, icon: Circle },
+    value: { label: "Wert", color: colors.primary, icon: Circle } // Ensured value has color and icon
   } satisfies ChartConfig;
 
 
   return { colors, areaChartConfig, financeChartConfig };
 }
+

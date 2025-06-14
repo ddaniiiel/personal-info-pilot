@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, useChart } from "@/components/ui/chart";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from 'recharts';
 import { Droplets, Zap,Flame, Trash2 } from 'lucide-react';
 import { useChartConfig } from '@/hooks/use-chart-config';
@@ -68,12 +68,16 @@ interface VerbrauchsanalyseSectionProps {
 }
 
 const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isActive }) => {
-  const { colors, financeChartConfig, areaChartConfig } = useChartConfig(); 
-  const chartConfig = financeChartConfig;
+  const { colors, areaChartConfig: globalAreaChartConfig } = useChartConfig(); 
 
   const formatValue = (value: number, unit: string) => `${value.toLocaleString('de-DE')} ${unit}`;
 
-  const renderAreaChart = (data: any[], dataKey: string, colorKey: keyof typeof colors, unit: string, title: string, Icon: React.ElementType) => (
+  const renderAreaChart = (data: any[], dataKey: string, colorKey: keyof typeof colors, unit: string, title: string, Icon: React.ElementType) => {
+    const chartSpecificConfig = {
+        [dataKey]: { label: title, color: colors[colorKey] }
+    };
+    
+    return (
     <Card className="shadow-apple hover:shadow-apple-lg transition-shadow duration-300 rounded-2xl bg-surface-primary/80 backdrop-blur-md border-border/30">
       <CardHeader className="border-b border-border/30 pb-4">
         <CardTitle className="flex items-center text-lg font-semibold text-foreground">
@@ -83,9 +87,7 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
       </CardHeader>
       <CardContent className="pt-6">
         <ChartContainer 
-            config={{
-                [dataKey]: { label: title, color: colors[colorKey] }
-            }} 
+            config={chartSpecificConfig}
             className="h-[250px] w-full"
         >
           <AreaChart
@@ -120,12 +122,12 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
               cursor={true}
               content={
                 <ChartTooltipContent 
-                  style={areaChartConfig.tooltipStyle}
+                  style={globalAreaChartConfig.tooltipStyle}
                   indicator="dot"
-                  formatter={(value, name, props) => { // Adjusted formatter signature
-                    // The 'name' here is actually the dataKey, like "verbrauch"
-                    // The 'config' for the chartContainer has the mapping for this dataKey
-                    const itemLabel = props.chartnextProps?.config?.[name as string]?.label || name;
+                  formatter={(value, name) => { // name is dataKey
+                    // chartSpecificConfig is in scope here
+                    const itemConfig = chartSpecificConfig[name as string];
+                    const itemLabel = itemConfig?.label || name;
                     const formattedValue = formatValue(value as number, unit);
                     return (
                       <div className="flex w-full justify-between items-center gap-4">
@@ -149,7 +151,15 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
         </ChartContainer>
       </CardContent>
     </Card>
-  );
+  )};
+
+  // Specific config for waste chart
+  const wasteChartSpecificConfig = {
+    restmuell: { label: "Restmüll", color: colors.muted },
+    papier: { label: "Papier", color: colors.transport },
+    bio: { label: "Bioabfall", color: colors.income },
+    gelberSack: { label: "Gelber Sack", color: colors.expense }
+  };
 
   return (
     <div className="space-y-8">
@@ -195,12 +205,7 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
             </CardHeader>
             <CardContent className="pt-6">
               <ChartContainer 
-                config={{
-                    restmuell: { label: "Restmüll", color: colors.muted },
-                    papier: { label: "Papier", color: colors.transport },
-                    bio: { label: "Bioabfall", color: colors.income },
-                    gelberSack: { label: "Gelber Sack", color: colors.expense }
-                }} 
+                config={wasteChartSpecificConfig}
                 className="h-[300px] w-full"
               >
                 <BarChart 
@@ -215,9 +220,10 @@ const VerbrauchsanalyseSection: React.FC<VerbrauchsanalyseSectionProps> = ({ isA
                   <ChartTooltip
                     cursor={{fill: 'hsl(var(--muted))', opacity: 0.3}}
                     content={
-                        <ChartTooltipContent 
-                            formatter={(value, name, props) => { // Adjusted formatter signature
-                                const itemConfig = props.chartnextProps?.config?.[name as string];
+                        <ChartTooltipContent
+                            style={globalAreaChartConfig.tooltipStyle}
+                            formatter={(value, name) => { // name is wasteTypeKey e.g. "restmuell"
+                                const itemConfig = wasteChartSpecificConfig[name as keyof typeof wasteChartSpecificConfig];
                                 const itemLabel = itemConfig?.label || name;
                                 const formattedValue = `${value} kg`;
                                 return (
