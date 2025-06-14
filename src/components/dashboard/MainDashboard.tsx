@@ -35,66 +35,72 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardLayout>
-      {/* Breadcrumb navigation */}
-      <div className="mb-6">
+      {/* Apple-style Breadcrumb navigation */}
+      <div className="mb-8">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/" className="focus-modern">
+              <BreadcrumbLink href="/" className="apple-focus rounded-lg p-1 -m-1">
                 <Home className="h-3.5 w-3.5 mr-1" />
                 <span className="sr-only">Home</span>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Dashboard</BreadcrumbPage>
+              <BreadcrumbPage className="font-medium">Dashboard</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
       {/* Guest Welcome Card - only show for guests */}
-      {user.isGuest && <GuestWelcomeCard />}
+      {user.isGuest && (
+        <div className="mb-8 apple-fade-in">
+          <GuestWelcomeCard />
+        </div>
+      )}
 
-      {/* Content with improved animations */}
-      <div className="space-y-6 animate-fade-in">
+      {/* Content with Apple-style animations */}
+      <div className="space-y-8">
         {/* Personalized Greeting */}
-        <PersonalizedGreeting 
-          greeting={greeting}
-          currentTime={currentTime}
-          isLoggedIn={isLoggedIn}
-        />
+        <div className="apple-fade-in">
+          <PersonalizedGreeting 
+            greeting={greeting}
+            currentTime={currentTime}
+            isLoggedIn={isLoggedIn}
+          />
+        </div>
         
         {/* Today's Priorities */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <div className="apple-slide-up" style={{ animationDelay: '0.1s' }}>
           <TodayPrioritiesSection priorities={todayPriorities} />
         </div>
         
         {/* Quick Stats Overview */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <div className="apple-slide-up" style={{ animationDelay: '0.2s' }}>
           <QuickStatsSection stats={dashboardStats} />
         </div>
         
         {/* Time/Weather, Finance and News Section */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="apple-slide-up" style={{ animationDelay: '0.3s' }}>
           <OverviewSection />
         </div>
         
-        {/* Main Dashboard Content - Responsive Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+        {/* Main Dashboard Content - Responsive Apple Grid */}
+        <div className="apple-grid grid-cols-1 lg:grid-cols-3 mb-8 apple-slide-up" style={{ animationDelay: '0.4s' }}>
           {/* Left Column - Family Information */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             <FamilyInfoSection />
           </div>
 
           {/* Right Column - Stats and Document Upload */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <StatisticsSection />
           </div>
         </div>
 
         {/* Insights and Recommendations */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
+        <div className="apple-slide-up" style={{ animationDelay: '0.5s' }}>
           <InsightsRecommendationsSection />
         </div>
       </div>

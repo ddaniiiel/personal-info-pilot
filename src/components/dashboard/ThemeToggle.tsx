@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Moon, Sun, Monitor, Palette } from 'lucide-react';
+import { Moon, Sun, Monitor, Palette, Check } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 
 const ThemeToggle: React.FC = () => {
@@ -19,11 +19,17 @@ const ThemeToggle: React.FC = () => {
     }
   };
 
+  const themes = [
+    { key: 'light', label: 'Hell', icon: Sun },
+    { key: 'dark', label: 'Dunkel', icon: Moon },
+    { key: 'system', label: 'System', icon: Monitor }
+  ];
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative group transition-all duration-200 hover:bg-primary/10">
-          <div className="transition-transform duration-200 group-hover:scale-110">
+        <Button variant="ghost" size="icon" className="apple-button-ghost h-10 w-10 rounded-xl apple-hover-scale">
+          <div className="apple-scale-in">
             {getThemeIcon()}
           </div>
           <span className="sr-only">Theme wechseln</span>
@@ -31,36 +37,30 @@ const ThemeToggle: React.FC = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
-        className="z-50 bg-card border border-border shadow-lg backdrop-blur-md min-w-[160px]"
+        className="w-48 glass border-border/30 shadow-apple-lg rounded-xl"
       >
-        <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-border/30">
           <Palette className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">Erscheinungsbild</span>
+          <span className="font-medium text-foreground">Erscheinungsbild</span>
         </div>
-        <DropdownMenuItem 
-          onClick={() => setTheme('light')} 
-          className="cursor-pointer transition-colors duration-200 hover:bg-primary/10"
-        >
-          <Sun className="h-4 w-4 mr-2" />
-          <span>Hell</span>
-          {theme === 'light' && <div className="ml-auto h-2 w-2 bg-primary rounded-full" />}
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('dark')} 
-          className="cursor-pointer transition-colors duration-200 hover:bg-primary/10"
-        >
-          <Moon className="h-4 w-4 mr-2" />
-          <span>Dunkel</span>
-          {theme === 'dark' && <div className="ml-auto h-2 w-2 bg-primary rounded-full" />}
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('system')} 
-          className="cursor-pointer transition-colors duration-200 hover:bg-primary/10"
-        >
-          <Monitor className="h-4 w-4 mr-2" />
-          <span>System</span>
-          {theme === 'system' && <div className="ml-auto h-2 w-2 bg-primary rounded-full" />}
-        </DropdownMenuItem>
+        
+        <div className="p-2 space-y-1">
+          {themes.map(({ key, label, icon: Icon }) => (
+            <DropdownMenuItem 
+              key={key}
+              onClick={() => setTheme(key as 'light' | 'dark' | 'system')} 
+              className="apple-focus rounded-lg cursor-pointer flex items-center justify-between p-3"
+            >
+              <div className="flex items-center gap-3">
+                <Icon className="h-4 w-4" />
+                <span>{label}</span>
+              </div>
+              {theme === key && (
+                <Check className="h-4 w-4 text-primary apple-scale-in" />
+              )}
+            </DropdownMenuItem>
+          ))}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

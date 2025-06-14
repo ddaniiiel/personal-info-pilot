@@ -15,10 +15,14 @@ export default {
 			center: true,
 			padding: '2rem',
 			screens: {
-				'2xl': '1600px'  // Increased from 1400px to 1600px
+				'2xl': '1600px'
 			}
 		},
 		extend: {
+			fontFamily: {
+				'inter': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+				'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -63,21 +67,22 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				dashboard: {
-          purple: {
-            light: '#a78bfa',
-            DEFAULT: '#8b5cf6',
-            dark: '#7c3aed'
-          },
-          neutral: '#64748b',
-          background: '#fafafa',
-          card: '#ffffff'
-        }
 			},
 			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				'lg': '12px',
+				'md': '8px',
+				'sm': '6px',
+				'xl': '16px',
+				'2xl': '20px',
+				'3xl': '24px'
+			},
+			boxShadow: {
+				'apple': '0 4px 16px rgba(0, 0, 0, 0.12)',
+				'apple-lg': '0 8px 32px rgba(0, 0, 0, 0.16)',
+				'apple-xl': '0 16px 64px rgba(0, 0, 0, 0.20)',
+			},
+			backdropBlur: {
+				'apple': '20px',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -96,47 +101,62 @@ export default {
 						height: '0'
 					}
 				},
-        'fade-in': {
-          '0%': {
-            opacity: '0',
-            transform: 'translateY(10px)'
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translateY(0)'
-          }
-        },
-        'slide-up': {
-          '0%': {
-            opacity: '0',
-            transform: 'translateY(20px)'
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translateY(0)'
-          }
-        },
-        'scale-in': {
-          '0%': {
-            opacity: '0',
-            transform: 'scale(0.95)'
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'scale(1)'
-          }
-        }
+				'apple-scale-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'scale(0.95)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'scale(1)'
+					}
+				},
+				'apple-fade-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'apple-slide-up': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(20px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'apple-bounce': {
+					'0%, 100%': {
+						transform: 'translateY(-25%)',
+						animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)'
+					},
+					'50%': {
+						transform: 'translateY(0)',
+						animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
+					}
+				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-        'fade-in': 'fade-in 0.3s ease-out',
-        'slide-up': 'slide-up 0.4s ease-out',
-        'scale-in': 'scale-in 0.2s ease-out'
+				'apple-scale-in': 'apple-scale-in 0.2s ease-out',
+				'apple-fade-in': 'apple-fade-in 0.3s ease-out',
+				'apple-slide-up': 'apple-slide-up 0.4s ease-out',
+				'apple-bounce': 'apple-bounce 1s infinite'
 			},
-      backdropBlur: {
-        xs: '2px',
-      }
+			spacing: {
+				'18': '4.5rem',
+				'88': '22rem',
+			},
+			fontSize: {
+				'xxs': '0.625rem',
+			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
