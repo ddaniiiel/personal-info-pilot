@@ -1,16 +1,26 @@
 
 import React, { ReactNode, useState, useMemo, useEffect } from 'react';
-import { Menu, Bell, X } from 'lucide-react';
+import { Menu, Bell, X, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationPanel } from '../dashboard/NotificationPanel';
 import DashboardHeader from '../dashboard/DashboardHeader';
 import TopicSelector from '../dashboard/TopicSelector';
+import { useUser } from '@/contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-// Optimize static components with React.memo
 const MemoizedNotificationPanel = React.memo(NotificationPanel);
 const MemoizedDashboardHeader = React.memo(DashboardHeader);
 const MemoizedTopicSelector = React.memo(TopicSelector);
@@ -19,8 +29,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, isLoggedIn, logout } = useUser();
+  const navigate = useNavigate();
 
-  // Event-Handler für Scroll-Erkennung
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/auth');
+    }
+  }, [isLoggedIn, navigate]);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -31,12 +48,24 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Optimierte Toggle-Handler
   const toggleNotifications = () => setNotificationsOpen(!notificationsOpen);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeNotifications = () => setNotificationsOpen(false);
 
-  // Memoize the notification panel to prevent re-rendering
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/auth');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  const getUserInitials = () => {
+    if (!user.firstName && !user.lastName) return 'U';
+    return `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase();
+  };
+
   const notificationPanel = useMemo(() => {
     if (!notificationsOpen) return null;
     
@@ -67,11 +96,18 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     );
   }, [notificationsOpen]);
 
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-dashboard-purple"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-dashboard-background">
-      {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Top Navigation - mit leichtem Schatten beim Scrollen */}
+        {/* Top Navigation */}
         <div className={`bg-white border-b border-border sticky top-0 z-10 transition-shadow ${isScrolled ? 'shadow-sm' : ''}`}>
           <div className="container flex items-center justify-between h-16">
             <div className="flex items-center">
@@ -98,6 +134,40 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
               </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-dashboard-purple text-white text-xs">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.firstName} {user.lastName}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profil</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Abmelden</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -105,7 +175,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         {/* Header with User Info */}
         <MemoizedDashboardHeader />
         
-        {/* Zentrale TopicSelector-Navigation */}
+        {/* Topic Selector Navigation */}
         <div className="bg-white border-b border-gray-200 py-2 sticky top-16 z-10">
           <div className="container">
             <MemoizedTopicSelector />
@@ -116,9 +186,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="container py-6 flex-grow">
           {children}
         </div>
+
+        {/* Footer */}
+        <footer className="bg-white border-t border-border py-6 mt-auto">
+          <div className="container text-center text-sm text-muted-foreground">
+            <p>&copy; 2024 KI-Dashboard. Alle Rechte vorbehalten.</p>
+          </div>
+        </footer>
       </div>
 
-      {/* Notification Panel - Sliding from right */}
+      {/* Notification Panel */}
       {notificationPanel}
     </div>
   );
