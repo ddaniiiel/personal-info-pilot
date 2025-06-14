@@ -67,6 +67,24 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
+				// Apple color system
+				apple: {
+					blue: 'hsl(var(--apple-blue))',
+					'blue-light': 'hsl(var(--apple-blue-light))',
+					green: 'hsl(var(--apple-green))',
+					'green-light': 'hsl(var(--apple-green-light))',
+					orange: 'hsl(var(--apple-orange))',
+					'orange-light': 'hsl(var(--apple-orange-light))',
+					red: 'hsl(var(--apple-red))',
+					'red-light': 'hsl(var(--apple-red-light))',
+					purple: 'hsl(var(--apple-purple))',
+					'purple-light': 'hsl(var(--apple-purple-light))',
+				},
+				surface: {
+					primary: 'hsl(var(--surface-primary))',
+					secondary: 'hsl(var(--surface-secondary))',
+					tertiary: 'hsl(var(--surface-tertiary))',
+				}
 			},
 			borderRadius: {
 				'lg': '12px',
@@ -77,9 +95,11 @@ export default {
 				'3xl': '24px'
 			},
 			boxShadow: {
-				'apple': '0 4px 16px rgba(0, 0, 0, 0.12)',
-				'apple-lg': '0 8px 32px rgba(0, 0, 0, 0.16)',
-				'apple-xl': '0 16px 64px rgba(0, 0, 0, 0.20)',
+				'apple': '0 4px 16px rgba(0, 0, 0, 0.08)',
+				'apple-lg': '0 8px 32px rgba(0, 0, 0, 0.12)',
+				'apple-xl': '0 16px 64px rgba(0, 0, 0, 0.16)',
+				'apple-button': '0 2px 8px rgba(0, 0, 0, 0.06)',
+				'apple-card': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
 			},
 			backdropBlur: {
 				'apple': '20px',
@@ -140,6 +160,14 @@ export default {
 						transform: 'translateY(0)',
 						animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
 					}
+				},
+				'apple-pulse': {
+					'0%, 100%': {
+						opacity: '1'
+					},
+					'50%': {
+						opacity: '0.5'
+					}
 				}
 			},
 			animation: {
@@ -148,7 +176,8 @@ export default {
 				'apple-scale-in': 'apple-scale-in 0.2s ease-out',
 				'apple-fade-in': 'apple-fade-in 0.3s ease-out',
 				'apple-slide-up': 'apple-slide-up 0.4s ease-out',
-				'apple-bounce': 'apple-bounce 1s infinite'
+				'apple-bounce': 'apple-bounce 1s infinite',
+				'apple-pulse': 'apple-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
 			},
 			spacing: {
 				'18': '4.5rem',

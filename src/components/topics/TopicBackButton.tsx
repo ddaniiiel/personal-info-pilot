@@ -12,7 +12,7 @@ const TopicBackButton: React.FC = () => {
       variant="outline" 
       size="sm" 
       onClick={() => navigate('/')}
-      className="mb-3 hover:bg-dashboard-purple/10 hover:text-dashboard-purple transition-colors"
+      className="mb-3 apple-button-secondary"
     >
       <ArrowLeft className="h-4 w-4 mr-2" />
       Zurück zum Dashboard

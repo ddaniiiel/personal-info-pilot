@@ -31,55 +31,63 @@ const GesundheitSection: React.FC<GesundheitSectionProps> = ({ isActive }) => {
       isActive={isActive}
       id="#gesundheit"
     >
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h3 className="font-medium">Kommende Termine</h3>
-          <Button variant="outline" size="sm">Termin hinzufügen</Button>
+          <h3 className="font-semibold text-lg text-foreground">Kommende Termine</h3>
+          <Button variant="outline" size="sm" className="apple-button-secondary">
+            Termin hinzufügen
+          </Button>
         </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Typ</TableHead>
-              <TableHead>Datum</TableHead>
-              <TableHead>Zeit</TableHead>
-              <TableHead>Haustier</TableHead>
-              <TableHead>Grund</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {appointments.map(appointment => (
-              <TableRow key={appointment.id}>
-                <TableCell className="font-medium">{appointment.type}</TableCell>
-                <TableCell>{appointment.date}</TableCell>
-                <TableCell>{appointment.time}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">{appointment.pet}</Badge>
-                </TableCell>
-                <TableCell>{appointment.reason}</TableCell>
+        
+        <div className="apple-card overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border/30">
+                <TableHead className="font-medium">Typ</TableHead>
+                <TableHead className="font-medium">Datum</TableHead>
+                <TableHead className="font-medium">Zeit</TableHead>
+                <TableHead className="font-medium">Haustier</TableHead>
+                <TableHead className="font-medium">Grund</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {appointments.map(appointment => (
+                <TableRow key={appointment.id} className="border-border/30 hover:bg-surface-secondary/50">
+                  <TableCell className="font-medium">{appointment.type}</TableCell>
+                  <TableCell>{appointment.date}</TableCell>
+                  <TableCell>{appointment.time}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="apple-badge">{appointment.pet}</Badge>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">{appointment.reason}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
 
-        <div className="mt-8">
+        <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="font-medium">Medikamentenplan</h3>
-            <Button variant="outline" size="sm">Medikament hinzufügen</Button>
+            <h3 className="font-semibold text-lg text-foreground">Medikamentenplan</h3>
+            <Button variant="outline" size="sm" className="apple-button-secondary">
+              Medikament hinzufügen
+            </Button>
           </div>
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <div className="apple-grid grid-cols-1 md:grid-cols-3">
             {medications.map(medication => (
-              <Card key={medication.id}>
-                <CardContent className="p-4">
+              <Card key={medication.id} className="apple-card apple-hover-lift">
+                <CardContent className="p-6">
                   <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="font-medium flex items-center">
-                        <Pill className="h-4 w-4 mr-2 text-dashboard-purple" />
+                    <div className="space-y-2">
+                      <h4 className="font-medium flex items-center text-foreground">
+                        <Pill className="h-4 w-4 mr-2 text-primary" />
                         {medication.name}
                       </h4>
                       <p className="text-sm text-muted-foreground">{medication.schedule}</p>
-                      <p className="text-sm">Nächste Gabe: {medication.nextDue}</p>
+                      <p className="text-sm font-medium">Nächste Gabe: {medication.nextDue}</p>
                     </div>
-                    <Badge variant="outline">{medication.pet}</Badge>
+                    <Badge variant="outline" className="apple-badge-success">{medication.pet}</Badge>
                   </div>
                 </CardContent>
               </Card>
