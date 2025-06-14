@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { NotificationPanel } from '../dashboard/NotificationPanel';
 import DashboardHeader from '../dashboard/DashboardHeader';
 import TopicSelector from '../dashboard/TopicSelector';
+import ThemeToggle from '../dashboard/ThemeToggle';
 import { useUser } from '@/contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -70,7 +71,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return (
       <>
         <div 
-          className="fixed inset-y-0 right-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-30 translate-x-0 border-l"
+          className="fixed inset-y-0 right-0 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 ease-in-out z-30 translate-x-0 border-l border-border"
         >
           <div className="flex items-center justify-between p-4 border-b border-border">
             <h2 className="font-semibold">Benachrichtigungen</h2>
@@ -78,7 +79,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               variant="ghost"
               size="icon"
               onClick={closeNotifications}
-              className="hover:bg-gray-100"
+              className="hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               <X className="h-5 w-5" />
             </Button>
@@ -95,10 +96,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   }, [notificationsOpen]);
 
   return (
-    <div className="flex min-h-screen bg-dashboard-background">
+    <div className="flex min-h-screen bg-dashboard-background dark:bg-gray-900 transition-colors">
       <div className="flex-1 flex flex-col">
         {/* Top Navigation */}
-        <div className={`bg-white border-b border-border sticky top-0 z-10 transition-shadow ${isScrolled ? 'shadow-sm' : ''}`}>
+        <div className={`bg-white dark:bg-gray-900 border-b border-border sticky top-0 z-10 transition-all ${isScrolled ? 'shadow-sm' : ''}`}>
           <div className="container flex items-center justify-between h-16">
             <div className="flex items-center">
               <Button
@@ -113,13 +114,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 KI-Dashboard
               </h1>
               {user.isGuest && (
-                <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full border border-green-200">
+                <span className="ml-2 px-2 py-1 text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full border border-green-200 dark:border-green-700">
                   Kostenloses Testen
                 </span>
               )}
             </div>
             
             <div className="flex items-center space-x-2">
+              <ThemeToggle />
               <Button
                 variant="ghost"
                 size="icon"
@@ -140,7 +142,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuContent className="w-56 z-50 bg-white dark:bg-gray-800 border border-border" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
@@ -178,7 +180,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <MemoizedDashboardHeader />
         
         {/* Topic Selector Navigation */}
-        <div className="bg-white border-b border-gray-200 py-2 sticky top-16 z-10">
+        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 py-2 sticky top-16 z-10">
           <div className="container">
             <MemoizedTopicSelector />
           </div>
@@ -190,7 +192,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
 
         {/* Enhanced Footer */}
-        <footer className="bg-white border-t border-border py-8 mt-auto">
+        <footer className="bg-white dark:bg-gray-900 border-t border-border py-8 mt-auto">
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
               <div>
